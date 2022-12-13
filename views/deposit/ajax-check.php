@@ -45,13 +45,27 @@ if ($data['status'] == 200) {
         <div class="col-8 text-xs">
             <div class="callout callout-success py-2">
                 <span class="text-success font-weight-bold">
-                    <?= $data['package'] ?>
+                    Riwayat Tabungan
                 </span>
                 <hr class="my-1">
                 <table style="width: 100%">
                     <tbody>
                         <tr>
-                            <td>Tabungan</td>
+                            <td>Kredit</td>
+                            <td>Rp.</td>
+                            <td class="text-right">
+                                <?= number_format($data['kredit'], 0, ',', '.') ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Debet</td>
+                            <td>Rp.</td>
+                            <td class="text-right">
+                                <?= number_format($data['debet'], 0, ',', '.') ?>
+                            </td>
+                        </tr>
+                        <tr class="text-success font-weight-bold">
+                            <td>Kredit</td>
                             <td>Rp.</td>
                             <td class="text-right">
                                 <?= number_format($data['total'], 0, ',', '.') ?>

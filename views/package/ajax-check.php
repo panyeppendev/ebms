@@ -18,11 +18,11 @@ if ($data) {
         $class = 'warning';
     }
 ?>
-    <div class="col-8">
+    <div class="col-9">
         <div class="callout callout-success py-1 px-3">
             <b>DATA DIRI</b>
         </div>
-        <dl class="row">
+        <dl class="row mb-0">
             <dt class="col-sm-3 font-weight-normal mb-1">NIS</dt>
             <dd class="col-sm-9 mb-1">
                 <?= $data->id ?>
@@ -46,12 +46,10 @@ if ($data) {
             <dd class="col-sm-9 mb-1"><?= $data->class_of_formal ?> - <?= $data->level_of_formal ?></dd>
         </dl>
     </div>
-    <div class="col-4">
-        <div class="card mb-0">
-            <div class="card-body box-profile">
-                <div class="text-center mb-4">
-                    <img src="<?= $avatar ?>" alt="IMAGE OF <?= $data->name ?>" style="width: 150px; border-radius: 3px;">
-                </div>
+    <div class="col-3">
+        <div class="card">
+            <div class="card-body p-0">
+                <img src="<?= $avatar ?>" alt="IMAGE OF <?= $data->name ?>" style="width: 100%; border-radius: 3px;">
             </div>
         </div>
     </div>
