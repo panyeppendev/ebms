@@ -17,8 +17,9 @@ class DepositModel extends CI_Model
     {
         $name = $this->input->post('name', true);
         $domicile = $this->input->post('domicile', true);
+        $period = $this->dm->getperiod();
 
-        $this->db->select('a.*, b.name, b.village, b.city, b.class, b.level, b.class_of_formal, b.level_of_formal, b.domicile');
+        $this->db->select('SUM(a.deposit) AS deposit, b.id AS id, b.name, b.village, b.city, b.class, b.level, b.class_of_formal, b.level_of_formal, b.domicile');
         $this->db->from('packages AS a')->join('students AS b', 'b.id = a.student_id');
         if ($name != '') {
             $this->db->like('b.name', $name);
@@ -27,8 +28,10 @@ class DepositModel extends CI_Model
         if ($domicile != '') {
             $this->db->where('b.domicile', $domicile);
         }
-        $this->db->where('a.deposit >', 0);
-        $result = $this->db->get();
+        $this->db->where([
+            'deposit >' => 0, 'a.period' => $period
+        ]);
+        $result = $this->db->group_by('a.student_id')->get();
 
         return [
             $result->result_object(),
@@ -39,8 +42,14 @@ class DepositModel extends CI_Model
     public function detail()
     {
         $id = $this->input->post('id', true);
+        $period = $this->dm->getperiod();
 
-        $result = $this->db->select('*')->from('package_deposit')->where('package_id', $id)->get();
+        $this->db->select('b.*')->from('package_deposit AS b');
+        $this->db->join('packages AS a', 'a.id = b.package_id');
+        $result = $this->db->where([
+            'a.student_id' => $id,
+            'a.period' => $period
+        ])->get();
         return [
             $result->result_object(),
             $result->num_rows()
@@ -95,27 +104,46 @@ class DepositModel extends CI_Model
         }
 
         $packageID = $checkPackage->id;
-        $package = $checkPackage->package;
-        $transport = $checkPackage->transport;
         $deposit = $checkPackage->deposit;
 
-        //TRANSPORT
-        $teksTransport = ['', ' + Transport'];
+        //GET DEPOSIT
+        $depositKredit = $this->db->select('SUM(deposit) AS deposit')->from('packages')->where([
+            'student_id' => $nis, 'period' => $period
+        ])->get()->row_object();
+        if (!$depositKredit || $depositKredit->deposit == '') {
+            $depositKredit = 0;
+        } else {
+            $depositKredit = $depositKredit->deposit;
+        }
+
+        $this->db->select('a.student_id, SUM(b.amount) AS amount')->from('packages AS a');
+        $this->db->join('package_transaction AS b', 'b.package_id = a.id');
+        $depositDebet = $this->db->where([
+            'a.student_id' => $nis, 'a.period' => $period, 'b.type' => 'DEPOSIT'
+        ])->get()->row_object();
+        if (!$depositDebet || $depositDebet->amount == '') {
+            $depositDebet = 0;
+        } else {
+            $depositDebet = $depositDebet->amount;
+        }
+        $deposit = $depositKredit - $depositDebet;
 
         return [
             'status' => 200,
             'message' => $nis,
             'package' => $packageID,
-            'total' => $deposit,
-            'text' => 'Paket ' . $package . $teksTransport[$transport]
+            'kredit' => $depositKredit,
+            'debet' => $depositDebet,
+            'total' => $deposit
         ];
     }
 
     public function showCheck()
     {
         $nis = $this->input->post('nis', true);
+        $kredit = $this->input->post('kredit', true);
+        $debet = $this->input->post('debet', true);
         $total = $this->input->post('total', true);
-        $text = $this->input->post('text', true);
 
         $data = $this->db->get_where('students', [
             'id' => $nis, 'status' => 'AKTIF'
@@ -129,7 +157,8 @@ class DepositModel extends CI_Model
         return [
             'status' => 200,
             'student' => $data,
-            'package' => $text,
+            'kredit' => $kredit,
+            'debet' => $debet,
             'total' => $total
         ];
     }
@@ -183,37 +212,6 @@ class DepositModel extends CI_Model
         return [
             'status' => 200,
             'message' => 'Tabungan berhasil disimpan'
-        ];
-    }
-
-    public function loadRecap()
-    {
-        $now = date('Y-m-d');
-        $this->db->select('SUM(amount) AS amount')->from('package_transaction');
-        $this->db->where('DATE(created_at)', $now);
-        $this->db->where_in('status', ['POCKET_CASH', 'DEPOSIT_CASH']);
-        $amount = $this->db->get()->row_object();
-        if ($amount) {
-            if ($amount->amount != '' || $amount->amount != 0) {
-                $amount = $amount->amount;
-            } else {
-                $amount = 0;
-            }
-        } else {
-            $amount = 0;
-        }
-
-        $this->db->select('a.amount, a.created_at, a.type, b.id AS package, c.name');
-        $this->db->from('package_transaction AS a')->join('packages AS b', 'b.id = a.package_id');
-        $this->db->join('students AS c', 'c.id = b.student_id');
-        $this->db->where('DATE(a.created_at)', $now);
-        $this->db->where_in('a.status', ['POCKET_CASH', 'DEPOSIT_CASH']);
-        $result = $this->db->get();
-
-        return [
-            $amount,
-            $result->num_rows(),
-            $result->result_object()
         ];
     }
 }

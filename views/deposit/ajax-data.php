@@ -9,7 +9,6 @@
                         <th colspan="2" class="text-center">NAMA</th>
                         <th>ALAMAT</th>
                         <th>ADMINISTRASI</th>
-                        <th>PAKET</th>
                         <th>TABUNGAN</th>
                         <th>OPSI</th>
                     </tr>
@@ -29,9 +28,6 @@
 
                             $city = str_replace(['Kabupaten', 'Kota'], '', $data->city);
                             $transport = ['', ' + Transport'];
-
-                            $status = $data->status;
-
                     ?>
                             <tr>
                                 <td class="align-middle"><?= $no++ ?></td>
@@ -54,9 +50,6 @@
                                         - <?= $data->class . ' - ' . $data->level ?> <br>
                                         - <?= $data->class_of_formal . ' - ' . $data->level_of_formal ?>
                                     </small>
-                                </td>
-                                <td class="align-middle text-success text-sm">
-                                    <?= 'Paket ' . $data->package . $transport[$data->transport] ?>
                                 </td>
                                 <td class="align-middle">
                                     <?= 'Rp. ' . number_format($data->deposit, 0, ',', '.') ?>

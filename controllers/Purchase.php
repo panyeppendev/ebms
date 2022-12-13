@@ -35,6 +35,14 @@ class Purchase extends CI_Controller
         $this->load->view('purchase/ajax-check', $data);
     }
 
+    public function getcheck()
+    {
+        $data = [
+            'data' => $this->pm->getData()
+        ];
+        $this->load->view('purchase/ajax-check-deposit', $data);
+    }
+
     public function save()
     {
         $result = $this->pm->save();

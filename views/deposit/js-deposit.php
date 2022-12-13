@@ -129,8 +129,9 @@
             method: 'POST',
             data: {
                 nis: res.message,
-                total: res.total,
-                text: res.text
+                kredit: res.kredit,
+                debet: res.debet,
+                total: res.total
             },
             success: function(response) {
                 $('#show-check').html(response)
@@ -187,6 +188,7 @@
                         $('#show-check').html('')
                         $('#nominal').prop('readonly', true).val('')
                         $('#modal-deposit').modal('hide')
+                        loadData()
                     }
                 })
             }

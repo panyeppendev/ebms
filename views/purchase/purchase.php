@@ -42,7 +42,7 @@ if ($step[0] != 0) {
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="nis">NIS <small class="text-success">Tekan F2 untuk fokus</small> </label>
+                                <label for="nis">NIS <small class="text-success">Tekan F2 untuk fokus inputan NIS</small> </label>
                                 <input data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="nis" name="nis" autofocus>
                             </div>
                             <form id="form-purchase">
@@ -55,6 +55,11 @@ if ($step[0] != 0) {
                                 </div>
                             </form>
                         </div>
+                        <div class="card-footer">
+                            <span class="text-info">
+                                Tekan <b>F4</b> untuk cek saldo
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-8" id="show-data">
@@ -64,6 +69,44 @@ if ($step[0] != 0) {
         <?php } ?>
     </section>
     <!-- /.content -->
+</div>
+
+<div class="modal fade" id="modal-check" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h6 class="modal-title">Cek Uang Saku Paket <?= $currentStep ?></h6>
+                <div class="align-middle" data-dismiss="modal" title="Tutup" style="cursor: pointer">
+                    <i class="fas fa-times-circle text-danger"></i>
+                </div>
+            </div>
+            <div class="modal-body" style="background-color: #f4f6f9; min-height: 40vh">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="card mb-0">
+                            <div class="card-body p-0">
+                                <input data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" name="id" id="id">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="mt-2 font-italic row justify-content-around">
+                            <div class="text-info">
+                                Masukkan ID Card lalu ENTER
+                            </div>
+                            <div class="text-danger">
+                                Tekan <b>ESC</b> untuk tutup modal
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3" id="show-check"></div>
+            </div>
+            <div class="modal-footer justify-content-between p-2"></div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
 </div>
 
 <div class="modal fade" id="modal-detail">

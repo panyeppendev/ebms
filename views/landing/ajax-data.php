@@ -47,17 +47,23 @@
             <?php
             if ($data['package'] == 200) {
             ?>
-                <div class="callout callout-success py-1 px-3">
-                    <b>INFORMASI PAKET <?= $data['step'] ?></b>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="callout callout-success py-1 px-3">
+                            <b>INFORMASI SALDO</b>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <dl class="row">
+                            <dt class="col-sm-6 font-weight-normal mb-1">Paket</dt>
+                            <dd class="col-sm-6 mb-1 font-weight-bold text-right"><?= $data['package_name'] ?></dd>
+                            <dt class="col-sm-6 font-weight-normal mb-1">Sisa Uang Saku</dt>
+                            <dd class="col-sm-6 mb-1 text-right"><?= $data['package_message']['pocket'] ?></dd>
+                            <dt class="col-sm-6 font-weight-normal mb-1">Sisa Tabungan</dt>
+                            <dd class="col-sm-6 mb-1 text-right"><?= $data['package_message']['deposit'] ?></dd>
+                        </dl>
+                    </div>
                 </div>
-                <dl class="row">
-                    <dt class="col-sm-3 font-weight-normal mb-1">Paket</dt>
-                    <dd class="col-sm-9 mb-1 font-weight-bold"><?= $data['package_name'] ?></dd>
-                    <dt class="col-sm-3 font-weight-normal mb-1">Sisa Uang Saku</dt>
-                    <dd class="col-sm-9 mb-1">Rp. <?= $data['package_message']['pocket'] ?></dd>
-                    <dt class="col-sm-3 font-weight-normal mb-1">Sisa Tabungan</dt>
-                    <dd class="col-sm-9 mb-1">Rp. <?= $data['package_message']['deposit'] ?></dd>
-                </dl>
             <?php
             } else {
             ?>

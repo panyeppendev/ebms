@@ -9,12 +9,17 @@
 
     $(function() {
         loadRecap()
-        $('body').on('keyup', e => {
-            if (e.keyCode == 113) {
-                $('#nominal').focusout().val('')
-                $('#nis').focus().val('')
-            }
-        })
+    })
+
+    $('body').on('keydown', e => {
+        $('#nominal').focusout().val()
+        if (e.keyCode == 113) {
+            $('#nis').focus().val('')
+        } else if (e.keyCode == 115) {
+            $('#modal-check').modal('show')
+        } else if (e.keyCode == 27) {
+            $('#modal-check').modal('hide')
+        }
     })
 
     $('#nis').on('focusin', () => {
@@ -93,9 +98,6 @@
             },
             dataType: 'JSON',
             success: function(res) {
-                console.log(res);
-
-                //return false
                 let status = res.status
                 if (status != 200) {
                     errorAlert(res.message)
@@ -165,6 +167,72 @@
                 $('#pocket').val(0)
                 $('#show-data').html('')
                 $('#nominal').prop('readonly', true).val('')
+            }
+        })
+    }
+
+    $('#modal-check').on('shown.bs.modal', () => {
+        $('#id').focus()
+    })
+
+    $('#modal-check').on('hidden.bs.modal', () => {
+        $('#id').val('')
+        $('#show-check').html('')
+        $('#nis').focus().val('')
+    })
+
+    $('#id').on('keyup', function(e) {
+        let id = $(this).val()
+        let key = e.which
+        if (key != 13) {
+            return false
+        }
+
+        if (key == 13 && id == '') {
+            return false
+        }
+
+        checkid(id)
+    })
+
+    const checkid = id => {
+        let step = $('#current_step').val()
+        $.ajax({
+            url: '<?= base_url() ?>purchase/checknis',
+            method: 'POST',
+            data: {
+                nis: id,
+                step
+            },
+            dataType: 'JSON',
+            success: function(res) {
+                let status = res.status
+                if (status != 200) {
+                    errorAlert(res.message)
+                    $('#id').focus().val('')
+                    $('#show-check').html('')
+                    return false
+                }
+                getcheck(res)
+            }
+        })
+    }
+
+    const getcheck = data => {
+        $.ajax({
+            url: '<?= base_url() ?>purchase/getcheck',
+            method: 'POST',
+            data: {
+                nis: data.message,
+                pocket: data.pocket,
+                deposit: data.deposit,
+                cash: data.cash,
+                canteen: data.canteen,
+                total: data.total,
+                package: data.text
+            },
+            success: function(res) {
+                $('#show-check').html(res)
             }
         })
     }

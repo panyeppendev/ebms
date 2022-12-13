@@ -39,23 +39,11 @@ class LandingModel extends CI_Model
         ];
     }
 
-    public function getSaldo($id, $step)
-    {
-        $this->db->select_sum('residual')->from('pockets');
-        $this->db->where(['student_id' => $id, 'step' => $step, 'status' => 'CHECKED']);
-        $getPocket = $this->db->get()->row_object();
-
-        $this->db->select_sum('amount')->from('deposits');
-        $this->db->where(['student_id' => $id, 'step' => $step]);
-        $getDeposit = $this->db->get()->row_object();
-
-        return $getPocket->residual + $getDeposit->amount;
-    }
-
     public function getdata()
     {
         $step = $this->step();
         $id = $this->input->post('id', true);
+        $period = $this->dm->getperiod();
 
         $checkStudent = $this->db->get_where('students', ['id' => $id])->row_object();
         if (!$checkStudent) {
@@ -91,13 +79,27 @@ class LandingModel extends CI_Model
         $amount = $text[$checkPackage->package];
 
         //GET DEPOSIT
-        $this->db->select('SUM(amount) AS total')->from('package_deposit');
-        $deposit = $this->db->where('package_id', $packageID)->get()->row_object();
-        if (!$deposit) {
-            $deposit = 0;
+        //GET DEPOSIT
+        $depositKredit = $this->db->select('SUM(deposit) AS deposit')->from('packages')->where([
+            'student_id' => $id, 'period' => $period
+        ])->get()->row_object();
+        if (!$depositKredit || $depositKredit->deposit == '') {
+            $depositKredit = 0;
         } else {
-            $deposit = $deposit->total;
+            $depositKredit = $depositKredit->deposit;
         }
+
+        $this->db->select('a.student_id, SUM(b.amount) AS amount')->from('packages AS a');
+        $this->db->join('package_transaction AS b', 'b.package_id = a.id');
+        $depositDebet = $this->db->where([
+            'a.student_id' => $id, 'a.period' => $period, 'b.type' => 'DEPOSIT'
+        ])->get()->row_object();
+        if (!$depositDebet || $depositDebet->amount == '') {
+            $depositDebet = 0;
+        } else {
+            $depositDebet = $depositDebet->amount;
+        }
+        $deposit = $depositKredit - $depositDebet;
 
         //GET POCKET
         $this->db->select('SUM(amount) AS total')->from('package_transaction');
