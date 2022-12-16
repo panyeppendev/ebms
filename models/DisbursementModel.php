@@ -185,9 +185,10 @@ class DisbursementModel extends CI_Model
         //CEK KREDIT TUNAI
         $this->db->select('SUM(amount) AS amount')->from('package_transaction');
         $this->db->where([
-            'DATE(created_at)' => $masehi, 'status' => 'POCKET_CASH',
+            'DATE(created_at)' => $masehi,
             'package_id' => $packageID
         ]);
+        $this->db->where_in('status', ['POCKET_CASH', 'DEPOSIT_CASH']);
         $checkKreditCash = $this->db->get()->row_object();
         if ($checkKreditCash->amount == '' || $checkKreditCash->amount <= 0) {
             $kreditCash = 0;
@@ -198,8 +199,14 @@ class DisbursementModel extends CI_Model
         //CEK KREDIT NON-TUNAI
         $this->db->select('SUM(amount) AS amount')->from('package_transaction');
         $this->db->where([
-            'DATE(created_at)' => $masehi, 'status' => 'DEPOSIT_CANTEEN',
+            'DATE(created_at)' => $masehi,
             'package_id' => $packageID
+        ]);
+        $this->db->where_in('status', [
+            'POCKET_CANTEEN',
+            'DEPOSIT_CANTEEN',
+            'POCKET_STORE',
+            'DEPOSIT_STORE'
         ]);
         $checkKreditCanteen = $this->db->get()->row_object();
         if ($checkKreditCanteen->amount == '' || $checkKreditCanteen->amount <= 0) {
@@ -212,7 +219,7 @@ class DisbursementModel extends CI_Model
             'status' => 200,
             'message' => $nis,
             'package' => $packageID,
-            'pocket' => $pocketFinal,
+            'pocket' => $pocketFinal - $kredit,
             'deposit' => $deposit,
             'cash' => $kreditCash,
             'canteen' => $kreditCanteen,
@@ -299,17 +306,17 @@ class DisbursementModel extends CI_Model
                 'type' => 'DEPOSIT',
                 'status' => 'DEPOSIT_CASH'
             ]);
-        } else {
-            $nominal = $nominal;
         }
 
-        $this->db->insert('package_transaction', [
-            'package_id' => $package,
-            'created_at' => date('Y-m-d H:i:s'),
-            'amount' => $nominal,
-            'type' => 'POCKET',
-            'status' => 'POCKET_CASH'
-        ]);
+        if ($nominal > 0) {
+            $this->db->insert('package_transaction', [
+                'package_id' => $package,
+                'created_at' => date('Y-m-d H:i:s'),
+                'amount' => $nominal,
+                'type' => 'POCKET',
+                'status' => 'POCKET_CASH'
+            ]);
+        }
 
         return [
             'status' => 200,

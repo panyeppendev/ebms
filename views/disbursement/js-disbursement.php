@@ -132,7 +132,7 @@
                     $('#nominal').focus().val('')
                     return false
                 }
-                //console.log(res);
+                loadRecap()
                 toastr.success(`Yeaah! ${ res.message }`)
                 $('#nis').focus().val('')
                 $('#show-data').html('')

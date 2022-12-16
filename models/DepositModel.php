@@ -62,26 +62,6 @@ class DepositModel extends CI_Model
         $step = $this->input->post('step', true);
         $period = $this->dm->getperiod();
 
-        //CHECK CARD
-        $checkCard = $this->db->get_where('cards', ['id' => $nis])->row_object();
-        if (!$checkCard) {
-            return [
-                'status' => 400,
-                'message' => 'Kartu tidak valid'
-            ];
-        }
-
-        $statusCard = $checkCard->status;
-        if ($statusCard != 'ACTIVE') {
-            $statusText = ['INACTIVE' => 'belum diaktivasi', 'BLOCKED' => 'sudah diblokir'];
-            return [
-                'status' => 400,
-                'message' => 'Kartu ini ' . $statusText[$statusCard]
-            ];
-        }
-
-        $nis = $checkCard->student_id;
-
         $cekStudent = $this->db->get_where('students', [
             'id' => $nis, 'status' => 'AKTIF'
         ])->num_rows();

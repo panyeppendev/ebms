@@ -28,10 +28,8 @@
                             }
 
                             $city = str_replace(['Kabupaten', 'Kota'], '', $data->city);
-                            $transport = ['', ' + Transport'];
-
                             $status = $data->status;
-
+                            $transport = ['', ' + Transport'];
                     ?>
                             <tr>
                                 <td class="align-middle"><?= $no++ ?></td>
