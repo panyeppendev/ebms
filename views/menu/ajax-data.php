@@ -92,6 +92,9 @@
                                         <button onclick="addUserMenu(<?= $data->id ?>, 'STORE')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir Koperasi">
                                             <i class="fas fa-user-clock"></i>
                                         </button>
+                                        <button onclick="addUserMenu(<?= $data->id ?>, 'LIBRARY')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir Perpustakaan">
+                                            <i class="fas fa-user-astronaut"></i>
+                                        </button>
                                         <button onclick="addUserMenu(<?= $data->id ?>, 'PANITIA-LIBURAN')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir Toko">
                                             <i class="fas fa-user-shield"></i>
                                         </button>

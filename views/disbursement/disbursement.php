@@ -51,7 +51,7 @@ if ($step[0] != 0) {
                                 <input autofocus data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="nis" name="nis">
                             </div>
                             <div class="form-group">
-                                <form id="form-disbursement">
+                                <form id="form-disbursement" autocomplete="off">
                                     <input type="hidden" name="package_save" id="package-save">
                                     <input type="hidden" name="pocket_save" id="pocket-save">
                                     <input type="hidden" name="total_save" id="total-save">
@@ -73,7 +73,7 @@ if ($step[0] != 0) {
 <div class="modal fade" id="modal-detail">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body" id="show-detail"></div>
+            <div class="modal-body" id="show-detail" style="max-height: 85vh;"></div>
         </div>
         <!-- /.modal-content -->
     </div>

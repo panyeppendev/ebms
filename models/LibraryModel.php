@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class PurchaseModel extends CI_Model
+class LibraryModel extends CI_Model
 {
     public function step()
     {
@@ -283,7 +283,7 @@ class PurchaseModel extends CI_Model
                 'created_at' => date('Y-m-d H:i:s'),
                 'amount' => $depositNominal,
                 'type' => 'DEPOSIT',
-                'status' => 'DEPOSIT_CANTEEN'
+                'status' => 'DEPOSIT_LIBRARY'
             ]);
         }
 
@@ -293,7 +293,7 @@ class PurchaseModel extends CI_Model
                 'created_at' => date('Y-m-d H:i:s'),
                 'amount' => $nominal,
                 'type' => 'POCKET',
-                'status' => 'POCKET_CANTEEN'
+                'status' => 'POCKET_LIBRARY'
             ]);
         }
 
@@ -308,7 +308,7 @@ class PurchaseModel extends CI_Model
         $now = date('Y-m-d');
         $this->db->select('SUM(amount) AS amount')->from('package_transaction');
         $this->db->where('DATE(created_at)', $now);
-        $this->db->where_in('status', ['POCKET_CANTEEN', 'DEPOSIT_CANTEEN']);
+        $this->db->where_in('status', ['POCKET_LIBRARY', 'DEPOSIT_LIBRARY']);
         $amount = $this->db->get()->row_object();
         if ($amount) {
             if ($amount->amount != '' || $amount->amount != 0) {
@@ -324,7 +324,7 @@ class PurchaseModel extends CI_Model
         $this->db->from('package_transaction AS a')->join('packages AS b', 'b.id = a.package_id');
         $this->db->join('students AS c', 'c.id = b.student_id');
         $this->db->where('DATE(a.created_at)', $now);
-        $this->db->where_in('a.status', ['POCKET_CANTEEN', 'DEPOSIT_CANTEEN']);
+        $this->db->where_in('a.status', ['POCKET_LIBRARY', 'DEPOSIT_LIBRARY']);
         $result = $this->db->get();
 
         return [
