@@ -40,7 +40,7 @@
 
     const loadRecap = () => {
         $.ajax({
-            url: '<?= base_url() ?>purchase/loadrecap',
+            url: '<?= base_url() ?>order/loadrecap',
             method: 'POST',
             success: function(res) {
                 $('#show-recap').html(res)
@@ -50,7 +50,7 @@
 
     const loadData = () => {
         $.ajax({
-            url: '<?= base_url() ?>purchase/loaddata',
+            url: '<?= base_url() ?>order/loaddata',
             method: 'POST',
             success: function(res) {
                 $('#show-detail').html(res)
@@ -89,7 +89,7 @@
         let step = $('#current_step').val()
         let start = $('#start_step').val()
         $.ajax({
-            url: '<?= base_url() ?>purchase/checknis',
+            url: '<?= base_url() ?>order/checknis',
             method: 'POST',
             data: {
                 nis,
@@ -117,7 +117,7 @@
 
     const getData = data => {
         $.ajax({
-            url: '<?= base_url() ?>purchase/getdata',
+            url: '<?= base_url() ?>order/getdata',
             method: 'POST',
             data: {
                 nis: data.message,
@@ -134,7 +134,7 @@
         })
     }
 
-    $('#form-purchase').on('submit', function(e) {
+    $('#form-order').on('submit', function(e) {
         e.preventDefault()
 
         const nominal = $('#nominal').val()
@@ -148,9 +148,9 @@
 
     const save = () => {
         $.ajax({
-            url: '<?= base_url() ?>purchase/save',
+            url: '<?= base_url() ?>order/save',
             method: 'POST',
-            data: $('#form-purchase').serialize(),
+            data: $('#form-order').serialize(),
             dataType: 'JSON',
             success: function(res) {
                 let status = res.status
@@ -198,7 +198,7 @@
     const checkid = id => {
         let step = $('#current_step').val()
         $.ajax({
-            url: '<?= base_url() ?>purchase/checknis',
+            url: '<?= base_url() ?>order/checknis',
             method: 'POST',
             data: {
                 nis: id,
@@ -220,7 +220,7 @@
 
     const getcheck = data => {
         $.ajax({
-            url: '<?= base_url() ?>purchase/getcheck',
+            url: '<?= base_url() ?>order/getcheck',
             method: 'POST',
             data: {
                 nis: data.message,

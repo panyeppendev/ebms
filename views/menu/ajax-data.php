@@ -89,8 +89,11 @@
                                         <button onclick="addUserMenu(<?= $data->id ?>, 'KASIR-TOKO')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir Toko">
                                             <i class="fas fa-user-tag"></i>
                                         </button>
+                                        <button onclick="addUserMenu(<?= $data->id ?>, 'STORE')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir Koperasi">
+                                            <i class="fas fa-user-clock"></i>
+                                        </button>
                                         <button onclick="addUserMenu(<?= $data->id ?>, 'PANITIA-LIBURAN')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir Toko">
-                                        <i class="fas fa-user-shield"></i>
+                                            <i class="fas fa-user-shield"></i>
                                         </button>
                                     </div>
                                 </td>

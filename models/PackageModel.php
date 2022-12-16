@@ -150,7 +150,7 @@ class PackageModel extends CI_Model
                 'created_at_hijriah' => getHijri(),
                 'package' => $package,
                 'step' => $step,
-                'transport' => $rates['transport'],
+                'transport' => ($rates['transport'] <= 0) ? 0 : 1,
                 'amount' => $rates['total'],
                 // 'total' => $rates['total'],
                 'status' => 'INACTIVE',
@@ -243,83 +243,31 @@ class PackageModel extends CI_Model
         $actived = date('Y-m-d');
         $tenor = mktime(0, 0, 0, date('n'), date('j') + 30, date('Y'));
         $expired = date('Y-m-d', $tenor);
-        $hijri = getHijri();
 
         $check = $this->db->get_where('packages', ['id' => $id])->num_rows();
-        $dataCheck = $this->db->get_where('packages', ['id' => $id])->row_object();
-        if ($check > 0) {
-            $this->db->where('id', $id)->update('packages', [
-                'activated_at' => $actived,
-                'expired_at' => $expired,
-                'status' => 'ACTIVE'
-            ]);
-
-            //INSERT DATA TO POCKETS
-            $package = $dataCheck->package;
-            if ($package == 'A' || $package == 'B') {
-                $amount = 5000;
-            } else {
-                $amount = 10000;
-            }
-
-            if ($package == 'B' || $package == 'D') {
-                $morning = 3000;
-            } else {
-                $morning = 0;
-            }
-
-            $dataPocket = [
-                'package_id' => $dataCheck->id,
-                'student_id' => $dataCheck->student_id,
-                'created_at' => $actived,
-                'created_at_hijriah' => $hijri,
-                'amount' => $amount,
-                'cash' => 0,
-                'canteen' => 0,
-                'residual' => $amount,
-                'status' => 'UNCHECKED'
-            ];
-
-            $dataTransaction = [
-                'created_at' => $actived,
-                'created_at_hijriah' => $hijri,
-                'package_id' => $dataCheck->id,
-                'student_id' => $dataCheck->student_id,
-                'morning' => $morning,
-                'afternoon' => 3000,
-                'night' => 3000
-            ];
-
-            $checkSettingPocket = $this->db->get_where('pocket_setting', [
-                'created_at' => $actived
-            ])->num_rows();
-
-            if ($checkSettingPocket > 0) {
-                $this->db->insert('pockets', $dataPocket);
-                $this->db->insert('transactions', $dataTransaction);
-                if ($this->db->affected_rows() > 0) {
-                    return [
-                        'status' => 200,
-                        'message' => 'Sukses'
-                    ];
-                } else {
-                    return [
-                        'status' => 400,
-                        'message' => 'Ada masalah dengan server'
-                    ];
-                }
-            }
-
-            return [
-                'status' => 200,
-                'message' => 'Sukses'
-            ];
-        } else {
+        if (!$check || $check <= 0) {
             return [
                 'status' => 400,
-                'message' => 'Data tidak ditemukan'
+                'message' => 'Data paket tidak valid'
             ];
         }
+
+        $this->db->where('id', $id)->update('packages', [
+            'activated_at' => $actived,
+            'expired_at' => $expired,
+            'status' => 'ACTIVE'
+        ]);
+
+        if ($this->db->affected_rows() <= 0) {
+            return [
+                'status' => 400,
+                'message' => 'Gagal..! Kesalahan server'
+            ];
+        }
+        return [
+            'status' => 200,
+            'message' => 'Sukses'
+        ];
     }
 
     public function packageActivation()
@@ -332,29 +280,29 @@ class PackageModel extends CI_Model
 
         $conditions = ['period' => $period, 'step' => $step, 'status' => 'INACTIVE'];
         $check = $this->db->get_where('packages', $conditions)->num_rows();
-        if ($check > 0) {
-            $this->db->where($conditions)->update('packages', [
-                'activated_at' => $actived,
-                'expired_at' => $expired,
-                'status' => 'ACTIVE'
-            ]);
-            if ($this->db->affected_rows() > 0) {
-                return [
-                    'status' => 200,
-                    'message' => 'Sukses'
-                ];
-            } else {
-                return [
-                    'status' => 400,
-                    'message' => 'Ada masalah dengans server'
-                ];
-            }
-        } else {
+        if (!$check || $check <= 0) {
             return [
                 'status' => 400,
-                'message' => 'Tidak ada paket untuk diaktifkan'
+                'message' => 'Tidak ada paket yang perlu diaktifkan'
             ];
         }
+
+        $this->db->where($conditions)->update('packages', [
+            'activated_at' => $actived,
+            'expired_at' => $expired,
+            'status' => 'ACTIVE'
+        ]);
+        if ($this->db->affected_rows() <= 0) {
+            return [
+                'status' => 400,
+                'message' => 'Gagal! Kesalahan server'
+            ];
+        }
+
+        return [
+            'status' => 200,
+            'message' => 'Sukses'
+        ];
     }
 
     public function dataPrint($package)

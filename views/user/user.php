@@ -22,6 +22,7 @@
                             <option value="ADMIN">ADMIN</option>
                             <option value="KASIR-DPU">KASIR DPU</option>
                             <option value="KASIR-TOKO">KASIR TOKO</option>
+                            <option value="STORE">KASIR KOPERASI</option>
                             <option value="PANITIA-LIBURAN">PANITIA LIBURAN</option>
                         </select>
                     </div>
@@ -76,6 +77,7 @@
                             <option value="ADMIN">ADMIN</option>
                             <option value="KASIR-DPU">KASIR-DPU</option>
                             <option value="KASIR-TOKO">KASIR-TOKO</option>
+                            <option value="STORE">KASIR KOPERASI</option>
                             <option value="PANITIA-LIBURAN">PANITIA LIBURAN</option>
                         </select>
                         <small class="text-danger errors" id="errorrole"></small>
