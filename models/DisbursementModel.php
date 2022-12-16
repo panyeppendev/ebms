@@ -206,7 +206,9 @@ class DisbursementModel extends CI_Model
             'POCKET_CANTEEN',
             'DEPOSIT_CANTEEN',
             'POCKET_STORE',
-            'DEPOSIT_STORE'
+            'DEPOSIT_STORE',
+            'POCKET_LIBRARY',
+            'DEPOSIT_LIBRARY'
         ]);
         $checkKreditCanteen = $this->db->get()->row_object();
         if ($checkKreditCanteen->amount == '' || $checkKreditCanteen->amount <= 0) {

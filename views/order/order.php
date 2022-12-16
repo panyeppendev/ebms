@@ -45,7 +45,7 @@ if ($step[0] != 0) {
                                 <label for="nis">NIS <small class="text-success">Tekan F2 untuk fokus inputan NIS</small> </label>
                                 <input data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="nis" name="nis" autofocus>
                             </div>
-                            <form id="form-order">
+                            <form id="form-order" autocomplete="off">
                                 <input type="hidden" name="package" id="package" value="0">
                                 <input type="hidden" name="pocket" id="pocket" value="0">
                                 <input type="hidden" name="total" id="total" value="0">
@@ -112,7 +112,7 @@ if ($step[0] != 0) {
 <div class="modal fade" id="modal-detail">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body" id="show-detail"></div>
+            <div class="modal-body" id="show-detail" style="max-height: 85vh;"></div>
         </div>
         <!-- /.modal-content -->
     </div>

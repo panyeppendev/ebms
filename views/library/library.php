@@ -45,7 +45,7 @@ if ($step[0] != 0) {
                                 <label for="nis">NIS <small class="text-success">Tekan F2 untuk fokus inputan NIS</small> </label>
                                 <input data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="nis" name="nis" autofocus>
                             </div>
-                            <form id="form-purchase" autocomplete="off">
+                            <form id="form-library" autocomplete="off">
                                 <input type="hidden" name="package" id="package" value="0">
                                 <input type="hidden" name="pocket" id="pocket" value="0">
                                 <input type="hidden" name="total" id="total" value="0">
@@ -120,4 +120,4 @@ if ($step[0] != 0) {
 </div>
 
 <?php $this->load->view('partials/footer'); ?>
-<?php $this->load->view('purchase/js-purchase'); ?>
+<?php $this->load->view('library/js-library'); ?>
