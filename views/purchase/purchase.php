@@ -112,7 +112,7 @@ if ($step[0] != 0) {
 <div class="modal fade" id="modal-detail">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body" id="show-detail" style="max-height: 85vh;"></div>
+            <div class="modal-body" id="show-detail" style="max-height: 85vh; overflow: auto"></div>
         </div>
         <!-- /.modal-content -->
     </div>
