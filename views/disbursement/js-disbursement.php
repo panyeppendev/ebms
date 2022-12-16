@@ -159,45 +159,6 @@
             }
         })
     }
-
-    const setFasting = () => {
-        Swal.fire({
-            title: 'Yakin nih?',
-            text: 'Tindakan ini tidak bisa dibatalkan',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yakin!',
-            cancelButtonText: 'Nggak jadi!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '<?= base_url() ?>disbursement/setfasting',
-                    method: 'POST',
-                    dataType: 'JSON',
-                    success: function(res) {
-                        let status = res.status
-                        if (status == 400) {
-                            toastr.error(`Oppsss.! ${res.message}`)
-                            return false
-                        }
-
-                        Swal.fire({
-                            title: 'Pencairan berhasil diubah',
-                            icon: 'success',
-                            html: 'Halaman akan dimuat ulang dalam <strong>2</strong> detik.<br/><br/>',
-                            timer: 2000,
-                            timerProgressBar: true
-                        })
-                        setTimeout(function() {
-                            location.reload()
-                        }, 2000)
-                    }
-                })
-            }
-        })
-    }
 </script>
 </body>
 
