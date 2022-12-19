@@ -128,7 +128,7 @@ class DisbursementModel extends CI_Model
         ])->num_rows();
 
         if ($diffDate->d >= 2) {
-            if ($checkYesterday > 1) {
+            if ($checkYesterday == 1) {
                 $pocketFinal = $pocket;
             } else {
                 $this->db->select('SUM(amount) AS amount')->from('package_transaction');
@@ -142,7 +142,7 @@ class DisbursementModel extends CI_Model
                 if ($data->amount == '' || $data->amount <= 0) {
                     $pocketFinal = $pocket * 3;
                 } else {
-                    $pocketFinal = $pocket * 2;
+                    $pocketFinal = ($pocket * 3) - $data->amount;
                 }
             }
         } else {
@@ -221,7 +221,7 @@ class DisbursementModel extends CI_Model
             'status' => 200,
             'message' => $nis,
             'package' => $packageID,
-            'pocket' => $pocketFinal - $kredit,
+            'pocket' => $pocketFinal,
             'deposit' => $deposit,
             'cash' => $kreditCash,
             'canteen' => $kreditCanteen,

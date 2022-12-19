@@ -79,7 +79,6 @@ class LandingModel extends CI_Model
         $amount = $text[$checkPackage->package];
 
         //GET DEPOSIT
-        //GET DEPOSIT
         $depositKredit = $this->db->select('SUM(deposit) AS deposit')->from('packages')->where([
             'student_id' => $id, 'period' => $period
         ])->get()->row_object();
