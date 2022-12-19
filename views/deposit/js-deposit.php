@@ -76,7 +76,7 @@
     $('#modal-deposit').on('hidden.bs.modal', () => {
         $('#id').val('')
         $('#package').val(0)
-        $('#total').val(0)
+        $('#saldo').val(0)
         $('#nominal').val('')
         $('#show-check').html('')
     })
@@ -115,7 +115,7 @@
                     return false
                 }
                 $('#package').val(response.package)
-                $('#total').val(response.total)
+                $('#saldo').val(response.saldo)
                 $('#nominal').prop('readonly', false).focus().val()
 
                 showCheck(response)

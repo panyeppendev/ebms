@@ -97,7 +97,7 @@
             },
             dataType: 'JSON',
             success: function(res) {
-
+                console.log(res);
                 let status = res.status
                 if (status != 200) {
                     errorAlert(res.message)

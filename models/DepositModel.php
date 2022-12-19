@@ -106,7 +106,7 @@ class DepositModel extends CI_Model
         } else {
             $depositDebet = $depositDebet->amount;
         }
-        $deposit = $depositKredit - $depositDebet;
+        $depositResidual = $depositKredit - $depositDebet;
 
         return [
             'status' => 200,
@@ -114,7 +114,8 @@ class DepositModel extends CI_Model
             'package' => $packageID,
             'kredit' => $depositKredit,
             'debet' => $depositDebet,
-            'total' => $deposit
+            'total' => $depositResidual,
+            'saldo' => $deposit
         ];
     }
 
@@ -148,7 +149,7 @@ class DepositModel extends CI_Model
         $nominalRp = str_replace('.', '', $this->input->post('nominal', true));
         $nominal = (int)$nominalRp;
         $package = $this->input->post('package', true);
-        $total = $this->input->post('total', true);
+        $saldo = $this->input->post('saldo', true);
 
         if ($package == 0 || $package == '') {
             return [
@@ -178,7 +179,7 @@ class DepositModel extends CI_Model
         }
 
         $this->db->where('id', $package)->update('packages', [
-            'deposit' => $total + $nominal,
+            'deposit' => $saldo + $nominal,
             'updated_at' => date('Y-m-d H:i:s')
         ]);
 

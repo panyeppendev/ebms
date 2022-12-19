@@ -64,7 +64,7 @@
                                 <small class="text-info">Tekan ENTER</small>
                                 <form id="form-deposit" class="mt-2" autocomplete="off">
                                     <input type="hidden" name="package" id="package" value="0">
-                                    <input type="hidden" name="total" id="total" value="0">
+                                    <input type="hidden" name="saldo" id="saldo" value="0">
                                     <input readonly type="text" class="form-control" id="nominal" name="nominal">
                                 </form>
                             </div>
