@@ -32,7 +32,7 @@ if ($step[0] != 0) {
                         Pencairan non tunai paket - <?= @$currentStep ?>
                     </div>
                 </div>
-                <div class="col-8" id="show-recap"></div>
+                <div class="col-8" id="show-recap" data-toggle="modal" data-target="#modal-detail"></div>
             </div>
             <div class="row">
                 <div class="col-4">
@@ -53,9 +53,7 @@ if ($step[0] != 0) {
                         </div>
                     </div>
                 </div>
-                <div class="col-8" id="show-data">
-
-                </div>
+                <div class="col-8" id="show-data"></div>
             </div>
         <?php } ?>
     </section>
@@ -65,11 +63,12 @@ if ($step[0] != 0) {
 <div class="modal fade" id="modal-detail">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body" id="show-detail" style="max-height: 85vh; overflow: auto"></div>
+            <div class="modal-header">
+                <input type="text" onkeyup="loadData()" id="changeName" class="form-control form-control-sm" placeholder="Cari nama">
+            </div>
+            <div class="modal-body" id="show-detail" style="min-height: 45vh; max-height: 85vh; overflow: auto"></div>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
 </div>
 
 <?php $this->load->view('partials/footer'); ?>

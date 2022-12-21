@@ -31,12 +31,15 @@
     })
 
     const loadData = () => {
+        let name = $('#changeName').val()
         $.ajax({
             url: '<?= base_url() ?>disbursement/loaddata',
             method: 'POST',
+            data: {
+                name
+            },
             success: function(res) {
                 $('#show-detail').html(res)
-                $('#modal-detail').modal('show')
             }
         })
     }
@@ -136,42 +139,29 @@
     }
 
     const save = () => {
-        Swal.fire({
-            title: 'Yakin, nih?',
-            text: 'Periksa lagi nominal dan pastikan sudah benar',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Lanjut',
-            cancelButtonText: 'Cek lagi'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '<?= base_url() ?>disbursement/save',
-                    method: 'POST',
-                    data: $('#form-disbursement').serialize(),
-                    dataType: 'JSON',
-                    beforeSend: () => {
-                        $('#loading').show()
-                    },
-                    success: function(res) {
-                        $('#loading').hide()
-                        let status = res.status
-                        if (status == 400) {
-                            errorAlert(res.message)
-                            $('#nominal').focus().val('')
-                            return false
-                        }
-                        loadRecap()
-                        getData(res)
-                        toastr.success(`Yeaah! ${ res.message }`)
-                        $('#nis').focus().val('')
-                        $('#package').val(0)
-                        $('#nis-save').val(0)
-                        $('#nominal').prop('readonly', true).val('')
-                    }
-                })
+        $.ajax({
+            url: '<?= base_url() ?>disbursement/save',
+            method: 'POST',
+            data: $('#form-disbursement').serialize(),
+            dataType: 'JSON',
+            beforeSend: () => {
+                $('#loading').show()
+            },
+            success: function(res) {
+                $('#loading').hide()
+                let status = res.status
+                if (status == 400) {
+                    errorAlert(res.message)
+                    $('#nominal').focus().val('')
+                    return false
+                }
+                loadRecap()
+                getData(res)
+                toastr.success(`Yeaah! ${ res.message }`)
+                $('#nis').focus().val('')
+                $('#package').val(0)
+                $('#nis-save').val(0)
+                $('#nominal').prop('readonly', true).val('')
             }
         })
     }

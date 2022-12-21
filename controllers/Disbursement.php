@@ -25,7 +25,7 @@ class Disbursement extends CI_Controller
     {
         $get = $this->dbm->loadRecap();
         $data = [
-            'data' => $get
+            'data' => $get[2]
         ];
         $this->load->view('disbursement/ajax-data', $data);
     }

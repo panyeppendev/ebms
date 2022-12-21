@@ -1,6 +1,6 @@
 <?php
-if ($data[2]) {
-    foreach ($data[2] as $d) {
+if ($data) {
+    foreach ($data as $d) {
         $type = $d->type;
         if ($type == 'POCKET') {
             $status = '<span class="text-success">Uang Saku</span>';
