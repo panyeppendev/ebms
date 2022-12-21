@@ -85,10 +85,23 @@ class DisbursementModel extends CI_Model
         $transport = $checkPackage->transport;
         if ($package == 'A' || $package == 'B') {
             $pocket = 5000;
+            $limit = 150000;
         } elseif ($package == 'C' || $package == 'D') {
             $pocket = 10000;
+            $limit = 300000;
         } else {
             $pocket = 0;
+            $limit = 0;
+        }
+
+        //GET ALL KREDIT POCKET
+        $allKredit = $this->db->select('SUM(amount) AS amount')->from('package_transaction')->where([
+            'package_id' => $packageID, 'type' => 'POCKET'
+        ])->get()->row_object();
+        if (!$allKredit || $allKredit->amount == '' || $allKredit->amount == 0) {
+            $allKredit = 0;
+        } else {
+            $allKredit = $allKredit->amount;
         }
 
         //GET DEPOSIT
@@ -127,26 +140,30 @@ class DisbursementModel extends CI_Model
             'package_id' => $packageID
         ])->num_rows();
 
-        if ($diffDate->d >= 2) {
-            if ($checkYesterday == 1) {
-                $pocketFinal = $pocket;
-            } else {
-                $this->db->select('SUM(amount) AS amount')->from('package_transaction');
-                $this->db->where([
-                    'DATE(created_at) >=' => $beforeYesterday,
-                    'DATE(created_at) <=' => $yesterday,
-                    'type' => 'POCKET',
-                    'package_id' => $packageID
-                ]);
-                $data = $this->db->get()->row_object();
-                if ($data->amount == '' || $data->amount <= 0) {
-                    $pocketFinal = $pocket * 3;
+        if ($limit - $allKredit > 0) {
+            if ($diffDate->d >= 2) {
+                if ($checkYesterday <= 0) {
+                    $this->db->select('SUM(amount) AS amount')->from('package_transaction');
+                    $this->db->where([
+                        'DATE(created_at) >=' => $beforeYesterday,
+                        'DATE(created_at) <=' => $yesterday,
+                        'type' => 'POCKET',
+                        'package_id' => $packageID
+                    ]);
+                    $data = $this->db->get()->row_object();
+                    if ($data->amount == '' || $data->amount <= 0) {
+                        $pocketFinal = $pocket * 3;
+                    } else {
+                        $pocketFinal = ($pocket * 3) - $data->amount;
+                    }
                 } else {
-                    $pocketFinal = ($pocket * 3) - $data->amount;
+                    $pocketFinal = $pocket;
                 }
+            } else {
+                $pocketFinal = $pocket;
             }
         } else {
-            $pocketFinal = $pocket;
+            $pocketFinal = 0;
         }
 
         //CEK KREDIT HARI INI
