@@ -173,18 +173,15 @@ class PurchaseModel extends CI_Model
         if ($limit - $allKredit > 0) {
             if ($diffDate->d >= 2) {
                 if ($checkYesterday <= 0) {
-                    $this->db->select('SUM(amount) AS amount')->from('package_transaction');
-                    $this->db->where([
-                        'DATE(created_at) >=' => $beforeYesterday,
-                        'DATE(created_at) <=' => $yesterday,
-                        'type' => 'POCKET',
+                    $checkBeforeYesterday = $this->db->get_where('package_transaction', [
+                        'DATE(created_at)' => $beforeYesterday, 'type' => 'POCKET',
                         'package_id' => $packageID
-                    ]);
-                    $data = $this->db->get()->row_object();
-                    if ($data->amount == '' || $data->amount <= 0) {
+                    ])->num_rows();
+
+                    if ($checkBeforeYesterday <= 0) {
                         $pocketFinal = $pocket * 3;
                     } else {
-                        $pocketFinal = ($pocket * 3) - $data->amount;
+                        $pocketFinal = $pocket * 2;
                     }
                 } else {
                     $pocketFinal = $pocket;
