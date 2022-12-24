@@ -2,14 +2,11 @@
 <?php
 if ($step[0] != 0) {
     $currentStep = $step[0];
-    $startStep = $step[1];
 } else {
     $currentStep = 0;
-    $startStep = 0;
 }
 ?>
 <input type="hidden" id="current-step" value="<?= $currentStep ?>">
-<input type="hidden" id="start-step" value="<?= $startStep ?>">
 <div class="content-wrapper">
     <!-- Main content -->
     <section class="content p-3">
@@ -35,12 +32,7 @@ if ($step[0] != 0) {
                         Pencairan uang saku paket - <?= @$currentStep ?>
                     </div>
                 </div>
-                <div class="col-6" id="show-recap"></div>
-                <div class="col-2">
-                    <button class="btn btn-default btn-sm btn-block">
-                        <b class="text-success">Rekapitulasi</b>
-                    </button>
-                </div>
+                <div class="col-8" id="show-recap"></div>
             </div>
             <div class="row">
                 <div class="col-4">
@@ -52,9 +44,8 @@ if ($step[0] != 0) {
                             </div>
                             <div class="form-group">
                                 <form id="form-disbursement" autocomplete="off">
-                                    <input type="hidden" name="package_save" id="package-save">
-                                    <input type="hidden" name="pocket_save" id="pocket-save">
-                                    <input type="hidden" name="total_save" id="total-save">
+                                    <input type="hidden" name="package" id="package" value="0">
+                                    <input type="hidden" name="nis_save" id="nis-save" value="0">
                                     <label for="nominal">Nominal</label>
                                     <input readonly type="text" class="form-control indonesian-currency" id="nominal" name="nominal">
                                 </form>

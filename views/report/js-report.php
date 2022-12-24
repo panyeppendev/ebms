@@ -85,46 +85,32 @@
 
     const checkNis = nis => {
         let step = $('#current-step').val()
+        let start = $('#start-step').val()
+
         $.ajax({
             url: '<?= base_url() ?>disbursement/checknis',
             method: 'POST',
             data: {
                 nis,
-                step
+                step,
+                start
             },
             dataType: 'JSON',
             success: function(res) {
+
                 let status = res.status
-                if (status == 500) {
+                if (status != 200) {
                     errorAlert(res.message)
                     $('#nis').focus().val('')
                     $('#show-data').html('')
                     $('#nominal').prop('readonly', true)
                     return false
                 }
-
-                if (status == 400) {
-                    $('#nominal').prop('readonly', true)
-                } else {
-                    $('#nominal').prop('readonly', false).focus().val('')
-                }
-                $('#package').val(res.package)
-                $('#nis-save').val(res.nis)
                 getData(res)
-            }
-        })
-    }
-
-    const getData = data => {
-        $.ajax({
-            url: '<?= base_url() ?>disbursement/getdata',
-            method: 'POST',
-            data: {
-                nis: data.nis,
-                package: data.package
-            },
-            success: function(res) {
-                $('#show-data').html(res)
+                $('#package-save').val(res.package)
+                $('#pocket-save').val(res.pocket)
+                $('#total-save').val(res.total)
+                $('#nominal').prop('readonly', false).focus().val('')
             }
         })
     }
@@ -147,12 +133,29 @@
                     return false
                 }
                 loadRecap()
-                getData(res)
                 toastr.success(`Yeaah! ${ res.message }`)
                 $('#nis').focus().val('')
-                $('#package').val(0)
-                $('#nis-save').val(0)
+                $('#show-data').html('')
                 $('#nominal').prop('readonly', true).val('')
+            }
+        })
+    }
+
+    const getData = data => {
+        $.ajax({
+            url: '<?= base_url() ?>disbursement/getdata',
+            method: 'POST',
+            data: {
+                nis: data.message,
+                pocket: data.pocket,
+                deposit: data.deposit,
+                cash: data.cash,
+                canteen: data.canteen,
+                total: data.total,
+                package: data.text
+            },
+            success: function(res) {
+                $('#show-data').html(res)
             }
         })
     }

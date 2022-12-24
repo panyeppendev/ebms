@@ -1,105 +1,179 @@
-<?php
-if ($data['status'] == 200) {
-    $avatarPath = FCPATH . 'assets/avatars/' . $data['student']->id . '.jpg';
+<div class="row">
+    <?php
+    if ($data['student']) {
+        $avatarPath = FCPATH . 'assets/avatars/' . $data['student']->id . '.jpg';
 
-    if (file_exists($avatarPath) === FALSE || $avatarPath == NULL) {
-        $avatar = base_url('assets/avatars/default.jpg');
-    } else {
-        $avatar = base_url('assets/avatars/' . $data['student']->id . '.jpg');
-    }
+        if (file_exists($avatarPath) === FALSE || $avatarPath == NULL) {
+            $avatar = base_url('assets/avatars/default.jpg');
+        } else {
+            $avatar = base_url('assets/avatars/' . $data['student']->id . '.jpg');
+        }
 
-    $city = str_replace(['Kabupaten', 'Kota'], '', $data['student']->city);
-?>
-    <div class="row">
-        <div class="col-4">
-            <div class="box-profile">
-                <div class="text-center">
-                    <img src="<?= $avatar ?>" alt="IMAGE OF <?= $data['student']->name ?>" style="width: 100%; border-radius: 3px;">
-                </div>
-            </div>
-        </div>
-        <div class="col-8">
+        $city = str_replace(['Kabupaten', 'Kota'], '', $data['student']->city);
+    ?>
+        <div class="col-7">
             <div class="row">
-                <div class="col-12">
-                    <dl class="row">
-                        <dt class="col-sm-3 font-weight-normal mb-1">Nama</dt>
-                        <dd class="col-sm-9 mb-1 font-weight-bold"><?= $data['student']->name ?></dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">Alamat</dt>
-                        <dd class="col-sm-9 mb-1">
-                            <?= $data['student']->village ?>, <?= $city ?>
-                        </dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">Domisili</dt>
-                        <dd class="col-sm-9 mb-1">
-                            <?= $data['student']->domicile ?>
-                        </dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">Diniyah</dt>
-                        <dd class="col-sm-9 mb-1"><?= $data['student']->class ?> - <?= $data['student']->level ?></dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">Formal</dt>
-                        <dd class="col-sm-9 mb-1"><?= $data['student']->class_of_formal ?> - <?= $data['student']->level_of_formal ?></dd>
-                    </dl>
-                </div>
-                <div class="col-8 text-xs">
-                    <div class="callout callout-success py-2">
-                        <span class="text-success font-weight-bold">
-                            <?= $data['package'] ?>
-                        </span>
-                        <hr class="my-1">
-                        <table style="width: 100%">
-                            <tbody>
-                                <tr>
-                                    <td style="width: 60%">Uang Saku</td>
-                                    <td style="width: 10%">Rp.</td>
-                                    <td style="width: 30%" class="text-right">
-                                        <?= number_format($data['pocket'], 0, ',', '.') ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Tabungan</td>
-                                    <td>Rp.</td>
-                                    <td class="text-right">
-                                        <?= number_format($data['deposit'], 0, ',', '.') ?>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <hr class="my-1">
-                        <table style="width: 100%">
-                            <tbody>
-                                <tr>
-                                    <td style="width: 60%">Tunai</td>
-                                    <td style="width: 10%">Rp.</td>
-                                    <td class="text-right" style="width: 30%">
-                                        <?= number_format($data['cash'], 0, ',', '.') ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Non Tunai</td>
-                                    <td>Rp.</td>
-                                    <td class="text-right">
-                                        <?= number_format($data['canteen'], 0, ',', '.') ?>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <hr class="my-1">
-                        <table style="width: 100%">
-                            <tbody>
-                                <tr class="text-success font-weight-bold">
-                                    <td style="width: 60%">Total Pencairan</td>
-                                    <td style="width: 10%">Rp.</td>
-                                    <td class="text-right" style="width: 30%">
-                                        <?= number_format($data['total'], 0, ',', '.') ?>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <div class="col-5">
+                    <div class="box-profile">
+                        <div class="text-center">
+                            <img src="<?= $avatar ?>" alt="IMAGE OF <?= $data['student']->name ?>" style="width: 100%; border-radius: 3px;">
+                        </div>
                     </div>
                 </div>
+                <div class="col-7">
+                    <b><?= $data['student']->name ?></b> <br>
+                    <hr class="my-2">
+                    <?= $data['student']->village ?>, <?= $city ?> <br>
+                    <?= $data['student']->domicile ?> <br>
+                    <hr class="my-2">
+                    <?= $data['student']->class ?> - <?= $data['student']->level ?> <br>
+                    <?= $data['student']->class_of_formal ?> - <?= $data['student']->level_of_formal ?>
+                </div>
             </div>
         </div>
+    <?php
+    } else {
+        echo '<span class="text-center text-danger">Data santri gagal dimuat</span>';
+    }
+    ?>
+    <div class="col-5">
+        <?php
+        if ($data['package']['status'] == 200) {
+        ?>
+            <div class="callout callout-success py-2">
+                <span class="text-success font-weight-bold">
+                    <?= $data['package']['info'] ?>
+                </span>
+                <div class="text-xs">
+                    <hr class="my-1">
+                    <table style="width: 100%" class="text-muted">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%">Limit Uang Saku</td>
+                                <td style="width: 35%" class="text-right">
+                                    <?= number_format($data['pocket']['limit'], 0, ',', '.') ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Debet Tunai</td>
+                                <td class="text-right">
+                                    <?= number_format($data['pocket']['cash'], 0, ',', '.') ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Debet Non-Tunai</td>
+                                <td class="text-right">
+                                    <?= number_format($data['pocket']['noncash'], 0, ',', '.') ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sisa Limit Uang Saku</td>
+                                <td class="text-right">
+                                    <?= number_format($data['pocket']['total'], 0, ',', '.') ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <hr class="my-1">
+                    <table style="width: 100%">
+                        <tbody>
+                            <?php
+                            if ($data['pocket']['total'] <= 0) {
+                            ?>
+                                <tr class="text-center text-danger">
+                                    <td colspan="2">Limit uang saku harian tidak tersedia</td>
+                                </tr>
+                            <?php
+                            } else {
+                            ?>
+                                <tr>
+                                    <td style="width: 65%">Limit Harian</td>
+                                    <td style="width: 35%" class="text-right text-success">
+                                        <?= number_format($data['daily']['limit'], 0, ',', '.') ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 65%">Simpanan dua hari</td>
+                                    <td style="width: 35%" class="text-right text-success">
+                                        <?= number_format($data['daily']['residual'], 0, ',', '.') ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Debet Tunai</td>
+                                    <td class="text-right text-danger">
+                                        <?= number_format($data['daily']['cash'], 0, ',', '.') ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Debet Non-Tunai</td>
+                                    <td class="text-right text-danger">
+                                        <?= number_format($data['daily']['noncash'], 0, ',', '.') ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Limit tersedia</td>
+                                    <td class="text-right text-success">
+                                        <?= number_format($data['daily']['total'], 0, ',', '.') ?>
+                                    </td>
+                                </tr>
+                            <?php
+                            }
+                            ?>
+
+                        </tbody>
+                    </table>
+                    <hr class="my-1">
+                    <table style="width: 100%">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%">Kredit Tabungan</td>
+                                <td class="text-right" style="width: 35%">
+                                    <?= number_format($data['deposit']['kredit'], 0, ',', '.') ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Debet Tunai</td>
+                                <td class="text-right">
+                                    <?= number_format($data['deposit']['cash'], 0, ',', '.') ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Debet Non-Tunai</td>
+                                <td class="text-right">
+                                    <?= number_format($data['deposit']['noncash'], 0, ',', '.') ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Saldo Tersedia</td>
+                                <td class="text-right">
+                                    <?= number_format($data['deposit']['total'], 0, ',', '.') ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <hr class="my-1">
+                </div>
+                <table style="width: 100%">
+                    <tbody>
+                        <tr class="text-success font-weight-bold">
+                            <td style="width: 65%">Total Pencairan</td>
+                            <td class="text-right" style="width: 35%">
+                                <?= number_format($data['daily']['total'] + $data['deposit']['total'], 0, ',', '.') ?>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        <?php
+        } else {
+        ?>
+            <div class="callout callout-success py-2">
+                <span class="text-danger">
+                    Info paket tidak tersedia
+                </span>
+            </div>
+        <?php
+        }
+        ?>
     </div>
-<?php
-} else {
-    echo 'Gagal memuat data. Segera hubungi Developer';
-}
-?>
+</div>
