@@ -12,23 +12,9 @@
     })
 
     $('body').on('keydown', e => {
-        $('#nominal').focusout().val()
         if (e.keyCode == 113) {
             $('#nis').focus().val('')
-        } else if (e.keyCode == 115) {
-            $('#modal-check').modal('show')
-        } else if (e.keyCode == 27) {
-            $('#modal-check').modal('hide')
         }
-    })
-
-    $('#nis').on('focusin', () => {
-        $('#nis').focus().val('')
-        $('#package').val(0)
-        $('#pocket').val(0)
-        $('#total').val(0)
-        $('#show-data').html('')
-        $('#nominal').prop('readonly', true).val('')
     })
 
     $('#nominal').on('keyup', e => {
@@ -87,29 +73,31 @@
 
     const checkNis = nis => {
         let step = $('#current_step').val()
-        let start = $('#start_step').val()
         $.ajax({
             url: '<?= base_url() ?>purchase/checknis',
             method: 'POST',
             data: {
                 nis,
-                step,
-                start
+                step
             },
             dataType: 'JSON',
             success: function(res) {
                 let status = res.status
-                if (status != 200) {
+                if (status == 500) {
                     errorAlert(res.message)
                     $('#nis').focus().val('')
                     $('#show-data').html('')
                     $('#nominal').prop('readonly', true)
                     return false
                 }
+
+                if (status == 400) {
+                    $('#nominal').prop('readonly', true)
+                } else {
+                    $('#nominal').prop('readonly', false).focus().val('')
+                }
                 $('#package').val(res.package)
-                $('#pocket').val(res.pocket)
-                $('#total').val(res.total)
-                $('#nominal').prop('readonly', false).focus().val('')
+                $('#nis-save').val(res.nis)
                 getData(res)
             }
         })
@@ -120,13 +108,8 @@
             url: '<?= base_url() ?>purchase/getdata',
             method: 'POST',
             data: {
-                nis: data.message,
-                pocket: data.pocket,
-                deposit: data.deposit,
-                cash: data.cash,
-                canteen: data.canteen,
-                total: data.total,
-                package: data.text
+                nis: data.nis,
+                package: data.package
             },
             success: function(res) {
                 $('#show-data').html(res)
@@ -153,86 +136,20 @@
             data: $('#form-purchase').serialize(),
             dataType: 'JSON',
             success: function(res) {
+                $('#loading').hide()
                 let status = res.status
                 if (status == 400) {
                     errorAlert(res.message)
-                    $('#nominal').val('').focus()
+                    $('#nominal').focus().val('')
                     return false
                 }
                 loadRecap()
+                getData(res)
                 toastr.success(`Yeaah! ${ res.message }`)
                 $('#nis').focus().val('')
                 $('#package').val(0)
-                $('#total').val(0)
-                $('#pocket').val(0)
-                $('#show-data').html('')
+                $('#nis-save').val(0)
                 $('#nominal').prop('readonly', true).val('')
-            }
-        })
-    }
-
-    $('#modal-check').on('shown.bs.modal', () => {
-        $('#id').focus()
-    })
-
-    $('#modal-check').on('hidden.bs.modal', () => {
-        $('#id').val('')
-        $('#show-check').html('')
-        $('#nis').focus().val('')
-    })
-
-    $('#id').on('keyup', function(e) {
-        let id = $(this).val()
-        let key = e.which
-        if (key != 13) {
-            return false
-        }
-
-        if (key == 13 && id == '') {
-            return false
-        }
-
-        checkid(id)
-    })
-
-    const checkid = id => {
-        let step = $('#current_step').val()
-        $.ajax({
-            url: '<?= base_url() ?>purchase/checknis',
-            method: 'POST',
-            data: {
-                nis: id,
-                step
-            },
-            dataType: 'JSON',
-            success: function(res) {
-                let status = res.status
-                if (status != 200) {
-                    errorAlert(res.message)
-                    $('#id').focus().val('')
-                    $('#show-check').html('')
-                    return false
-                }
-                getcheck(res)
-            }
-        })
-    }
-
-    const getcheck = data => {
-        $.ajax({
-            url: '<?= base_url() ?>purchase/getcheck',
-            method: 'POST',
-            data: {
-                nis: data.message,
-                pocket: data.pocket,
-                deposit: data.deposit,
-                cash: data.cash,
-                canteen: data.canteen,
-                total: data.total,
-                package: data.text
-            },
-            success: function(res) {
-                $('#show-check').html(res)
             }
         })
     }
