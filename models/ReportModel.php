@@ -24,11 +24,4 @@ class ReportModel extends CI_Model
             $disbursement
         ];
     }
-
-    // public function pocket()
-    // {
-    //     // $step = $this->input->post('step', true);
-    //     $step = 0;
-    //     $this->db->select('')
-    // }
 }
