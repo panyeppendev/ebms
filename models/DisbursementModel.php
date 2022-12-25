@@ -102,7 +102,7 @@ class DisbursementModel extends CI_Model
             'student' => $data,
             'package' => $this->getDetailPackage($package),
             'pocket' => $this->getPocket($package, $this->getDetailPackage($package)['limit']),
-            'daily' => $this->getPocketDaily($package, $this->getDetailPackage($package)['pocket'], $this->getPocket($package, $this->getDetailPackage($package)['total'])),
+            'daily' => $this->getPocketDaily($package, $this->getDetailPackage($package)['pocket'], $this->getPocket($package, $this->getDetailPackage($package)['limit'])['total']),
             'deposit' => $this->getDeposit($nis)
         ];
     }
