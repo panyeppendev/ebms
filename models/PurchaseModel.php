@@ -102,7 +102,7 @@ class PurchaseModel extends CI_Model
             'student' => $data,
             'package' => $this->getDetailPackage($package),
             'pocket' => $this->getPocket($package, $this->getDetailPackage($package)['limit']),
-            'daily' => $this->getPocketDaily($package, $this->getDetailPackage($package)['pocket'], $this->getPocket($package, $this->getDetailPackage($package)['limit'])['total']),
+            'daily' => $this->getPocketDaily($package, $this->getDetailPackage($package)['pocket'], $this->getPocket($package, $this->getDetailPackage($package)['total'])),
             'deposit' => $this->getDeposit($nis)
         ];
     }
