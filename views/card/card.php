@@ -11,11 +11,7 @@
                             <input data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="id" name="id" autofocus>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <button id="button-check" class="btn btn-primary btn-sm btn-block">
-                            Kirim Permintaan
-                        </button>
-                    </div>
+                    <div class="card-footer"></div>
                 </div>
             </div>
             <div class="col-8" id="show-data">
