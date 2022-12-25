@@ -167,7 +167,7 @@
         <?php
         } else {
         ?>
-            <div class="callout callout-success py-2">
+            <div class="callout callout-danger py-2">
                 <span class="text-danger">
                     Info paket tidak tersedia
                 </span>

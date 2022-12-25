@@ -1,10 +1,9 @@
 <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-        <b>Version</b> 1.6.9
+        <b>Version</b> 1.6.12
     </div>
     <?php
     $currentYear = date('Y');
-
     ?>
     <strong>Copyright &copy; <?= (date('Y') != $currentYear) ? $currentYear . '-' : '' ?><?= $currentYear ?> </strong><span class="text-default">e-BMS PPMU. Panyeppen</span> All rights reserved.
 </footer>

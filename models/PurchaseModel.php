@@ -114,7 +114,9 @@ class PurchaseModel extends CI_Model
         if (!$getPackage) {
             return [
                 'status' => 400,
-                'message' => 'Data paket tidak valid'
+                'message' => 'Data paket tidak valid',
+                'pocket' => 0,
+                'limit' => 0
             ];
         }
 
