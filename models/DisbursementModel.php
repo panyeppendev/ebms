@@ -102,7 +102,7 @@ class DisbursementModel extends CI_Model
             'student' => $data,
             'package' => $this->getDetailPackage($package),
             'pocket' => $this->getPocket($package, $this->getDetailPackage($package)['limit']),
-            'daily' => $this->getPocketDaily($package, $this->getDetailPackage($package)['pocket']),
+            'daily' => $this->getPocketDaily($package, $this->getDetailPackage($package)['pocket'], $this->getPocket($package, $this->getDetailPackage($package)['total'])),
             'deposit' => $this->getDeposit($nis)
         ];
     }
@@ -173,7 +173,7 @@ class DisbursementModel extends CI_Model
         ];
     }
 
-    public function getPocketDaily($package, $pocket)
+    public function getPocketDaily($package, $pocket, $limit)
     {
         $start = $this->step()[1];
         $masehi = date('Y-m-d');
@@ -191,21 +191,24 @@ class DisbursementModel extends CI_Model
             'package_id' => $package
         ])->num_rows();
 
+        if ($limit <= 0) {
+            $residual = 0;
+        } else {
+            if ($diffDate->d >= 2) {
+                if ($checkYesterday <= 0) {
+                    $checkBeforeYesterday = $this->db->get_where('package_transaction', [
+                        'DATE(created_at)' => $beforeYesterday, 'type' => 'POCKET',
+                        'package_id' => $package
+                    ])->num_rows();
 
-        if ($diffDate->d >= 2) {
-            if ($checkYesterday <= 0) {
-                $checkBeforeYesterday = $this->db->get_where('package_transaction', [
-                    'DATE(created_at)' => $beforeYesterday, 'type' => 'POCKET',
-                    'package_id' => $package
-                ])->num_rows();
-
-                if ($checkBeforeYesterday <= 0) {
-                    $residual = $pocket * 2;
+                    if ($checkBeforeYesterday <= 0) {
+                        $residual = $pocket * 2;
+                    } else {
+                        $residual = $pocket;
+                    }
                 } else {
-                    $residual = $pocket;
+                    $residual = 0;
                 }
-            } else {
-                $residual = 0;
             }
         }
 
@@ -319,7 +322,7 @@ class DisbursementModel extends CI_Model
         $getPocket = $this->getPocket($package, $limit);
         $totalPocket = $getPocket['total'];
 
-        $pocketDaily = $this->getPocketDaily($package, $pocket);
+        $pocketDaily = $this->getPocketDaily($package, $pocket, $totalPocket);
         $totalPocketDaily = $pocketDaily['total'];
 
         $deposit = $this->getDeposit($nis);

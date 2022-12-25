@@ -7,6 +7,12 @@
         "timeOut": "2000"
     }
 
+    $('body').on('keydown', e => {
+        if (e.keyCode == 113) {
+            $('#nis').focus().val('')
+        }
+    })
+
     $(function() {
         loadRecap()
         let currentStep = $('#current-step').val()
