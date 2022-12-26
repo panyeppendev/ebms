@@ -321,6 +321,11 @@ class DisbursementModel extends CI_Model
 
         $pocketDaily = $this->getPocketDaily($package, $pocket);
         $totalPocketDaily = $pocketDaily['total'];
+        if ($totalPocket <= 0) {
+            $totalPocketDaily = 0;
+        } else {
+            $totalPocketDaily;
+        }
 
         $deposit = $this->getDeposit($nis);
         $totalDeposit = $deposit['total'];

@@ -39,7 +39,7 @@ if ($step[0] != 0) {
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="nis">NIS</label>
+                                <label for="nis">NIS <small class="text-success">Tekan F2 untuk fokus inputan NIS</small> </label>
                                 <input autofocus data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="nis" name="nis">
                             </div>
                             <div class="form-group">

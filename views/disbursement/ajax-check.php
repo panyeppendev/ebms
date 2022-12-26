@@ -158,7 +158,16 @@
                         <tr class="text-success font-weight-bold">
                             <td style="width: 65%">Total Pencairan</td>
                             <td class="text-right" style="width: 35%">
-                                <?= number_format($data['daily']['total'] + $data['deposit']['total'], 0, ',', '.') ?>
+                                <?php
+                                $dailyTotal = $data['daily']['total'];
+                                $pocketLimit = $data['pocket']['total'];
+                                if ($pocketLimit <= 0) {
+                                    $dailyTotal = 0;
+                                } else {
+                                    $dailyTotal;
+                                }
+                                ?>
+                                <?= number_format($dailyTotal  + $data['deposit']['total'], 0, ',', '.') ?>
                             </td>
                         </tr>
                     </tbody>
