@@ -5,11 +5,11 @@
         <div class="row mb-3">
             <div class="col-2">
                 <select name="package" id="package" class="form-control form-control-sm">
-                    <option <?= ($step[0] == 0) ? 'selected' : '' ?> value="0">Pembayaran</option>
+                    <option value="0">Pembayaran</option>
                     <?php
                     for ($i = 1; $i < 13; $i++) {
                     ?>
-                        <option <?= ($step[0] == $i) ? 'selected' : '' ?> value="<?= $i ?>">Paket - <?= $i ?></option>
+                        <option value="<?= $i ?>">Paket - <?= $i ?></option>
                     <?php
                     }
                     ?>
@@ -29,11 +29,11 @@
             </div>
             <div class="col-2">
                 <select name="disbursement" id="disbursement" class="form-control form-control-sm">
-                    <option <?= ($step[1] == 0) ? 'selected' : '' ?> value="0">Pencairan</option>
+                    <option value="0">Pencairan</option>
                     <?php
                     for ($i = 1; $i < 13; $i++) {
                     ?>
-                        <option <?= ($step[1] == $i) ? 'selected' : '' ?> value="<?= $i ?>">Paket - <?= $i ?></option>
+                        <option value="<?= $i ?>">Paket - <?= $i ?></option>
                     <?php
                     }
                     ?>
@@ -53,32 +53,26 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-4">
                 <div class="card">
-                    <div class="card-body p-2">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr class="text-center">
-                                    <th>NO</th>
-                                    <th>URAIAN</th>
-                                    <th>QTY</th>
-                                    <th>SATUAN</th>
-                                    <th>JUMLAH</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-center">1</td>
-                                    <td>Uang Saku Paket A</td>
-                                    <td class="text-center">10</td>
-                                    <td class="text-right">20.000</td>
-                                    <td class="text-right">200.000</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="nis">NIS</label>
+                            <input autofocus data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="nis" name="nis">
+                        </div>
+                        <div class="form-group">
+                            <form id="form-disbursement" autocomplete="off">
+                                <input type="hidden" name="package_save" id="package-save">
+                                <input type="hidden" name="pocket_save" id="pocket-save">
+                                <input type="hidden" name="total_save" id="total-save">
+                                <label for="nominal">Nominal</label>
+                                <input readonly type="text" class="form-control indonesian-currency" id="nominal" name="nominal">
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="col-8" id="show-data"></div>
         </div>
 
     </section>
