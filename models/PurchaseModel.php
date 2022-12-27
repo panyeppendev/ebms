@@ -402,11 +402,16 @@ class PurchaseModel extends CI_Model
             $amount = 0;
         }
 
+        $name = $this->input->post('name', true);
+
         $this->db->select('a.amount, a.created_at, a.type, b.id AS package, c.name');
         $this->db->from('package_transaction AS a')->join('packages AS b', 'b.id = a.package_id');
         $this->db->join('students AS c', 'c.id = b.student_id');
         $this->db->where('DATE(a.created_at)', $now);
         $this->db->where_in('a.status', [$role[0], $role[1]]);
+        if ($name != '') {
+            $this->db->like('c.name', $name);
+        }
         $result = $this->db->get();
 
         return [

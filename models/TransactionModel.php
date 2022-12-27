@@ -101,7 +101,7 @@ class TransactionModel extends CI_Model
         }
 
         $shift = $this->getShift();
-        if (!$shift) {
+        if (!$shift || $shift == '') {
             return [
                 'status' => 400,
                 'message' => 'Saat ini jam tutup',
@@ -134,7 +134,8 @@ class TransactionModel extends CI_Model
                     'status' => 400,
                     'message' => 'Sarapan hanya khusus Paket B dan D',
                     'nis' => $nis,
-                    'text' => 'Paket ' . $package . $teksTransport
+                    'text' => 'Paket ' . $package . $teksTransport,
+                    'day' => date('N')
                 ];
             }
 
@@ -160,30 +161,41 @@ class TransactionModel extends CI_Model
         }
 
         if ($shift == 'AFTERNOON') {
-            if (date('N') != 7 || date('N') != 3) {
-                if ($checkTransaction > 0) {
-                    return [
-                        'status' => 400,
-                        'message' => 'Jatah nasi pada shift ini sudah diambil',
-                        'nis' => $nis,
-                        'text' => 'Paket ' . $package . $teksTransport
-                    ];
-                }
-            } else {
+            $dayNum = date('N');
+
+            $setTomorrow = new DateTime('tomorrow');
+            $tomorrowDate = $setTomorrow->format('Y-m-d');
+            $hour = '09:00:00';
+            $format = 'Y-m-d H:i:s';
+            $tomorrowDateTime = DateTime::createFromFormat($format, $tomorrowDate . ' ' . $hour);
+            $tomorrowFinal = $tomorrowDateTime->format('Y-m-d H:i:s');
+
+            if ($dayNum == 3 || $dayNum == 7) {
                 //CHECK MORNING INI MONDAY
-                $tomorrow = date('Y-m-d', strtotime('+1 day', strtotime(date('Y-m-d'))));
                 $checkTomorrow = $this->db->select('id')->from('package_transaction')->where([
-                    'package_id' => $packageID, 'DATE(created_at)' => $tomorrow, 'status' => 'MORNING'
+                    'package_id' => $packageID,
+                    'DATE(created_at)' => $tomorrowDate,
+                    'status' => 'MORNING'
                 ])->get()->num_rows();
 
                 if ($checkTransaction > 0) {
-                    $now = date('Y-m-d H:i:s', strtotime('+1 day', strtotime(date('Y-m-d'))));
+                    $now = $tomorrowFinal;
+                    $shift = 'MORNING';
                 }
 
                 if ($checkTransaction > 0 && $checkTomorrow > 0) {
                     return [
                         'status' => 400,
                         'message' => 'Jatah nasi sahur sudah diambil',
+                        'nis' => $nis,
+                        'text' => 'Paket ' . $package . $teksTransport
+                    ];
+                }
+            } else {
+                if ($checkTransaction > 0) {
+                    return [
+                        'status' => 400,
+                        'message' => 'Jatah nasi pada shift ini sudah diambil',
                         'nis' => $nis,
                         'text' => 'Paket ' . $package . $teksTransport
                     ];

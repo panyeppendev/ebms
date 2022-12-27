@@ -44,4 +44,23 @@ class Transaction extends CI_Controller
         ];
         $this->load->view('transaction/ajax-check', $data);
     }
+
+    public function coba($id)
+    {
+        $result = $this->tm->coba($id);
+
+        echo json_encode($result);
+    }
+
+    public function cobalagi()
+    {
+        $tomorrow = new DateTime('tomorrow');
+        $nowSet = $tomorrow->format('Y-m-d');
+        $nowHour = '09:00:00';
+        $format = 'Y-m-d H:i:s';
+        $tomorrowSet = DateTime::createFromFormat($format, $nowSet . ' ' . $nowHour);
+        // $tomorrowFinal = $datetime->format('Y-m-d H:i:s');
+
+        echo $tomorrowSet->date;
+    }
 }
