@@ -19,4 +19,27 @@ class Report extends CI_Controller
         ];
         $this->load->view('report/report', $data);
     }
+
+    public function loadPaymentReport()
+    {
+        $step = $this->input->post('step', true);
+        $data = [
+            'step' => $step,
+            'pocket' => $this->rm->reportPocket($step),
+            'besidesPocket' => $this->rm->besidesPocket($step)
+        ];
+
+        $this->load->view('report/ajax-payment-report', $data);
+    }
+
+    public function loadDisbursementReport()
+    {
+        $step = $this->input->post('step', true);
+        $data = [
+            'step' => $step,
+            'data' => $this->rm->disbursement($step)
+        ];
+
+        $this->load->view('report/ajax-disbursement-report', $data);
+    }
 }
