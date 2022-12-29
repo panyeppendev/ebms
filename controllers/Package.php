@@ -102,11 +102,4 @@ class Package extends CI_Controller
         ];
         $this->load->view('print/package-print', $data);
     }
-
-    public function coba()
-    {
-        $data = $this->pm->reporting(7);
-
-        print_r($data);
-    }
 }

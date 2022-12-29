@@ -24,4 +24,113 @@ class ReportModel extends CI_Model
             $disbursement
         ];
     }
+
+    public function reportPocket($step)
+    {
+        $this->db->select('a.package, COUNT(a.id) AS qty, b.amount');
+        $this->db->from('packages AS a')->join('package_detail AS b', 'b.package_id = a.id');
+        if ($step != '' && $step != 0) {
+            $this->db->where('a.step', $step);
+        }
+        $this->db->where('b.account_id', 'P11')->group_by('a.package');
+        return $this->db->get()->result_object();
+    }
+
+    public function besidesPocket($step)
+    {
+        $this->db->select('COUNT(a.id) AS qty, b.amount, c.name');
+        $this->db->from('packages AS a')->join('package_detail AS b', 'b.package_id = a.id');
+        $this->db->join('payment_account AS c', 'c.id = b.account_id');
+        if ($step != '' && $step != 0) {
+            $this->db->where('a.step', $step);
+        }
+        $this->db->where('b.account_id !=', 'P11')->group_by('b.account_id');
+        return $this->db->get()->result_object();
+    }
+
+    public function disbursement($step)
+    {
+        $startDate = $this->input->post('startDate', true);
+        $endDate = $this->input->post('endDate', true);
+        $period = $this->dm->getperiod();
+
+        $this->db->select('b.domicile');
+        $this->db->select('SUM(IF(c.account_id = "P11", c.amount, 0)) AS pocket');
+        $this->db->select('SUM(IF(c.account_id = "P13", c.amount, 0)) AS breakfast');
+        $this->db->select('SUM(IF(c.account_id = "P12", c.amount, 0)) AS dpu ');
+        $this->db->from('packages AS a')->join('students AS b', 'b.id = a.student_id');
+        $this->db->join('package_detail AS c', 'c.package_id = a.id');
+        $this->db->where([
+            'a.period' => $period,
+            'a.status !=' => 'INORDER'
+        ]);
+        if ($step != '' && $step != 0) {
+            $this->db->where('a.step', $step);
+        }
+        $kredit = $this->db->group_by('b.domicile')->get()->result_object();
+
+        if ($kredit) {
+            $data = [];
+            foreach ($kredit as $d) {
+                $data[] = [
+                    'domicile' => $d->domicile,
+                    'kredit_pocket' => $d->pocket,
+                    'debet_pocket' => $this->debet($step, $d->domicile, $startDate, $endDate)[0],
+                    'kredit_breakfast' => $d->breakfast,
+                    'debet_breakfast' => $this->debet($step, $d->domicile, $startDate, $endDate)[1],
+                    'kredit_dpu' => $d->dpu,
+                    'debet_dpu' => $this->debet($step, $d->domicile, $startDate, $endDate)[2]
+                ];
+            }
+
+            return [
+                'status' => 200,
+                'data' => $data
+            ];
+        } else {
+            return [
+                'status' => 400,
+                'data' => []
+            ];
+        }
+    }
+
+    public function debet($step, $domicile, $startDate, $endDate)
+    {
+        $period = $this->dm->getperiod();
+        $this->db->select('b.domicile');
+        $this->db->select('SUM(IF(c.type = "POCKET", c.amount, 0)) AS kredit_pocket');
+        $this->db->select('SUM(IF(c.type = "BREAKFAST", c.amount, 0)) AS kredit_breakfast');
+        $this->db->select('SUM(IF(c.type = "DPU", c.amount, 0)) AS kredit_dpu ');
+        $this->db->from('packages AS a')->join('students AS b', 'b.id = a.student_id');
+        $this->db->join('package_transaction AS c', 'c.package_id = a.id');
+        $this->db->where([
+            'a.period' => $period,
+            'a.status !=' => 'INORDER',
+            'b.domicile' => $domicile
+        ]);
+        if ($step != '' && $step != 0) {
+            $this->db->where('a.step', $step);
+        }
+        if ($startDate != '' && $endDate != '') {
+            $start = date('Y-m-d H:i:s', strtotime($startDate . ' 00:00:00'));
+            $end = date('Y-m-d H:i:s', strtotime($endDate . ' 23:59:59'));
+            $this->db->where('c.created_at >=', $start);
+            $this->db->where('c.created_at <=', $end);
+        }
+        $data = $this->db->get()->row_object();
+        if ($data) {
+            $pocket = $data->kredit_pocket;
+            $breakfast = $data->kredit_breakfast;
+            $dpu = $data->kredit_dpu;
+        } else {
+            $pocket = 0;
+            $breakfast = 0;
+            $dpu = 0;
+        }
+
+        return [
+            $pocket, $breakfast, $dpu
+        ];
+    }
 }
