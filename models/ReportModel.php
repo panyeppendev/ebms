@@ -133,4 +133,27 @@ class ReportModel extends CI_Model
             $pocket, $breakfast, $dpu
         ];
     }
+
+    public function detailPayment($step)
+    {
+        $period = $this->dm->getperiod();
+        if ($step == 0) {
+            return 0;
+        }
+        $this->db->select('a.package, b.id, b.name, b.village, b.city, b.domicile');
+        $this->db->select('MAX(IF(c.account_id = "P11", c.amount, 0)) AS pocket');
+        $this->db->select('MAX(IF(c.account_id = "P12", c.amount, 0)) AS dpu');
+        $this->db->select('MAX(IF(c.account_id = "P13", c.amount, 0)) AS breakfast ');
+        $this->db->select('MAX(IF(c.account_id = "P15", c.amount, 0)) AS transport ');
+        $this->db->select('MAX(IF(c.account_id = "P14", c.amount, 0)) AS admin ');
+        $this->db->select('a.amount');
+        $this->db->from('packages AS a')->join('students AS b', 'b.id = a.student_id');
+        $this->db->join('package_detail AS c', 'c.package_id = a.id', 'left');
+        $this->db->where([
+            'a.status !=' => 'INORDER',
+            'a.period' => $period,
+            'a.step' => $step
+        ]);
+        return $this->db->group_by('a.id')->get()->result_object();
+    }
 }

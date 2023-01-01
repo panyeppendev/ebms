@@ -13,6 +13,7 @@
     })
 
     const loadPaymentReport = () => {
+        $('#show-payment-report').html('<h6 class="text-center text-info"><i>Data sedang dimuat ..........</i></h6>')
         let step = $('#change-step-payment').val()
         $.ajax({
             url: '<?= base_url() ?>report/loadpaymentreport',
@@ -20,13 +21,20 @@
             data: {
                 step
             },
+            beforeSend: function() {
+                $('.wrap-loading__').show()
+            },
             success: function(res) {
                 $('#show-payment-report').html(res)
+            },
+            complete: function() {
+                $('.wrap-loading__').hide()
             }
         })
     }
 
     const loadDisbursementReport = () => {
+        $('#show-disbursement-report').html('<h6 class="text-center text-info"><i>Data sedang dimuat ..........</i></h6>')
         let step = $('#change-step-disbursement').val()
         let startDate = $('#start-date').val()
         let endDate = $('#end-date').val()
@@ -38,8 +46,14 @@
                 startDate,
                 endDate
             },
+            beforeSend: function() {
+                $('.wrap-loading__').show()
+            },
             success: function(res) {
                 $('#show-disbursement-report').html(res)
+            },
+            complete: function() {
+                $('.wrap-loading__').hide()
             }
         })
     }
@@ -75,6 +89,10 @@
 
         loadDisbursementReport()
     });
+
+    $('#change-step-payment').on('change', function() {
+        $('#step-payment-download').val($(this).val())
+    })
 </script>
 </body>
 

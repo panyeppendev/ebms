@@ -3,7 +3,7 @@
     <!-- Main content -->
     <section class="content p-3">
         <div class="row mb-3">
-            <div class="col-6"></div>
+            <div class="col-7"></div>
             <div class="col-2">
                 <select onchange="loadPaymentReport()" id="change-step-payment" class="form-control form-control-sm">
                     <option <?= ($step[0] == 0) ? 'selected' : '' ?> value="0">Pembayaran</option>
@@ -16,17 +16,14 @@
                     ?>
                 </select>
             </div>
-            <div class="col-2">
-                <button type="button" class="btn btn-default btn-sm btn-block">
-                    <i class="fas fa-file-download"></i>
-                    Unduh Rincian
-                </button>
-            </div>
-            <div class="col-2">
-                <button type="button" class="btn btn-default btn-sm btn-block">
-                    <i class="fas fa-file-download"></i>
-                    Unduh Akumulasi
-                </button>
+            <div class="col-3">
+                <form action="<?= base_url() ?>report/exportPocket" method="post">
+                    <input type="hidden" name="step" id="step-payment-download" value="<?= $step[0] ?>">
+                    <button type="submit" class="btn btn-default btn-sm btn-block">
+                        <i class="fas fa-file-download"></i>
+                        Unduh Laporan Pembayaran
+                    </button>
+                </form>
             </div>
         </div>
         <div class="row">
@@ -73,9 +70,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12" id="show-disbursement-report">
-
-            </div>
+            <div class="col-12" id="show-disbursement-report"></div>
         </div>
     </section>
     <!-- /.content -->
@@ -87,10 +82,19 @@
         <div class="modal-content">
             <div class="modal-body" id="show-detail" style="max-height: 85vh; overflow: auto"></div>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
 </div>
+
+<!-- MODAL -->
+<div class="wrap-loading__" style="display: none">
+    <div class="loading__ fade-in-loading__">
+        <div class="wrapper-loading__">
+            <div class="lds-dual-ring"></div>
+            <span class="font-italic text-loading__">Ke pasar beli pepaya, tunggu sebentar, ya.....</span>
+        </div>
+    </div>
+</div>
+
 <?php $this->load->view('partials/footer'); ?>
 <script src="<?= base_url('template') ?>/plugins/moment/moment.min.js"></script>
 <script src="<?= base_url('template') ?>/plugins/daterangepicker/daterangepicker.js"></script>
