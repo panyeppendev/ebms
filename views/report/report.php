@@ -31,7 +31,7 @@
         </div>
         <hr>
         <div class="row mb-3">
-            <div class="col-3"></div>
+            <div class="col-4"></div>
             <div class="col-2">
                 <select onchange="loadDisbursementReport()" id="change-step-disbursement" class="form-control form-control-sm">
                     <option value="0" <?= ($step[1] == 0) ? 'selected' : '' ?>>Pencairan</option>
@@ -56,17 +56,16 @@
                     <input type="hidden" id="end-date" value="">
                 </div>
             </div>
-            <div class="col-2">
-                <button type="button" class="btn btn-default btn-sm btn-block">
-                    <i class="fas fa-file-download"></i>
-                    Unduh Rincian
-                </button>
-            </div>
-            <div class="col-2">
-                <button type="button" class="btn btn-default btn-sm btn-block">
-                    <i class="fas fa-file-download"></i>
-                    Unduh Akumulasi
-                </button>
+            <div class="col-3">
+                <form action="<?= base_url() ?>report/exportDisbursement" method="post">
+                    <input type="hidden" name="step" id="step-payment-download" value="<?= $step[0] ?>">
+                    <input type="hidden" name="startDate" id="start-date-download" value="">
+                    <input type="hidden" name="endDate" id="end-date-download" value="">
+                    <button type="submit" class="btn btn-default btn-sm btn-block">
+                        <i class="fas fa-file-download"></i>
+                        Unduh Laporan Pencairan
+                    </button>
+                </form>
             </div>
         </div>
         <div class="row">
