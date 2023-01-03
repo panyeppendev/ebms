@@ -137,9 +137,6 @@ class ReportModel extends CI_Model
     public function detailPayment($step)
     {
         $period = $this->dm->getperiod();
-        if ($step == 0) {
-            return 0;
-        }
         $this->db->select('a.package, b.id, b.name, b.village, b.city, b.domicile');
         $this->db->select('MAX(IF(c.account_id = "P11", c.amount, 0)) AS pocket');
         $this->db->select('MAX(IF(c.account_id = "P12", c.amount, 0)) AS dpu');
@@ -149,11 +146,44 @@ class ReportModel extends CI_Model
         $this->db->select('a.amount');
         $this->db->from('packages AS a')->join('students AS b', 'b.id = a.student_id');
         $this->db->join('package_detail AS c', 'c.package_id = a.id', 'left');
+        if ($step != '' && $step != 0) {
+            $this->db->where('a.step', $step);
+        }
         $this->db->where([
             'a.status !=' => 'INORDER',
-            'a.period' => $period,
-            'a.step' => $step
+            'a.period' => $period
         ]);
         return $this->db->group_by('a.id')->get()->result_object();
+    }
+
+    public function detailDisbursement($step)
+    {
+        $startDate = $this->input->post('startDate', true);
+        $endDate = $this->input->post('endDate', true);
+        $period = $this->dm->getperiod();
+        $this->db->select('a.package, b.id, b.name, b.village, b.city, b.domicile');
+        $this->db->select('SUM(IF(c.status = "POCKET_CASH", c.amount, 0)) AS pocket_cash');
+        $this->db->select('SUM(IF(c.status = "POCKET_CANTEEN", c.amount, 0)) AS pocket_canteen');
+        $this->db->select('SUM(IF(c.status = "POCKET_STORE", c.amount, 0)) AS pocket_store');
+        $this->db->select('SUM(IF(c.status = "POCKET_LIBRARY", c.amount, 0)) AS pocket_library');
+        $this->db->select('SUM(IF(c.status = "BREAKFAST", c.amount, 0)) AS breakfast');
+        $this->db->select('SUM(IF(c.status = "MORNING", c.amount, 0)) AS morning');
+        $this->db->select('SUM(IF(c.status = "AFTERNOON", c.amount, 0)) AS afternoon');
+        $this->db->from('packages AS a')->join('students AS b', 'b.id = a.student_id');
+        $this->db->join('package_transaction AS c', 'c.package_id = a.id', 'left');
+        if ($step != '' && $step != 0) {
+            $this->db->where('a.step', $step);
+        }
+        if ($startDate != '' && $endDate != '') {
+            $start = date('Y-m-d H:i:s', strtotime($startDate . ' 00:00:00'));
+            $end = date('Y-m-d H:i:s', strtotime($endDate . ' 23:59:59'));
+            $this->db->where('c.created_at >=', $start);
+            $this->db->where('c.created_at <=', $end);
+        }
+        $this->db->where([
+            'a.status !=' => 'INORDER',
+            'a.period' => $period
+        ]);
+        return $this->db->group_by('a.id')->order_by('b.domicile ASC, a.package ASC')->get()->result_object();
     }
 }

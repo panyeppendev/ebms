@@ -78,6 +78,8 @@
         $(this).val('').attr('placeholder', picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
         $('#start-date').val(picker.startDate.format('YYYY-MM-DD'))
         $('#end-date').val(picker.endDate.format('YYYY-MM-DD'))
+        $('#start-date-download').val(picker.startDate.format('YYYY-MM-DD'))
+        $('#end-date-download').val(picker.endDate.format('YYYY-MM-DD'))
 
         loadDisbursementReport()
     });
@@ -86,6 +88,8 @@
         $(this).attr('placeholder', 'Semua waktu').val('');
         $('#start-date').val('')
         $('#end-date').val('')
+        $('#start-date-download').val('')
+        $('#end-date-download').val('')
 
         loadDisbursementReport()
     });
