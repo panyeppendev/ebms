@@ -58,6 +58,7 @@
             },
             dataType: 'JSON',
             success: function(res) {
+
                 let status = res.status
                 if (status == 500) {
                     errorAlert(res.message)
@@ -66,14 +67,7 @@
                     return false
                 }
 
-                let statusSend = 0;
-                if (status == 200) {
-                    toastr.success(`Yeaah..! ${res.message}`)
-                } else {
-                    statusSend = 400
-                }
-
-                getData(res.nis, res.text, res.message, statusSend)
+                getData(res.nis, res.text, res.message, status)
                 $('#nis').focus().val('')
             }
         })

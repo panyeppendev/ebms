@@ -129,13 +129,12 @@ class TransactionModel extends CI_Model
         $now = date('Y-m-d H:i:s');
         //BREAKFAST
         if ($shift == 'BREAKFAST') {
-            if ($package != 'B' || $package != 'D') {
+            if ($package === 'A' || $package === 'C') {
                 return [
                     'status' => 400,
-                    'message' => 'Sarapan hanya khusus Paket B dan D',
+                    'message' => 'Transaksi sarapan hanya khusus Paket B dan D',
                     'nis' => $nis,
-                    'text' => 'Paket ' . $package . $teksTransport,
-                    'day' => date('N')
+                    'text' => 'Paket ' . $package . $teksTransport
                 ];
             }
 
@@ -221,7 +220,7 @@ class TransactionModel extends CI_Model
 
         return [
             'status' => 200,
-            'message' => 'Pengambilan jatah nasi sukses',
+            'message' => 'Jatah nasi tersedia. Silahkan distribusikan..!!',
             'nis' => $nis,
             'text' => 'Paket ' . $package . $teksTransport
         ];

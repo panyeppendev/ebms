@@ -27,6 +27,13 @@ if ($data['status'] == 200) {
                         </div>
                     </div>
                 <?php } ?>
+                <?php if ($data['status_send'] == 200) { ?>
+                    <div class="col-12">
+                        <div class="alert alert-success" role="alert">
+                            <?= $data['message'] ?>
+                        </div>
+                    </div>
+                <?php } ?>
                 <div class="col-12">
                     <dl class="row">
                         <dt class="col-sm-3 font-weight-normal mb-1">Nama</dt>

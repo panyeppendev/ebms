@@ -15,13 +15,7 @@
     <link rel="stylesheet" href="<?= base_url() ?>template/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="<?= base_url() ?>template/plugins/toastr/toastr.min.css">
     <link rel="stylesheet" href="<?= base_url() ?>template/plugins/croppie/croppie.css">
-    <style>
-        select[readonly] {
-            background: #e9ecef;
-            pointer-events: none;
-            touch-action: none;
-        }
-    </style>
+    <link rel="stylesheet" href="<?= base_url() ?>template/css/custome.css">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed layout-navbar-fixed text-sm">
