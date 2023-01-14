@@ -191,7 +191,7 @@ class PurchaseModel extends CI_Model
             'package_id' => $package
         ])->num_rows();
 
-
+        $residual = 0;
         if ($diffDate->d >= 2) {
             if ($checkYesterday <= 0) {
                 $checkBeforeYesterday = $this->db->get_where('package_transaction', [
@@ -205,7 +205,7 @@ class PurchaseModel extends CI_Model
                     $residual = $pocket;
                 }
             } else {
-                $residual = 0;
+                $residual;
             }
         }
 
