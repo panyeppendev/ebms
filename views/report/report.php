@@ -58,7 +58,7 @@
             </div>
             <div class="col-3">
                 <form action="<?= base_url() ?>report/exportDisbursement" method="post">
-                    <input type="hidden" name="step" id="step-payment-download" value="<?= $step[0] ?>">
+                    <input type="hidden" name="step" id="step-disbursement-download" value="<?= $step[0] ?>">
                     <input type="hidden" name="startDate" id="start-date-download" value="">
                     <input type="hidden" name="endDate" id="end-date-download" value="">
                     <button type="submit" class="btn btn-default btn-sm btn-block">
