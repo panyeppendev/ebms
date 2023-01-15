@@ -32,19 +32,18 @@ if ($step[0] != 0) {
                         Pencairan uang saku paket - <?= @$currentStep ?>
                     </div>
                 </div>
-                <div class="col-8" data-toggle="modal" data-target="#modal-detail" id="show-recap"></div>
-                <!-- <div class="col-3">
+                <div class="col-6" data-toggle="modal" data-target="#modal-detail" id="show-recap"></div>
+                <div class="col-3">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
                                 <i class="far fa-calendar-alt"></i>
                             </span>
                         </div>
-                        <input type="text" class="form-control form-control-sm" id="reservation" placeholder="Semua waktu">
-                        <input type="hidden" id="start-date" value="">
-                        <input type="hidden" id="end-date" value="">
+                        <input type="text" class="form-control form-control-sm" id="reservation" placeholder="Hari ini">
+                        <input type="hidden" id="filter-date" value="">
                     </div>
-                </div> -->
+                </div>
             </div>
             <hr class="mt-0">
             <div class="row">

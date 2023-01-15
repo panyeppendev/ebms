@@ -388,8 +388,14 @@ class PurchaseModel extends CI_Model
     {
         $role = $this->getRole();
         $now = date('Y-m-d');
+        $filter = $this->input->post('filter', true);
+
         $this->db->select('SUM(amount) AS amount')->from('package_transaction');
-        $this->db->where('DATE(created_at)', $now);
+        if ($filter != '') {
+            $this->db->where('DATE(created_at)', $filter);
+        } else {
+            $this->db->where('DATE(created_at)', $now);
+        }
         $this->db->where_in('status', [$role[0], $role[1]]);
         $amount = $this->db->get()->row_object();
         if ($amount) {
@@ -407,7 +413,11 @@ class PurchaseModel extends CI_Model
         $this->db->select('a.amount, a.created_at, a.type, b.id AS package, c.name');
         $this->db->from('package_transaction AS a')->join('packages AS b', 'b.id = a.package_id');
         $this->db->join('students AS c', 'c.id = b.student_id');
-        $this->db->where('DATE(a.created_at)', $now);
+        if ($filter != '') {
+            $this->db->where('DATE(a.created_at)', $filter);
+        } else {
+            $this->db->where('DATE(a.created_at)', $now);
+        }
         $this->db->where_in('a.status', [$role[0], $role[1]]);
         if ($name != '') {
             $this->db->like('c.name', $name);
