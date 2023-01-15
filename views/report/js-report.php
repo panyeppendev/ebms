@@ -97,6 +97,10 @@
     $('#change-step-payment').on('change', function() {
         $('#step-payment-download').val($(this).val())
     })
+
+    $('#change-step-disbursement').on('change', function() {
+        $('#step-disbursement-download').val($(this).val())
+    })
 </script>
 </body>
 
