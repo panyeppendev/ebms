@@ -17,6 +17,29 @@
         }
     })
 
+    $('#reservation').daterangepicker({
+        singleDatePicker: true,
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Reset',
+            applyLabel: 'Terapkan'
+        }
+    })
+
+    $('#reservation').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val('').attr('placeholder', picker.startDate.format('DD/MM/YYYY'));
+        $('#filter-date').val(picker.startDate.format('YYYY-MM-DD'))
+
+        loadRecap()
+    });
+
+    $('#reservation').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).attr('placeholder', 'Hari ini').val('');
+        $('#filter-date').val('')
+
+        loadRecap()
+    });
+
     $('#nominal').on('keyup', e => {
         if (e.keyCode == 113) {
             $('#nis').focus().val('')
@@ -25,9 +48,13 @@
     })
 
     const loadRecap = () => {
+        let filter = $('#filter-date').val()
         $.ajax({
             url: '<?= base_url() ?>purchase/loadrecap',
             method: 'POST',
+            data: {
+                filter
+            },
             success: function(res) {
                 $('#show-recap').html(res)
             }
@@ -36,11 +63,13 @@
 
     const loadData = () => {
         let name = $('#changeName').val()
+        let filter = $('#filter-date').val()
         $.ajax({
             url: '<?= base_url() ?>purchase/loaddata',
             method: 'POST',
             data: {
-                name
+                name,
+                filter
             },
             success: function(res) {
                 $('#show-detail').html(res)

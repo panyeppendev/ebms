@@ -398,9 +398,14 @@ class DisbursementModel extends CI_Model
     public function loadRecap()
     {
         $name = $this->input->post('name', true);
+        $filter = $this->input->post('filter', true);
         $now = date('Y-m-d');
         $this->db->select('SUM(amount) AS amount')->from('package_transaction');
-        $this->db->where('DATE(created_at)', $now);
+        if ($filter != '') {
+            $this->db->where('DATE(created_at)', $filter);
+        } else {
+            $this->db->where('DATE(created_at)', $now);
+        }
         $this->db->where_in('status', ['POCKET_CASH', 'DEPOSIT_CASH']);
         $amount = $this->db->get()->row_object();
         if ($amount) {
@@ -416,7 +421,11 @@ class DisbursementModel extends CI_Model
         $this->db->select('a.amount, a.created_at, a.type, b.id AS package, c.name');
         $this->db->from('package_transaction AS a')->join('packages AS b', 'b.id = a.package_id');
         $this->db->join('students AS c', 'c.id = b.student_id');
-        $this->db->where('DATE(a.created_at)', $now);
+        if ($filter != '') {
+            $this->db->where('DATE(a.created_at)', $filter);
+        } else {
+            $this->db->where('DATE(a.created_at)', $now);
+        }
         $this->db->where_in('a.status', ['POCKET_CASH', 'DEPOSIT_CASH']);
         if ($name != '') {
             $this->db->like('c.name', $name);
