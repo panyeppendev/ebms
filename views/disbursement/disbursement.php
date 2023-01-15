@@ -25,15 +25,28 @@ if ($step[0] != 0) {
                 </div>
             </div>
         <?php } else { ?>
-            <div class="row mb-2">
-                <div class="col-4">
+            <div class="row">
+                <div class="col-3">
                     <div class="callout callout-success py-1">
                         <i class="fas fa-info-circle"></i>
                         Pencairan uang saku paket - <?= @$currentStep ?>
                     </div>
                 </div>
                 <div class="col-8" data-toggle="modal" data-target="#modal-detail" id="show-recap"></div>
+                <!-- <div class="col-3">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="far fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control form-control-sm" id="reservation" placeholder="Semua waktu">
+                        <input type="hidden" id="start-date" value="">
+                        <input type="hidden" id="end-date" value="">
+                    </div>
+                </div> -->
             </div>
+            <hr class="mt-0">
             <div class="row">
                 <div class="col-4">
                     <div class="card">
@@ -72,4 +85,6 @@ if ($step[0] != 0) {
     </div>
 </div>
 <?php $this->load->view('partials/footer'); ?>
+<script src="<?= base_url('template') ?>/plugins/moment/moment.min.js"></script>
+<script src="<?= base_url('template') ?>/plugins/daterangepicker/daterangepicker.js"></script>
 <?php $this->load->view('disbursement/js-disbursement'); ?>
