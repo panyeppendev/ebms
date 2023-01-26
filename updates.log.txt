@@ -1,2 +1,1 @@
-[USERS] => Add STORE in role enum
-[PACKAGE_TRANSACTION] => ADD STORE in status enum
+[PACKAGE_TRANSACTION] => ADD student_id field

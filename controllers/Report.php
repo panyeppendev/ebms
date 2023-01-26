@@ -521,4 +521,114 @@ class Report extends CI_Controller
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
     }
+
+    public function exportDeposit()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet(0);
+        // Buat sebuah variabel untuk menampung pengaturan style dari header tabel
+        $style_col = [
+            'font' => ['bold' => true], // Set font nya jadi bold
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, // Set text jadi ditengah secara horizontal (center)
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
+            ],
+            'borders' => [
+                'top' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN], // Set border top dengan garis tipis
+                'right' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],  // Set border right dengan garis tipis
+                'bottom' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN], // Set border bottom dengan garis tipis
+                'left' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN] // Set border left dengan garis tipis
+            ]
+        ];
+        // Buat sebuah variabel untuk menampung pengaturan style dari isi tabel
+        $style_row = [
+            'alignment' => [
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
+            ],
+            'borders' => [
+                'top' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN], // Set border top dengan garis tipis
+                'right' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],  // Set border right dengan garis tipis
+                'bottom' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN], // Set border bottom dengan garis tipis
+                'left' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN] // Set border left dengan garis tipis
+            ]
+        ];
+        $sheet->setCellValue('A1', 'REKAPITULASI TABUNGAN'); // Set kolom A1 dengan tulisan "DATA SISWA"
+        $sheet->mergeCells('A1:J1'); // Set Merge Cell pada kolom A1 sampai E1
+        $sheet->getStyle('A1')->getFont()->setBold(true); // Set bold kolom A1
+        // Buat header tabel nya pada baris ke 3
+        $sheet->setCellValue('A3', 'NO'); // Set kolom A3 dengan tulisan "NO"
+        $sheet->setCellValue('B3', 'NAMA'); // Set kolom B3 dengan tulisan "NIS"
+        $sheet->setCellValue('C3', 'DOMISILI'); // Set kolom C3 dengan tulisan "NAMA"
+        $sheet->setCellValue('D3', 'ALAMAT'); // Set kolom E3 dengan tulisan "ALAMAT"
+        $sheet->setCellValue('E3', 'TABUNGAN'); // Set kolom E3 dengan tulisan "ALAMAT"
+        $sheet->setCellValue('F3', 'TUNAI'); // Set kolom E3 dengan tulisan "ALAMAT"
+        $sheet->setCellValue('G3', 'KANTIN'); // Set kolom E3 dengan tulisan "ALAMAT"
+        $sheet->setCellValue('H3', 'KOPERASI'); // Set kolom E3 dengan tulisan "ALAMAT"
+        $sheet->setCellValue('I3', 'PERPUS'); // Set kolom E3 dengan tulisan "ALAMAT"
+        $sheet->setCellValue('J3', 'SISA'); // Set kolom E3 dengan tulisan "ALAMAT"
+        $sheet->getStyle('A3')->applyFromArray($style_col);
+        $sheet->getStyle('B3')->applyFromArray($style_col);
+        $sheet->getStyle('C3')->applyFromArray($style_col);
+        $sheet->getStyle('D3')->applyFromArray($style_col);
+        $sheet->getStyle('E3')->applyFromArray($style_col);
+        $sheet->getStyle('F3')->applyFromArray($style_col);
+        $sheet->getStyle('G3')->applyFromArray($style_col);
+        $sheet->getStyle('H3')->applyFromArray($style_col);
+        $sheet->getStyle('I3')->applyFromArray($style_col);
+        $sheet->getStyle('J3')->applyFromArray($style_col);
+
+        $data = $this->rm->deposit();
+        if ($data) {
+            $num = 1;
+            $numrow = 5;
+            foreach ($data as $d) {
+                $deposit = $d['deposit'];
+                $cash = $d['cash'];
+                $canteen = $d['canteen'];
+                $store = $d['store'];
+                $library = $d['library'];
+                $id = $d['id'];
+                $residual = $deposit - ($cash + $canteen + $store + $library);
+
+                $sheet->setCellValue('A' . $numrow, $num);
+                $sheet->setCellValue('B' . $numrow, $d['name']);
+                $sheet->setCellValue('C' . $numrow, $d['domicile']);
+                $sheet->setCellValue('D' . $numrow, $d['village'].', '.$d['city']);
+                $sheet->setCellValue('E' . $numrow, $deposit);
+                $sheet->setCellValue('F' . $numrow, $cash);
+                $sheet->setCellValue('G' . $numrow, $canteen);
+                $sheet->setCellValue('H' . $numrow, $store);
+                $sheet->setCellValue('I' . $numrow, $library);
+                $sheet->setCellValue('J' . $numrow, $residual);
+
+                // Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
+                $sheet->getStyle('A' . $numrow)->applyFromArray($style_row);
+                $sheet->getStyle('B' . $numrow)->applyFromArray($style_row);
+                $sheet->getStyle('C' . $numrow)->applyFromArray($style_row);
+                $sheet->getStyle('D' . $numrow)->applyFromArray($style_row);
+                $sheet->getStyle('E' . $numrow)->applyFromArray($style_row);
+                $sheet->getStyle('F' . $numrow)->applyFromArray($style_row);
+                $sheet->getStyle('G' . $numrow)->applyFromArray($style_row);
+                $sheet->getStyle('H' . $numrow)->applyFromArray($style_row);
+                $sheet->getStyle('I' . $numrow)->applyFromArray($style_row);
+                $sheet->getStyle('J' . $numrow)->applyFromArray($style_row);
+
+                $num++;
+                $numrow++;
+            }
+        }
+
+        // Set height semua kolom menjadi auto (mengikuti height isi dari kolommnya, jadi otomatis)
+        $sheet->getDefaultRowDimension()->setRowHeight(-1);
+        // Set orientasi kertas jadi LANDSCAPE
+        $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+        // Set judul file excel nya
+        $sheet->setTitle("Rekapitulasi Tabungan");
+        // Proses file excel
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="Laporan-Tabungan.xlsx"'); // Set nama file excel nya
+        header('Cache-Control: max-age=0');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
 }

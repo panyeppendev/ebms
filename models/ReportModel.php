@@ -186,4 +186,66 @@ class ReportModel extends CI_Model
         ]);
         return $this->db->group_by('a.id')->order_by('b.domicile ASC, a.package ASC')->get()->result_object();
     }
+
+    public function deposit()
+    {
+        $period = $this->dm->getperiod();
+        $packages = $this->db->get_where('packages', [
+            'period' => $period,
+            'deposit >' => 0
+        ])->result_object();
+        if ($packages) {
+            foreach ($packages as $p) {
+                $studentId = $p->student_id;
+                $this->db->where([
+                    'package_id' => $p->id,
+                    'student_id' => NULL,
+                    'type' => 'DEPOSIT'
+                ])->update('package_transaction', [
+                    'student_id' => $studentId
+                ]);
+            }
+        }
+        $this->db->select('SUM(a.deposit) AS deposit, b.id, b.name, b.village, b.city, b.domicile');
+        $this->db->from('students AS b');
+        $this->db->join('packages AS a', 'a.student_id = b.id');
+        $this->db->where([
+            'a.status !=' => 'INORDER',
+            'a.period' => $period,
+            'a.deposit >' => 0
+        ]);
+        $data = $this->db->group_by('a.student_id')->order_by('b.domicile ASC, a.student_id ASC')->get()->result_object();
+
+        $deposits = [];
+        if ($data) {
+            foreach ($data as $d) {
+                $debit = $this->getDebit($d->id);
+                $deposits[] = [
+                    'id' => $d->id,
+                    'name' => $d->name,
+                    'village' => $d->village,
+                    'city' => $d->city,
+                    'domicile' => $d->domicile,
+                    'deposit' => $d->deposit,
+                    'cash' => $debit->cash,
+                    'canteen' => $debit->canteen,
+                    'store' => $debit->store,
+                    'library' => $debit->library
+                ];
+            }
+
+            return $deposits;
+        }
+
+        return $deposits;
+    }
+
+    public function getDebit($id)
+    {
+        $this->db->select('SUM(IF(status = "DEPOSIT_CASH", amount, 0)) AS cash');
+        $this->db->select('SUM(IF(status = "DEPOSIT_CANTEEN", amount, 0)) AS canteen');
+        $this->db->select('SUM(IF(status = "DEPOSIT_STORE", amount, 0)) AS store');
+        $this->db->select('SUM(IF(status = "DEPOSIT_LIBRARY", amount, 0)) AS library');
+        return $this->db->from('package_transaction')->where('student_id', $id)->get()->row_object();
+    }
 }
