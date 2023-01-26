@@ -31,7 +31,14 @@
         </div>
         <hr>
         <div class="row mb-3">
-            <div class="col-4"></div>
+            <div class="col-4">
+                <form action="<?= base_url() ?>report/exportDeposit" method="post">
+                    <button type="submit" class="btn btn-default btn-sm btn-block">
+                        <i class="fas fa-file-download"></i>
+                        Unduh Laporan Tabungan
+                    </button>
+                </form>
+            </div>
             <div class="col-2">
                 <select onchange="loadDisbursementReport()" id="change-step-disbursement" class="form-control form-control-sm">
                     <option value="0" <?= ($step[1] == 0) ? 'selected' : '' ?>>Pencairan</option>
