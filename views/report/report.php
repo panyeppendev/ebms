@@ -3,7 +3,27 @@
     <!-- Main content -->
     <section class="content p-3">
         <div class="row mb-3">
-            <div class="col-7"></div>
+            <div class="col-7">
+                <form action="<?= base_url() ?>report/log" target="_blank" method="post" class="row">
+                    <div class="col-4">
+                        <select name="type" required class="form-control form-control-sm">
+                            <option value="">.:Pilih:.</option>
+                            <option value="CASH">Tunai</option>
+                            <option value="CANTEEN">Kantin</option>
+                            <option value="STORE">Koperasi</option>
+                            <option value="LIBRARY">Perpus</option>
+                        </select>
+                    </div>
+                    <div class="col-5">
+                        <input type="date" name="date" required class="form-control form-control-sm">
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-default btn-block btn-sm">
+                            <i class="fas fa-print"></i> Print Log
+                        </button>
+                    </div>
+                </form>
+            </div>
             <div class="col-2">
                 <select onchange="loadPaymentReport()" id="change-step-payment" class="form-control form-control-sm">
                     <option <?= ($step[0] == 0) ? 'selected' : '' ?> value="0">Pembayaran</option>
