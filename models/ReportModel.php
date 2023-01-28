@@ -248,4 +248,19 @@ class ReportModel extends CI_Model
         $this->db->select('SUM(IF(status = "DEPOSIT_LIBRARY", amount, 0)) AS library');
         return $this->db->from('package_transaction')->where('student_id', $id)->get()->row_object();
     }
+
+    public function log($type, $date)
+    {
+        $this->db->select('b.name, b.domicile, a.amount, a.type, a.created_at');
+        $this->db->from('package_transaction AS a')->join('packages AS c', 'c.id = a.package_id');
+        $this->db->join('students AS b', 'b.id = c.student_id');
+        $this->db->where_in('a.status', [
+            'POCKET_'.$type,
+            'DEPOSIT_'.$type
+        ]);
+        $this->db->where([
+            'DATE(a.created_at)' => $date
+        ]);
+        return $this->db->get()->result_object();
+    }
 }

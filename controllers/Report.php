@@ -631,4 +631,25 @@ class Report extends CI_Controller
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
     }
+
+    public function log()
+    {
+        $type = $this->input->post('type', true);
+        $date = $this->input->post('date', true);
+
+        $text = [
+            'CASH' => 'TUNAI',
+            'CANTEEN' => 'KANTIN',
+            'STORE' => 'KOPERASI',
+            'LIBRARY' => 'PERPUS'
+        ];
+        $data = [
+            'title' => 'Print Out Log Transaksi',
+            'type' => $text[$type],
+            'date' => dateIDFormat($date),
+            'data' => $this->rm->log($type, $date)
+        ];
+        $this->load->view('print/log-transaction', $data);
+    }
+
 }
