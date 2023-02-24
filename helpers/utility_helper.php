@@ -115,3 +115,24 @@ function step($step)
     ];
     return $steps[$step];
 }
+
+
+function ageCounter($birth)
+{
+	$birthDate = new DateTime($birth);
+	$today = new DateTime("today");
+	if ($birthDate > $today) {
+		exit("Tanggal lahir tidak valid");
+	}
+	$y = $today->diff($birthDate)->y;
+	$m = $today->diff($birthDate)->m;
+	$d = $today->diff($birthDate)->d;
+	if ($y > 0) {
+		$y = $y.' tahun';
+	}else{
+		$y = '';
+	}
+
+	return $y;
+}
+

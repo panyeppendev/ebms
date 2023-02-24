@@ -31,6 +31,10 @@ class AuthModel extends CI_Model
                         $textRole = 'ADMIN';
                     } elseif ($role == 'DEV') {
                         $textRole = 'DEVELOPER';
+                    } elseif ($role == 'ADMIN-SECURITY') {
+                        $textRole = 'ADMIN KAMTIB';
+                    } elseif ($role == 'SECURITY') {
+                        $textRole = 'STAF KAMTIB';
                     } else {
                         $textRole = str_replace('-', ' ', $role);
                     }

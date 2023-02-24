@@ -78,3 +78,109 @@ function getMasehiExplode()
     $date = date('Y-m-d');
     return explode('-', $date);
 }
+
+function setDiff($date)
+{
+	$now = date('Y-m-d H:i:s');
+	$diff = strtotime($now) - strtotime($date);
+
+	if ($diff >= 1) {
+		return ['LATE', $now];
+	}
+
+	return ['DISCIPLINE', $now];
+}
+
+function showDiff($date, $back)
+{
+	$date = date_create($date);
+	$back = date_create($back); // waktu sekarang
+	$diff  = date_diff($date, $back);
+
+	$year = $diff->y;
+	$month = $diff->m;
+	$day = $diff->d;
+	$hour = $diff->h;
+	$minute = $diff->i;
+
+	if ($year != 0) {
+		$t = $year . ' tahun';
+	} else {
+		$t = '';
+	}
+
+	if ($month != 0) {
+		$b = $month . ' bulan';
+	} else {
+		$b = '';
+	}
+
+	if ($day != 0) {
+		$h = $day . ' hari';
+	} else {
+		$h = '';
+	}
+
+	if ($hour != 0) {
+		$j = $hour . ' jam';
+	} else {
+		$j = '';
+	}
+
+	if ($minute != 0) {
+		$m = $minute . ' menit';
+	} else {
+		$m = '';
+	}
+
+	return $t . ' ' . $b . ' ' . $h . ' ' . $j . ' ' . $m;
+}
+
+function showDiffSuspension($date, $back)
+{
+	$date = date_create($date);
+	$back = date_create($back); // waktu sekarang
+	$diff  = date_diff($date, $back);
+
+	$year = $diff->y;
+	$month = $diff->m;
+	$day = $diff->d;
+	$hour = $diff->h;
+	$minute = $diff->i;
+
+	if ($back > $date) {
+		return 'Waktunya dinon-aktifkan';
+	}
+
+	if ($year != 0) {
+		$t = $year . ' tahun';
+	} else {
+		$t = '';
+	}
+
+	if ($month != 0) {
+		$b = $month . ' bulan';
+	} else {
+		$b = '';
+	}
+
+	if ($day != 0) {
+		$h = $day . ' hari';
+	} else {
+		$h = '';
+	}
+
+	if ($hour != 0) {
+		$j = $hour . ' jam';
+	} else {
+		$j = '';
+	}
+
+	if ($minute != 0) {
+		$m = $minute . ' menit';
+	} else {
+		$m = '';
+	}
+
+	return 'Non-aktif pada : '.$t . ' ' . $b . ' ' . $h . ' ' . $j . ' ' . $m;
+}

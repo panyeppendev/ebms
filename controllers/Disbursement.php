@@ -74,15 +74,4 @@ class Disbursement extends CI_Controller
         ];
         $this->load->view('disbursement/ajax-check', $data);
     }
-
-    public function coba()
-    {
-        $now = date('Y-m-d');
-
-        $this->db->select('SUM(amount) AS amount')->from('package_transaction');
-        $this->db->where('DATE(created_at)', $now);
-        $this->db->where_in('status', ['POCKET_CASH', 'DEPOSIT_CASH']);
-        $amount = $this->db->get()->row_object();
-        echo $this->db->last_query();
-    }
 }

@@ -29,13 +29,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <img src="<?= base_url() ?>assets/images/logo.png" alt="e-bms Sistem" class="brand-image img-circle elevation-3" style="opacity: .8">
                     <span class="brand-text font-weight-light">e-bms Panyeppen</span>
                 </a>
-                <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url() ?>">
-                            Login
-                        </a>
-                    </li>
-                </ul>
+				<span class="text-muted text-sm">Pastikan cursor aktif pada bidang inputan, masukkan NIS lalu tekan ENTER</span>
+				<input data-inputmask="'mask' : '9999999'" data-mask="" id="nis" autofocus type="text" class="form-control w-25" placeholder="Masukkan NIS lalu Enter">
             </div>
         </nav>
         <!-- /.navbar -->
@@ -46,16 +41,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="content">
                 <div class="container pt-3">
                     <div class="row">
-                        <div class="col-lg-3">
-                            <input autofocus data-inputmask="'mask' : '9999999'" data-mask="" type="text" class="form-control" id="nis" placeholder="Masukkan NIS">
-                            <button onclick="checkButton()" type="button" class="btn btn-primary btn-block mt-3">Kirim Permintaan</button>
-                            <br>
-                            <span class="text-info">
-                                <i>Silahkan masukkan ID Santri lalu tekan <b>ENTER</b> atau klik tombol <b>Kirim Permintaan</b></i>
-                            </span>
-                        </div>
                         <!-- /.col-md-6 -->
-                        <div class="col-lg-9" id="show-data">
+                        <div class="col-12" id="show-data">
 
                         </div>
                         <!-- /.col-md-6 -->

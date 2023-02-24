@@ -157,7 +157,9 @@ class PurchaseModel extends CI_Model
         $nonCash = $this->db->where_in('status', [
             'POCKET_CANTEEN',
             'POCKET_STORE',
-            'POCKET_LIBRARY'
+            'POCKET_LIBRARY',
+            'POCKET_SECURITY',
+            'POCKET_BARBER'
         ])->get()->row_object();
         if ($nonCash && $nonCash->total != '' || $nonCash->total != 0) {
             $nonCash = $nonCash->total;
@@ -223,7 +225,9 @@ class PurchaseModel extends CI_Model
         $nonCash = $this->db->where_in('status', [
             'POCKET_CANTEEN',
             'POCKET_STORE',
-            'POCKET_LIBRARY'
+            'POCKET_LIBRARY',
+            'POCKET_SECURITY',
+            'POCKET_BARBER'
         ])->get()->row_object();
         if ($nonCash && $nonCash->total != '' || $nonCash->total != 0) {
             $nonCash = $nonCash->total;
@@ -271,7 +275,9 @@ class PurchaseModel extends CI_Model
         $this->db->where_in('b.status', [
             'DEPOSIT_CANTEEN',
             'DEPOSIT_STORE',
-            'DEPOSIT_LIBRARY'
+            'DEPOSIT_LIBRARY',
+            'DEPOSIT_SECURITY',
+            'DEPOSIT_BARBER'
         ]);
         $nonCash = $this->db->where([
             'a.student_id' => $nis, 'a.period' => $period
@@ -345,6 +351,7 @@ class PurchaseModel extends CI_Model
         //JIKA LIMIT SUDAH HABIS
         if ($totalPocket <= 0) {
             $this->db->insert('package_transaction', [
+                'student_id' => $nis,
                 'package_id' => $package,
                 'created_at' => date('Y-m-d H:i:s'),
                 'amount' => $nominal,
@@ -357,6 +364,7 @@ class PurchaseModel extends CI_Model
                 $depositNominal = $nominal - $totalPocketDaily;
                 $nominal = $totalPocketDaily;
                 $this->db->insert('package_transaction', [
+                    'student_id' => $nis,
                     'package_id' => $package,
                     'created_at' => date('Y-m-d H:i:s'),
                     'amount' => $depositNominal,
@@ -367,6 +375,7 @@ class PurchaseModel extends CI_Model
 
             if ($nominal > 0) {
                 $this->db->insert('package_transaction', [
+                    'student_id' => $nis,
                     'package_id' => $package,
                     'created_at' => date('Y-m-d H:i:s'),
                     'amount' => $nominal,

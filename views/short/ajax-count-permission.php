@@ -1,0 +1,1 @@
+<span class="text-primary">Total : <?= $permission ?> izin</span>
