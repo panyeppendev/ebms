@@ -147,7 +147,7 @@ class DisbursementModel extends CI_Model
         $cash = $this->db->select('SUM(amount) AS total')->from('package_transaction')->where([
             'package_id' => $package, 'status' => 'POCKET_CASH'
         ])->get()->row_object();
-        if ($cash && $cash->total != '' || $cash->total != 0) {
+        if (($cash && $cash->total != '') || $cash->total != 0) {
             $cash = $cash->total;
         } else {
             $cash = 0;
@@ -157,7 +157,9 @@ class DisbursementModel extends CI_Model
         $nonCash = $this->db->where_in('status', [
             'POCKET_CANTEEN',
             'POCKET_STORE',
-            'POCKET_LIBRARY'
+            'POCKET_LIBRARY',
+            'POCKET_SECURITY',
+            'POCKET_BARBER'
         ])->get()->row_object();
         if ($nonCash && $nonCash->total != '' || $nonCash->total != 0) {
             $nonCash = $nonCash->total;
@@ -223,7 +225,9 @@ class DisbursementModel extends CI_Model
         $nonCash = $this->db->where_in('status', [
             'POCKET_CANTEEN',
             'POCKET_STORE',
-            'POCKET_LIBRARY'
+            'POCKET_LIBRARY',
+            'POCKET_SECURITY',
+            'POCKET_BARBER'
         ])->get()->row_object();
         if ($nonCash && $nonCash->total != '' || $nonCash->total != 0) {
             $nonCash = $nonCash->total;
@@ -271,7 +275,9 @@ class DisbursementModel extends CI_Model
         $this->db->where_in('b.status', [
             'DEPOSIT_CANTEEN',
             'DEPOSIT_STORE',
-            'DEPOSIT_LIBRARY'
+            'DEPOSIT_LIBRARY',
+            'DEPOSIT_SECURITY',
+            'DEPOSIT_BARBER'
         ]);
         $nonCash = $this->db->where([
             'a.student_id' => $nis, 'a.period' => $period
@@ -356,6 +362,7 @@ class DisbursementModel extends CI_Model
         //JIKA LIMIT SUDAH HABIS
         if ($totalPocket <= 0) {
             $this->db->insert('package_transaction', [
+                'student_id' => $nis,
                 'package_id' => $package,
                 'created_at' => date('Y-m-d H:i:s'),
                 'amount' => $nominal,
@@ -368,6 +375,7 @@ class DisbursementModel extends CI_Model
                 $depositNominal = $nominal - $totalPocketDaily;
                 $nominal = $totalPocketDaily;
                 $this->db->insert('package_transaction', [
+                    'student_id' => $nis,
                     'package_id' => $package,
                     'created_at' => date('Y-m-d H:i:s'),
                     'amount' => $depositNominal,
@@ -378,6 +386,7 @@ class DisbursementModel extends CI_Model
 
             if ($nominal > 0) {
                 $this->db->insert('package_transaction', [
+                    'student_id' => $nis,
                     'package_id' => $package,
                     'created_at' => date('Y-m-d H:i:s'),
                     'amount' => $nominal,

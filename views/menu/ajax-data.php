@@ -95,8 +95,14 @@
                                         <button onclick="addUserMenu(<?= $data->id ?>, 'LIBRARY')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir Perpustakaan">
                                             <i class="fas fa-user-astronaut"></i>
                                         </button>
-                                        <button onclick="addUserMenu(<?= $data->id ?>, 'PANITIA-LIBURAN')" type="button" class="btn btn-default btn-sm" title="Beri Akses Panitia Liburan">
+                                        <button onclick="addUserMenu(<?= $data->id ?>, 'ADMIN-SECURITY')" type="button" class="btn btn-default btn-sm" title="Beri Akses Admin Keamanan">
                                             <i class="fas fa-user-shield"></i>
+                                        </button>
+                                        <button onclick="addUserMenu(<?= $data->id ?>, 'SECURITY')" type="button" class="btn btn-default btn-sm" title="Beri Akses Staf Keamanan">
+                                            <i class="fas fa-user-shield"></i>
+                                        </button>
+                                        <button onclick="addUserMenu(<?= $data->id ?>, 'HOLIDAY')" type="button" class="btn btn-default btn-sm" title="Beri Akses Panitia Liburan">
+                                            <i class="fas fa-taxi"></i>
                                         </button>
                                     </div>
                                 </td>

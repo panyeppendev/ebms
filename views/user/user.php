@@ -24,7 +24,9 @@
                             <option value="KASIR-TOKO">KASIR TOKO</option>
                             <option value="STORE">KASIR KOPERASI</option>
                             <option value="LIBRARY">KASIR PERPUS</option>
-                            <option value="PANITIA-LIBURAN">PANITIA LIBURAN</option>
+                            <option value="ADMIN-SECURITY">ADMIN KEAMANAN</option>
+                            <option value="SECURITY">STAF KEAMANAN</option>
+                            <option value="HOLIDAY">PANITIA LIBURAN</option>
                         </select>
                     </div>
                 </div>
@@ -79,8 +81,9 @@
                             <option value="KASIR-DPU">KASIR-DPU</option>
                             <option value="KASIR-TOKO">KASIR-TOKO</option>
                             <option value="STORE">KASIR KOPERASI</option>
-                            <option value="LIBRARY">KASIR PERPUS</option>
-                            <option value="PANITIA-LIBURAN">PANITIA LIBURAN</option>
+                            <option value="ADMIN-SECURITY">ADMIN KEAMANAN</option>
+                            <option value="SECURITY">STAF KEAMANAN</option>
+                            <option value="HOLIDAY">PANITIA LIBURAN</option>
                         </select>
                         <small class="text-danger errors" id="errorrole"></small>
                     </div>

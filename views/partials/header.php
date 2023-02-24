@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="<?= base_url() ?>template/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <link rel="stylesheet" href="<?= base_url() ?>template/plugins/jquery-ui/jquery-ui.min.css">
     <link rel="stylesheet" href="<?= base_url() ?>template/plugins/daterangepicker/daterangepicker.css">
+	<link rel="stylesheet" href="<?= base_url() ?>template/plugins/select2/css/select2.min.css">
+	<link rel="stylesheet" href="<?= base_url() ?>template/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="<?= base_url() ?>template/plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
