@@ -74,45 +74,6 @@ class LongModel extends CI_Model
             ];
         }
 
-		//COUNT PELANGGARAN
-		$this->db->select('COUNT(a.id) AS total, b.category')->from('punishments AS a');
-		$this->db->join('constitutions AS b', 'b.id = a.constitution_id');
-		$punishment = $this->db->where([
-			'a.period' => $period, 'a.student_id' => $nis, 'a.status' => 'NOT-ADDED', 'b.category !=' => 'TOP'
-		])->group_by('b.category')->get()->result_object();
-		if ($punishment) {
-			foreach ($punishment as $item) {
-				$total = (int)$item->total;
-				$category = $item->category;
-				if ($category === 'LOW' && $total === 7) {
-					return [
-						'status' => 400,
-						'message' => 'Santri ini sudah 7 kali melakukan <b>pelanggaran ringan</b> dan belum diproses pada tingkat pelanggaran yang lebih tinggi',
-						'nis' => $nis
-					];
-					break;
-				}
-
-				if ($category === 'MEDIUM' && $total === 5) {
-					return [
-						'status' => 400,
-						'message' => 'Santri ini sudah 5 kali melakukan <b>pelanggaran sedang</b> dan belum diproses pada tingkat pelanggaran yang lebih tinggi',
-						'nis' => $nis
-					];
-					break;
-				}
-
-				if ($category === 'HIGH' && $total === 4) {
-					return [
-						'status' => 400,
-						'message' => 'Santri ini sudah 4 kali melakukan <b>pelanggaran berat</b> dan belum diproses pada tingkat pelanggaran yang lebih tinggi',
-						'nis' => $nis
-					];
-					break;
-				}
-			}
-		}
-
         $checkPermission = $this->db->get_where('permissions', [
             'student_id' => $nis, 'status' => 'ACTIVE'
         ])->row_object();
@@ -125,7 +86,7 @@ class LongModel extends CI_Model
         }
 
         $checkNominal = $this->checkNominal();
-        if ($checkNominal['status'] == 400) {
+        if ($checkNominal['status'] === 400) {
             return [
                 'status' => 400,
                 'message' => 'Tarif surat jarak jauh belum diatur. Hubungi Admin ~',
@@ -290,7 +251,7 @@ class LongModel extends CI_Model
         } else {
             $this->db->where('DATE(created_at)', $now);
         }
-        $this->db->where('type !=', 'BARBER');
+        $this->db->where('type', 'LONG');
         $amount = $this->db->get()->row_object();
         if ($amount) {
             if ($amount->amount != '' || $amount->amount != 0) {
@@ -313,7 +274,7 @@ class LongModel extends CI_Model
         if ($name != '') {
             $this->db->like('b.name', $name);
         }
-        $this->db->where('a.type !=', 'BARBER');
+        $this->db->where('a.type', 'LONG');
         $result = $this->db->get();
 
         return [
@@ -458,6 +419,22 @@ class LongModel extends CI_Model
 			];
 		}
 
+		$count = ['LOW' => 2, 'MEDIUM' => 5, 'HIGH' => 4];
+		$penalty = ['LOW' => 'M-10001', 'MEDIUM' => 'H-10001', 'HIGH' => 'T-10001'];
+		$multiple = ['LOW' => 'MEDIUM', 'MEDIUM' => 'HIGH', 'HIGH' => 'TOP'];
+		if ($category !== 'TOP') {
+			$getPenaltyMultiple = $this->db->get_where('constitutions', [
+				'category' => $multiple[$category], 'type' => 'PENALTY'
+			]);
+
+			if ($getPenaltyMultiple->num_rows() <= 0) {
+				return [
+					'status' => 400,
+					'message' => 'Data tindakan untuk proses kelipatan pelanggaran belum diatur'
+				];
+			}
+		}
+
 		$this->db->insert('punishments', [
 			'student_id' => $nis,
 			'constitution_id' => $constitution,
@@ -495,9 +472,63 @@ class LongModel extends CI_Model
 			];
 		}
 
+		if ($category !== 'TOP') {
+			//COUNT PELANGGARAN
+			$period = $this->dm->getperiod();
+
+			$this->db->select('a.id, b.category')->from('punishments AS a');
+			$this->db->join('constitutions AS b', 'b.id = a.constitution_id');
+			$punishment = $this->db->where([
+				'a.period' => $period, 'a.student_id' => $nis, 'a.status' => 'NOT-ADDED', 'b.category' => $category
+			])->get();
+
+			if ($punishment->num_rows() === $count[$category]){
+				//ADD TO PUNISHMENT
+				$this->db->insert('punishments', [
+					'student_id' => $nis,
+					'constitution_id' => $penalty[$category],
+					'period' => $period,
+					'created_at' => date('Y-m-d H:i:s')
+				]);
+				$idPunishmentMultiple = $this->db->insert_id();
+				if ($this->db->affected_rows() <= 0){
+					return [
+						'status' => 500,
+						'message' => 'Gagal menambahkan data tindakan kelipatan'
+					];
+				}
+				//ADD TO PUNISHMMENT DETAIL
+				foreach ($getPenaltyMultiple->result_object() as $item) {
+					$this->db->insert('punishment_detail', [
+						'punishment_id' => $idPunishmentMultiple,
+						'constitution_id' => $item->id
+					]);
+				}
+				if ($this->db->affected_rows() <= 0){
+					return [
+						'status' => 500,
+						'message' => 'Gagal menambahkan detail tindakan kelipatan'];
+				}
+
+				foreach ($punishment->result_object() as $item) {
+					$this->db->where('id', $item->id)->update('punishments', ['status' => 'ADDED']);
+				}
+				if ($this->db->affected_rows() <= 0){
+					return [
+						'status' => 500,
+						'message' => 'Gagal memperbarui status tindakan'];
+				}
+
+				return [
+					'status' => 200,
+					'message' => 'Data pelanggaran berikut kelipatan berhasil ditambahkan'
+				];
+			}
+		}
+
 		return [
 			'status' => 200,
-			'message' => 'Sukses'
+			'message' => 'Data pelanggaran berhasil ditambahkan'
 		];
 	}
 
@@ -543,7 +574,7 @@ class LongModel extends CI_Model
 
 	public function loadPermissionById($id)
 	{
-		$this->db->select('a.*, DATE(a.created_at) as created_at, b.name, b.date_of_birth, b.place_of_birth, b.address, b.village, b.district, b.city, b.domicile, b.class, b.level, b.class_of_formal, b.level_of_formal, b.father');
+		$this->db->select('a.*, DATE(a.created_at) as created_at, DATE(a.expired_at) as expired_at, a.expired_at as date_expired, a.note, b.name, b.date_of_birth, b.place_of_birth, b.address, b.village, b.district, b.city, b.domicile, b.class, b.level, b.class_of_formal, b.level_of_formal, b.father');
 		$this->db->from('permissions AS a')->join('students AS b', 'b.id = a.student_id');
 		return $this->db->where('a.id', $id)->get()->row_object();
 	}

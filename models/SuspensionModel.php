@@ -186,7 +186,7 @@ class SuspensionModel extends CI_Model
 	{
 		$period = $this->dm->getperiod();
 		$result = $this->db->get_where('suspensions', [
-			'period' => $period
+			'period' => $period, 'status' => 'ACTIVE'
 		])->result_object();
 
 		if ($result) {

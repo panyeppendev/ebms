@@ -30,7 +30,7 @@ if ($step[0] != 0) {
                     <div class="card">
                         <div class="card-body py-1">
                             <i class="fas fa-info-circle"></i>
-                            Surat jarak dekat paket - <?= @$currentStep ?>
+                            Surat jarak jauh
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@ if ($step[0] != 0) {
 					</button>
 				</div>
             </div>
-            <div class="row mt-3" id="show-permission" style="max-height: 63.1vh; overflow: auto"></div>
+            <div class="row mt-3" id="show-permission" style="min-height: 62.1vh; max-height: 63.1vh; overflow: auto"></div>
 	<?php } ?>
 	</section>
 	<!-- /.content -->
@@ -102,10 +102,16 @@ if ($step[0] != 0) {
 						<select id="change-constitution" class="form-control form-control-sm select2bs4">
 							<option value="">.:Pilih Item Pelanggaran:.</option>
 							<?php
+							$textConstitutionCategory = [
+								'LOW' => 'Ringan',
+								'MEDIUM' => 'Sedang',
+								'HIGH' => 'Berat',
+								'TOP' => 'Sangat Berat'
+							];
 							if ($constitutions) {
 								foreach ($constitutions as $constitution) {
 									?>
-									<option value="<?= $constitution->id ?>"><?= $constitution->name ?></option>
+									<option value="<?= $constitution->id ?>"><?= $textConstitutionCategory[$constitution->category].' - '.$constitution->name ?></option>
 									<?php
 								}
 							}

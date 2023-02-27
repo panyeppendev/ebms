@@ -3,6 +3,46 @@ defined('BASEPATH') or exit('No direct script access allowec');
 
 class ConstitutionModel extends CI_Model
 {
+	public function setConstitutionDefault()
+	{
+		$data = [
+			[
+				'id' => 'M-10001',
+				'name' => 'Melakukan pelanggaran ringan sebanyak tujuh kali',
+				'type' => 'PROHIBITION',
+				'clause' => 1,
+				'category' => 'MEDIUM'
+			],
+			[
+				'id' => 'H-10001',
+				'name' => 'Melakukan pelanggaran sedang sebanyak lima kali',
+				'type' => 'PROHIBITION',
+				'clause' => 1,
+				'category' => 'HIGH'
+			],
+			[
+				'id' => 'T-10001',
+				'name' => 'Melakukan pelanggaran berat sebanyak empat kali',
+				'type' => 'PROHIBITION',
+				'clause' => 1,
+				'category' => 'TOP'
+			]
+		];
+		foreach ($data as $item) {
+			$check = $this->db->get_where('constitutions', ['id' => $item['id']])->num_rows();
+			if ($check <= 0) {
+				$this->db->insert('constitutions', [
+					'id' => $item['id'],
+					'name' => $item['name'],
+					'type' => $item['type'],
+					'category' => $item['category'],
+					'clause' => $item['clause'],
+					'created_at' => date('Y-m-d H:i:s')
+				]);
+			}
+		}
+	}
+
 	public function loadData()
 	{
 		$type = $this->input->post('type', true);
@@ -35,13 +75,20 @@ class ConstitutionModel extends CI_Model
 			];
 		}
 
+		if (in_array($id, ['M-10001', 'H-10001', 'T-10001'])) {
+			return [
+				'status' => 400,
+				'message' => 'Undang-undang bawaan tidak bisa diedit'
+			];
+		}
+
 		if ($id === '0') {
 			$getConstitution = $this->db->get_where('constitutions', [
-				'type' => $type, 'clause' => $clause
+				'type' => $type, 'category' => $category, 'clause' => $clause
 			])->num_rows();
 		}else{
 			$getConstitution = $this->db->get_where('constitutions', [
-				'id !=' => $id, 'type' => $type, 'clause' => $clause
+				'id !=' => $id, 'type' => $type, 'category' => $category, 'clause' => $clause
 			])->num_rows();
 		}
 		if ($getConstitution > 0) {
@@ -62,6 +109,8 @@ class ConstitutionModel extends CI_Model
 			$this->db->where('id', $id)->update('constitutions', $data);
 			$message = 'Data berhasil diubah';
 		} else {
+			$id = substr($category, 0, 1).'-'.mt_rand(10000, 99999);
+			$data = array_merge(['id' => $id], $data);
 			$this->db->insert('constitutions', $data);
 			$message = 'Data berhasil ditambahkan';
 		}

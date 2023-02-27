@@ -136,3 +136,47 @@ function ageCounter($birth)
 	return $y;
 }
 
+function diffDayCounter($from, $finish) {
+	$tgl1 = strtotime($from);
+	$tgl2 = strtotime($finish);
+
+	$jarak = $tgl2 - $tgl1;
+
+	$hari = $jarak / 60 / 60 / 24;
+	return $hari;
+}
+
+function dateDisplayWithDay($date) {
+	$tgl = date('Y-m-d', strtotime($date));
+	$jam = date('H:i', strtotime($date));
+
+	$days = [1 =>    'Senin',
+		'Selasa',
+		'Rabu',
+		'Kamis',
+		'Jum\'at',
+		'Sabtu',
+		'Minggu'
+	];
+
+	$months = [
+		1 =>   'Januari',
+		'Februari',
+		'Maret',
+		'April',
+		'Mei',
+		'Juni',
+		'Juli',
+		'Agustus',
+		'September',
+		'Oktober',
+		'November',
+		'Desember'
+	];
+	$explodeDate = explode('-', $tgl);
+	$dayNum = date('N', strtotime($date));
+
+	return 'hari <b>'.$days[$dayNum].'</b> tanggal <b>'.$explodeDate[2].' '.$months[(int)$explodeDate[1]].' '.$explodeDate[0].'</b> pukul <b>'.$jam .' WIB</b>';
+
+}
+

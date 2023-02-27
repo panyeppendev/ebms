@@ -38,6 +38,7 @@
 
 					$no = 1;
 					foreach ($datas as $data) {
+						$idDefault = ['M-10001', 'H-10001', 'T-10001'];
 						?>
 						<tr>
 							<td><?= $no++ ?></td>
@@ -50,7 +51,7 @@
 							<td><?= $textType[$data->type] ?></td>
 							<td><?= $data->clause ?></td>
 							<td class="text-center">
-								<button class="btn btn-default btn-sm" onclick="getById(<?= $data->id ?>)">
+								<button <?= (in_array($data->id, $idDefault)) ? 'disabled' : '' ?> class="btn btn-default btn-sm" onclick="getById('<?= $data->id ?>')">
 									<i class="fas fa-pen-alt"></i>
 								</button>
 							</td>
@@ -58,7 +59,7 @@
 				<?php
 					}
 				} else {
-					echo '<tr><td colspan="5" class="text-center text-danger">Tidak ada data untuk ditampilkan</td></tr>';
+					echo '<tr><td colspan="6" class="text-center text-danger">Tidak ada data untuk ditampilkan</td></tr>';
 				}
 				?>
 				</tbody>

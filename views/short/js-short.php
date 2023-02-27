@@ -207,11 +207,19 @@
 					success: function(res) {
 						let status = res.status
 						if (status != 200) {
-							errorAlert(res.message)
+							Swal.fire(
+								'Oppss..!',
+								res.message,
+								'error'
+							)
 							return false
 						}
 
-						toastr.success('Satu tindakan berhasil ditambahkan')
+						Swal.fire(
+							'Yeaahh..!',
+							res.message,
+							'success'
+						)
 						$('#modal-constitution').modal('hide')
 						loadPermission()
 					}

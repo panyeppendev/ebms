@@ -55,18 +55,14 @@
 										?>
 									</select>
 								</div>
-								<div class="form-group clearfix">
-									<div class="icheck-primary d-inline">
-										<input type="radio" id="no" name="double" value="NO" checked="">
-										<label for="no" class="font-weight-normal">Bukan kelipatan</label>
-									</div>
-									<div class="icheck-primary d-inline ml-5">
-										<input type="radio" id="yes" name="double" value="YES">
-										<label for="yes" class="font-weight-normal">Kelipatan</label>
-									</div>
-								</div>
 							</div>
 						</form>
+						<div class="col-12">
+							<div class="callout callout-danger">
+								<h5>Catatan!</h5>
+								<p>Untuk tindakan <b>TERLAMBAT KEMBALI IZIN</b> bukan melalui menu ini melainkan di menu Jarak Jauh/Dekat</p>
+							</div>
+						</div>
 					</div>
 					<div class="card-footer px-3">
 						<button id="button-check" class="btn btn-primary btn-block" onclick="checkClicked()">
