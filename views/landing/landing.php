@@ -117,7 +117,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 },
                 dataType: 'JSON',
                 success: function(res) {
-                    console.log(res);
                     if (res.status == 400) {
                         toastr.error(`Opppsss.! ${res.message}`)
                         return false
