@@ -30,6 +30,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <span class="brand-text font-weight-light">e-bms Panyeppen</span>
                 </a>
 				<span class="text-muted text-sm">Pastikan cursor aktif pada bidang inputan, masukkan NIS lalu tekan ENTER</span>
+				<input type="hidden" id="type" value="FIRST">
 				<input data-inputmask="'mask' : '9999999'" data-mask="" id="nis" autofocus type="text" class="form-control w-25" placeholder="Masukkan NIS lalu Enter">
             </div>
         </nav>
@@ -128,13 +129,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
         }
 
         const getdata = id => {
+			let type = $('#type').val()
+
             $.ajax({
                 url: '<?= base_url() ?>landing/getdata',
                 method: 'POST',
                 data: {
-                    id
+                    id,
+					type
                 },
                 success: function(res) {
+					if (type === 'FIRST') {
+						$('#type').val('SECOND')
+					}else {
+						$('#type').val('FIRST')
+					}
                     $('#show-data').html(res)
                 }
             })

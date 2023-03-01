@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class LandingModel extends CI_Model
 {
-    public function step()
+	public function step()
     {
         $data = $this->db->get_where('steps', ['status' => 'DISBURSEMENT'])->row_object();
         if ($data) {
@@ -169,5 +169,67 @@ class LandingModel extends CI_Model
 			'detail' => $data,
 			'residual' => $total
 		];
+	}
+
+	public function getdatakamtib()
+	{
+		$id = $this->input->post('id', true);
+		$period = $this->dm->getperiod();
+
+		$checkStudent = $this->db->get_where('students', ['id' => $id])->row_object();
+		if (!$checkStudent) {
+			return [
+				'status' => 400,
+				'message' => 'ID santri tidak valid'
+			];
+		}
+
+		//GET PERMISSION
+		$this->db->select('COUNT(id) as total, type')->from('permissions');
+		$this->db->where(['student_id' => $id, 'period' => $period]);
+		$permission = $this->db->group_by('type')->order_by('type', 'DESC')->get()->result_object();
+
+		$this->db->select('COUNT(id) as total, reason')->from('permissions');
+		$this->db->where(['student_id' => $id, 'period' => $period, 'type' => 'LONG']);
+		$reason = $this->db->group_by('reason')->order_by('type', 'DESC')->get()->result_object();
+
+		//GET SUSPENSION
+		$suspension = $this->db->get_where('suspensions', [
+			'student_id' => $id, 'period' => $period, 'status' => 'ACTIVE'
+		])->row_object();
+
+		$this->db->select('COUNT(a.id) as total, b.category')->from('punishments as a');
+		$this->db->join('constitutions as b', 'b.id = a.constitution_id');
+		$this->db->where(['a.student_id' => $id, 'a.period' => $period]);
+		$result = $this->db->group_by('b.category')->order_by('b.category', 'ASC')->get()->result_object();
+
+		$overview = [];
+		if ($result) {
+			foreach ($result as $item) {
+				$overview[] = [
+					'count' => $item->total,
+					'category' => $item->category,
+					'detail' => $this->getPunishment($id, $item->category)
+				];
+			}
+		}
+		return [
+			'status' => 200,
+			'student' => $checkStudent,
+			'punishment' => $overview,
+			'permission' => $permission,
+			'reason' => $reason,
+			'suspension' => $suspension
+		];
+	}
+
+	public function getPunishment($id, $category)
+	{
+		$period = $this->dm->getperiod();
+
+		$this->db->select('b.name, b.category')->from('punishments as a');
+		$this->db->join('constitutions as b', 'b.id = a.constitution_id');
+		$this->db->where(['a.student_id' => $id, 'a.period' => $period, 'b.category' => $category]);
+		return $this->db->order_by('a.created_at', 'DESC')->limit(5)->get()->result_object();
 	}
 }

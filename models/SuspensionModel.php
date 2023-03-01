@@ -193,14 +193,14 @@ class SuspensionModel extends CI_Model
 			$rows = 0;
 			foreach ($result as $item) {
 				$expired = $item->expired_at;
-				if (date('Y-m-d H:i:s') >= $expired) {
+				if (strtotime(date('Y-m-d H:i:s')) >= strtotime($expired)) {
 					$this->db->where('id', $item->id)->update('suspensions', [
 						'status' => 'DONE'
 					]);
-				}
 
-				if ($this->db->affected_rows() > 0) {
-					$rows++;
+					if ($this->db->affected_rows() > 0) {
+						$rows++;
+					}
 				}
 			}
 

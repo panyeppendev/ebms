@@ -27,9 +27,17 @@ class Landing extends CI_Controller
 
     public function getdata()
     {
-        $data = ['data' => $this->lm->getdata()];
+		$type = $this->input->post('type', true);
 
-        $this->load->view('landing/ajax-data', $data);
+		if ($type === 'FIRST') {
+			$data = ['data' => $this->lm->getdata()];
+
+			$this->load->view('landing/ajax-data', $data);
+		} else {
+			$data = ['data' => $this->lm->getdatakamtib()];
+
+			$this->load->view('landing/ajax-data-kamtib', $data);
+		}
     }
 
 	public function coba()
