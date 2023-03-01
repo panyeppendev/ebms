@@ -198,7 +198,9 @@
 			padding-top: 30px;
 		}
 
-
+		.mb-3 {
+			margin-bottom: 10px;
+		}
     </style>
 </head>
 
@@ -208,14 +210,17 @@
 			if ($data) {
 		?>
 				<div class="row">
-					<div class="col-12 text-center mb-5">
+					<div class="col-12 text-center mb-3">
 						<h6>
-							<u>SURAT PERMOHONAN IZIN JARAK JAUH</u>
+							<u>SURAT IZIN JARAK JAUH</u>
 						</h6>
 						<i>Nomor: <?= $data->reference ?></i>
 					</div>
 					<div class="col-12">
-						<table class="table" border="0">
+						<p>Yang bertanda tangan di bawah ini, Kami pengurus Pondok Pesantren Miftahul Ulum Panyeppen menerangkan bahwa anak tersebut di bawah ini:</p>
+					</div>
+					<div class="col-12">
+						<table class="table mb-0" border="0">
 							<tbody>
 								<tr>
 									<td class="pl-5">Nama</td>
@@ -266,18 +271,22 @@
 									<td><b><?= $data->father ?></b></td>
 								</tr>
 								<tr>
-									<td class="pl-5">Alasan Izin</td>
-									<td>:</td>
-									<td><?= $data->reason ?></td>
-								</tr>
-								<tr>
-									<td class="pl-5">Lama Izin</td>
+									<td class="pl-5">Keperluan</td>
 									<td>:</td>
 									<td><?= $data->reason ?></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
+				</div>
+				<div class="col-12">
+					<p>
+						Telah diberi izin untuk pulang/bepergian selama <b><?= diffDayCounter($data->created_at, $data->expired_at) ?></b> hari, berlaku sejak tanggal ditetapkan
+						dan harus kembali ke pondok pesantren selambat-lambatnya <?= dateDisplayWithDay($data->date_expired) ?>
+					</p>
+				</div>
+				<div class="col-12">
+					<p>Demikian mohon maklum adanya.</p>
 				</div>
 				<div class="row">
 					<div class="col-6"></div>
@@ -297,48 +306,6 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-6 text-center">
-						<table class="table">
-							<tr>
-								<td>
-									Keamanan Daerah
-									<br><br><br><br>
-									<b><u>RAHMAN FARUQ</u></b>
-								</td>
-							</tr>
-							<tr>
-								<td class="pt-5"></td>
-							</tr>
-							<tr>
-								<td>
-									Kepala Daerah
-									<br><br><br><br>
-									<b><u>RAHMAN FARUQ</u></b>
-								</td>
-							</tr>
-						</table>
-					</div>
-					<div class="col-6 text-center">
-						<table class="table">
-							<tr>
-								<td>
-									Wali Kelas
-									<br><br><br><br>
-									<b><u>RAHMAN FARUQ</u></b>
-								</td>
-							</tr>
-							<tr>
-								<td class="pt-5"></td>
-							</tr>
-							<tr>
-								<td>
-									Kepala Bagian KAMTIB
-									<br><br><br><br>
-									<b><u>RAHMAN FARUQ</u></b>
-								</td>
-							</tr>
-						</table>
-					</div>
 					<div class="col-12 text-center">
 						<table class="table">
 							<tr>
@@ -346,9 +313,9 @@
 							</tr>
 							<tr>
 								<td>
-									Pengurus
-									<br><br><br><br>
-									<b><u>RAHMAN FARUQ</u></b>
+									Kepala Bagian KAMTIB
+									<br><br><br><br><br>
+									<b><u>(____________________________________)</u></b>
 								</td>
 							</tr>
 						</table>
@@ -356,14 +323,15 @@
 				</div>
 				<div class="row">
 					<div class="col-12">
-						<ol>
-							<li>
-								Pemohon harus menyelesaikan seluruh tanda tangan kepada pihak yang sudah ditentukan
-							</li>
-							<li>
-								Pemohon harus menyetorkan kembali surat permohonan ini kepada bagian Kamtib apabila tanda tangan sudah selesai seluruhnya
-							</li>
-						</ol>
+						<?php
+						if ($data->note === 'EMERGENCY') {
+							?>
+						<p><b>CATATAN:</b> <br>
+							Santri tersebut di atas sedang dalam masa skorsing
+						<?php
+							}
+						?>
+						</p>
 					</div>
 				</div>
 		<?php

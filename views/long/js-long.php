@@ -41,7 +41,7 @@
         let name = $('#changeName').val()
         let filter = $('#filter-date').val()
         $.ajax({
-            url: '<?= base_url() ?>short/loaddata',
+            url: '<?= base_url() ?>long/loaddata',
             method: 'POST',
             data: {
                 name,
@@ -207,11 +207,19 @@
 					success: function(res) {
 						let status = res.status
 						if (status != 200) {
-							errorAlert(res.message)
+							Swal.fire(
+								'Oppss..!',
+								res.message,
+								'error'
+							)
 							return false
 						}
 
-						toastr.success('Satu tindakan berhasil ditambahkan')
+						Swal.fire(
+							'Yeahh..!',
+							res.message,
+							'success'
+						)
 						$('#modal-constitution').modal('hide')
 						loadPermission()
 					}

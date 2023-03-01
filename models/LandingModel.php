@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class LandingModel extends CI_Model
 {
-    public function step()
+	public function step()
     {
         $data = $this->db->get_where('steps', ['status' => 'DISBURSEMENT'])->row_object();
         if ($data) {
@@ -63,10 +63,13 @@ class LandingModel extends CI_Model
 
 	public function getDetailPackage($id, $step)
 	{
+		$period = $this->dm->getperiod();
+
 		$getPackage = $this->db->get_where('packages', [
 			'student_id' => $id,
 			'step' => $step,
-			'package !=' => 'UNKNOWN'
+			'package !=' => 'UNKNOWN',
+			'period' => $period
 		])->row_object();
 
 		if (!$getPackage) {
@@ -87,28 +90,27 @@ class LandingModel extends CI_Model
 			$limit = 0;
 		}
 
-		$cash = $this->db->select('SUM(amount) AS total')->from('package_transaction')->where([
-			'package_id' => $idPackage, 'status' => 'POCKET_CASH'
-		])->get()->row_object();
-		if (($cash && $cash->total != '') || $cash->total != 0) {
-			$cash = $cash->total;
-		} else {
-			$cash = 0;
-		}
+		$this->db->select('status, SUM(amount) as total')->from('package_transaction');
+		$result = $this->db->where(['package_id' => $idPackage, 'type' => 'POCKET'])->group_by('status')->get()->result_object();
+		$cash = 0;
+		$all = 0;
+		$data = [];
+		if ($result) {
+			foreach ($result as $item) {
+				$status = $item->status;
+				$all += $item->total;
 
-		$this->db->select('SUM(amount) AS total')->from('package_transaction')->where('package_id', $idPackage);
-		$nonCash = $this->db->where_in('status', [
-			'POCKET_CANTEEN',
-			'POCKET_STORE',
-			'POCKET_LIBRARY',
-			'POCKET_SECURITY',
-			'POCKET_BARBER'
-		])->get()->row_object();
-		if (($nonCash && $nonCash->total != '') || $nonCash->total != 0) {
-			$nonCash = $nonCash->total;
-		} else {
-			$nonCash = 0;
+				if ($status == 'POCKET_CASH') {
+					$cash += $item->total;
+				}else{
+					$data[] = [
+						'status' => $item->status,
+						'total' => $item->total
+					];
+				}
+			}
 		}
+		$nonCash = $all - $cash;
 
 		return [
 			'status' => 200,
@@ -118,7 +120,8 @@ class LandingModel extends CI_Model
 				'limit' => $limit,
 				'cash' => $cash,
 				'non_cash' => $nonCash,
-				'residual' => $limit - ($cash + $nonCash)
+				'detail' => $data,
+				'residual' => $limit - $all
 			]
 		];
 	}
@@ -136,41 +139,97 @@ class LandingModel extends CI_Model
 			$kredit = $kredit->deposit;
 		}
 
-		$this->db->select('a.student_id, SUM(b.amount) AS amount')->from('packages AS a');
-		$this->db->join('package_transaction AS b', 'b.package_id = a.id');
-		$cash = $this->db->where([
-			'a.student_id' => $nis, 'a.period' => $period, 'b.status' => 'DEPOSIT_CASH'
-		])->get()->row_object();
-		if (!$cash || $cash->amount == '') {
-			$cash = 0;
-		} else {
-			$cash = $cash->amount;
-		}
+		$this->db->select('status, SUM(amount) as total')->from('package_transaction');
+		$result = $this->db->where(['student_id' => $nis, 'type' => 'DEPOSIT'])->group_by('status')->get()->result_object();
+		$cash = 0;
+		$all = 0;
+		$data = [];
+		if ($result) {
+			foreach ($result as $item) {
+				$status = $item->status;
+				$all += $item->total;
 
-		$this->db->select('a.student_id, SUM(b.amount) AS amount')->from('packages AS a');
-		$this->db->join('package_transaction AS b', 'b.package_id = a.id');
-		$this->db->where_in('b.status', [
-			'DEPOSIT_CANTEEN',
-			'DEPOSIT_STORE',
-			'DEPOSIT_LIBRARY',
-			'DEPOSIT_SECURITY',
-			'DEPOSIT_BARBER'
-		]);
-		$nonCash = $this->db->where([
-			'a.student_id' => $nis, 'a.period' => $period
-		])->get()->row_object();
-		if (!$nonCash || $nonCash->amount == '') {
-			$nonCash = 0;
-		} else {
-			$nonCash = $nonCash->amount;
+				if ($status == 'DEPOSIT_CASH') {
+					$cash += $item->total;
+				}else{
+					$data[] = [
+						'status' => $item->status,
+						'total' => $item->total
+					];
+				}
+			}
 		}
+		$nonCash = $all - $cash;
 
-		$total = $kredit - ($cash + $nonCash);
+		$total = $kredit - $all;
 		return [
 			'kredit' => $kredit,
 			'cash' => $cash,
 			'non_cash' => $nonCash,
+			'detail' => $data,
 			'residual' => $total
 		];
+	}
+
+	public function getdatakamtib()
+	{
+		$id = $this->input->post('id', true);
+		$period = $this->dm->getperiod();
+
+		$checkStudent = $this->db->get_where('students', ['id' => $id])->row_object();
+		if (!$checkStudent) {
+			return [
+				'status' => 400,
+				'message' => 'ID santri tidak valid'
+			];
+		}
+
+		//GET PERMISSION
+		$this->db->select('COUNT(id) as total, type')->from('permissions');
+		$this->db->where(['student_id' => $id, 'period' => $period]);
+		$permission = $this->db->group_by('type')->order_by('type', 'DESC')->get()->result_object();
+
+		$this->db->select('COUNT(id) as total, reason')->from('permissions');
+		$this->db->where(['student_id' => $id, 'period' => $period, 'type' => 'LONG']);
+		$reason = $this->db->group_by('reason')->order_by('type', 'DESC')->get()->result_object();
+
+		//GET SUSPENSION
+		$suspension = $this->db->get_where('suspensions', [
+			'student_id' => $id, 'period' => $period, 'status' => 'ACTIVE'
+		])->row_object();
+
+		$this->db->select('COUNT(a.id) as total, b.category')->from('punishments as a');
+		$this->db->join('constitutions as b', 'b.id = a.constitution_id');
+		$this->db->where(['a.student_id' => $id, 'a.period' => $period]);
+		$result = $this->db->group_by('b.category')->order_by('b.category', 'ASC')->get()->result_object();
+
+		$overview = [];
+		if ($result) {
+			foreach ($result as $item) {
+				$overview[] = [
+					'count' => $item->total,
+					'category' => $item->category,
+					'detail' => $this->getPunishment($id, $item->category)
+				];
+			}
+		}
+		return [
+			'status' => 200,
+			'student' => $checkStudent,
+			'punishment' => $overview,
+			'permission' => $permission,
+			'reason' => $reason,
+			'suspension' => $suspension
+		];
+	}
+
+	public function getPunishment($id, $category)
+	{
+		$period = $this->dm->getperiod();
+
+		$this->db->select('b.name, b.category')->from('punishments as a');
+		$this->db->join('constitutions as b', 'b.id = a.constitution_id');
+		$this->db->where(['a.student_id' => $id, 'a.period' => $period, 'b.category' => $category]);
+		return $this->db->order_by('a.created_at', 'DESC')->limit(5)->get()->result_object();
 	}
 }

@@ -8,16 +8,15 @@ class PunishmentModel extends CI_Model
 {
 	public function constitution()
 	{
-		return $this->db->get_where('constitutions', [
-			'type' => 'PROHIBITION'
-		])->result_object();
+		$this->db->select('*')->from('constitutions')->where('type', 'PROHIBITION');
+		$this->db->where_not_in('id', ['M-10001', 'H-10001', 'T-10001']);
+		return $this->db->order_by('clause ASC, category ASC')->get()->result_object();
 	}
 
     public function checkNis()
     {
         $nis = str_replace('_', '', $this->input->post('nis', true));
 		$constitution = $this->input->post('constitution', true);
-		$double = $this->input->post('double', true);
 		$period = $this->dm->getperiod();
 
 		if ($nis === '' || $constitution === '') {
@@ -80,99 +79,21 @@ class PunishmentModel extends CI_Model
 			];
 		}
 
-		//SET DOUBLE
-		$doubleValue = [
-			'LOW' => 7,
-			'MEDIUM' => 5,
-			'HIGH' => 4
-		];
+		$count = ['LOW' => 2, 'MEDIUM' => 5, 'HIGH' => 4];
+		$penaltyId = ['LOW' => 'M-10001', 'MEDIUM' => 'H-10001', 'HIGH' => 'T-10001'];
+		$multiple = ['LOW' => 'MEDIUM', 'MEDIUM' => 'HIGH', 'HIGH' => 'TOP'];
+		if ($category !== 'TOP') {
+			$getPenaltyMultiple = $this->db->get_where('constitutions', [
+				'category' => $multiple[$category], 'type' => 'PENALTY'
+			]);
 
-		$text = [
-			'LOW' => 'ringan',
-			'MEDIUM' => 'sedang',
-			'HIGH' => 'berat',
-			'TOP' => 'sangat berat'
-		];
-
-		$categoryChange = [
-			'LOW' => 'LOW',
-			'MEDIUM' => 'LOW',
-			'HIGH' => 'MEDIUM',
-			'TOP' => 'HIGH'
-		];
-
-		//COUNT PELANGGARAN
-		$this->db->select('COUNT(a.id) AS total, b.category')->from('punishments AS a');
-		$this->db->join('constitutions AS b', 'b.id = a.constitution_id');
-		$punishment = $this->db->where([
-			'a.period' => $period, 'a.student_id' => $nis, 'a.status' => 'NOT-ADDED', 'b.category !=' => 'TOP'
-		])->group_by('b.category')->get()->result_object();
-		if ($punishment) {
-			if ($double === 'NO' || ($double === 'YES' && $category === 'LOW')) {
-				foreach ($punishment as $item) {
-				$total = (int)$item->total;
-				$category = $item->category;
-				if ($category === 'LOW' && $total === 7) {
-					return [
-						'status' => 400,
-						'message' => 'Santri ini sudah 7 kali melakukan <b>pelanggaran ringan</b> dan belum diproses pada tingkat pelanggaran yang lebih tinggi',
-						'nis' => $nis,
-						'constitution' => $constitution
-					];
-					break;
-				}
-
-				if ($category === 'MEDIUM' && $total === 5) {
-					return [
-						'status' => 400,
-						'message' => 'Santri ini sudah 5 kali melakukan <b>pelanggaran sedang</b> dan belum diproses pada tingkat pelanggaran yang lebih tinggi',
-						'nis' => $nis,
-						'constitution' => $constitution
-					];
-					break;
-				}
-
-				if ($category === 'HIGH' && $total === 4) {
-					return [
-						'status' => 400,
-						'message' => 'Santri ini sudah 4 kali melakukan <b>pelanggaran berat</b> dan belum diproses pada tingkat pelanggaran yang lebih tinggi',
-						'nis' => $nis,
-						'constitution' => $constitution
-					];
-					break;
-				}
-			}
-			}
-		}
-
-		if ($double === 'YES' && $category !== 'LOW') {
-			$this->db->select('a.id, b.category')->from('punishments AS a');
-			$this->db->join('constitutions AS b', 'b.id = a.constitution_id');
-			$punishmentByCategory = $this->db->where([
-				'a.period' => $period, 'a.student_id' => $nis, 'a.status' => 'NOT-ADDED', 'b.category' => $categoryChange[$category]
-			])->get();
-			if ($punishmentByCategory->num_rows() !== $doubleValue[$categoryChange[$category]]) {
+			if ($getPenaltyMultiple->num_rows() <= 0) {
 				return [
 					'status' => 400,
-					'message' => 'Tidak ada pelanggaran '.$text[$categoryChange[$category]].' sebanyak '. $doubleValue[$categoryChange[$category]] .' kali',
+					'message' => 'Data tindakan untuk proses kelipatan pelanggaran belum diatur',
 					'nis' => $nis,
-					'constitution' => $constitution
+					'constitution' => null
 				];
-			}
-
-			if ($punishmentByCategory->result_object()) {
-				foreach ($punishmentByCategory->result_object() as $item) {
-					$id = $item->id;
-					$this->db->where('id', $id)->update('punishments', [
-						'status' => 'ADDED'
-					]);
-				}
-				if ($this->db->affected_rows() <= 0) {
-					return [
-						'status' => 500,
-						'message' => 'Gagal saat memperbarui status ta\'zir'
-					];
-				}
 			}
 		}
 
@@ -204,6 +125,7 @@ class PunishmentModel extends CI_Model
 			];
 		}
 
+
 		//ADD TO SUSPENSION
 		if ($category === 'TOP') {
 			$this->db->insert('suspensions', [
@@ -226,15 +148,91 @@ class PunishmentModel extends CI_Model
 				'nis' => $nis,
 				'constitution' => $constitution
 			];
-		}else{
+		}
+
+		//COUNT PELANGGARAN
+		$this->db->select('a.id, b.category')->from('punishments AS a');
+		$this->db->join('constitutions AS b', 'b.id = a.constitution_id');
+		$punishment = $this->db->where([
+			'a.period' => $period, 'a.student_id' => $nis, 'a.status' => 'NOT-ADDED', 'b.category' => $category
+		])->get();
+
+		if ($punishment->num_rows() === $count[$category]){
+			//ADD TO PUNISHMENT
+			$this->db->insert('punishments', [
+				'student_id' => $nis,
+				'constitution_id' => $penaltyId[$category],
+				'period' => $period,
+				'created_at' => date('Y-m-d H:i:s')
+			]);
+			$idPunishmentMultiple = $this->db->insert_id();
+			if ($this->db->affected_rows() <= 0){
+				return [
+					'status' => 500,
+					'message' => 'Gagal menambahkan data tindakan kelipatan'
+				];
+			}
+			//ADD TO PUNISHMMENT DETAIL
+			foreach ($getPenaltyMultiple->result_object() as $item) {
+				$this->db->insert('punishment_detail', [
+					'punishment_id' => $idPunishmentMultiple,
+					'constitution_id' => $item->id
+				]);
+			}
+			if ($this->db->affected_rows() <= 0){
+				return [
+					'status' => 500,
+					'message' => 'Gagal menambahkan detail tindakan kelipatan'];
+			}
+
+			foreach ($punishment->result_object() as $item) {
+				$this->db->where('id', $item->id)->update('punishments', ['status' => 'ADDED']);
+			}
+			if ($this->db->affected_rows() <= 0){
+				return [
+					'status' => 500,
+					'message' => 'Gagal memperbarui status tindakan'];
+			}
+
+			if ($multiple[$category] === 'TOP') {
+				$this->db->insert('suspensions', [
+					'student_id' => $nis,
+					'constitution_id' => $penaltyId[$category],
+					'punishment_id' => $idPunishmentMultiple,
+					'period' => $period,
+					'created_at' => date('Y-m-d H:i:s')
+				]);
+				if ($this->db->affected_rows() <= 0){
+					return [
+						'status' => 500,
+						'message' => 'Gagal menambahkan data skorsing'
+					];
+				}
+
+				return [
+					'status' => 200,
+					'message' => 'Data ta\'zir kelipatan sekaligus <b>skorsing</b> berhasil ditambahkan. Lihat menu skorsing',
+					'nis' => $nis,
+					'constitution' => $penaltyId[$category]
+				];
+			}
+
 			return [
 				'status' => 200,
-				'message' => 'Data ta\'zir berhasil ditambahkan',
+				'message' => 'Data ta\'zir berikut kelipatan kelipatan berhasil ditambahkan',
 				'nis' => $nis,
-				'constitution' => $constitution
+				'constitution' => $penaltyId[$category]
 			];
 		}
-    }
+
+		return [
+			'status' => 200,
+			'message' => 'Data ta\'zir berhasil ditambahkan',
+			'nis' => $nis,
+			'constitution' => $constitution
+		];
+
+	}
 
     public function getData()
     {
@@ -262,14 +260,14 @@ class PunishmentModel extends CI_Model
 		$this->db->select('COUNT(a.id) AS total, b.category')->from('punishments AS a');
 		$this->db->join('constitutions AS b', 'b.id = a.constitution_id');
 		$punishment = $this->db->where([
-			'a.period' => $period, 'a.student_id' => $nis, 'a.status' => 'NOT-ADDED', 'b.category !=' => 'TOP'
+			'a.period' => $period, 'a.student_id' => $nis, 'a.status' => 'NOT-ADDED'
 		])->group_by('b.category')->order_by('b.category', 'ASC')->get()->result_object();
 
         return [
 			'status' => $this->input->post('status', true),
 			'message' => $this->input->post('message', true),
             'student' => $data,
-			'constitution' => $getConstitution->name,
+			'constitution' => $constitutionName,
 			'penalty' => $penalty,
 			'punishment' => $punishment
         ];

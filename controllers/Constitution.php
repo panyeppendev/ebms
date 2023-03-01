@@ -13,6 +13,9 @@ class Constitution extends CI_Controller
 
 	public function index()
 	{
+		//SET DEFAULT CONSTITUTION
+		$this->cm->setConstitutionDefault();
+
 		$data = [
 			'title' => 'Tata Tertib Pesantren'
 		];
@@ -40,5 +43,4 @@ class Constitution extends CI_Controller
 
 		echo json_encode($result);
 	}
-
 }

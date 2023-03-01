@@ -273,7 +273,12 @@
 								<tr>
 									<td class="pl-5">Lama Izin</td>
 									<td>:</td>
-									<td><?= $data->reason ?></td>
+									<td><?= diffDayCounter($data->created_at, $data->expired_at) ?> Hari</td>
+								</tr>
+								<tr>
+									<td class="pl-5">Tanggal</td>
+									<td>:</td>
+									<td><?= dateIDFormat($data->created_at) ?> s.d. <?= dateIDFormat($data->expired_at) ?></td>
 								</tr>
 							</tbody>
 						</table>
