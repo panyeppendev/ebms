@@ -208,6 +208,9 @@
 			if ($data) {
 		?>
 				<div class="row">
+					<div class="col-12">
+                        <img src="<?= base_url() ?>assets/images/kop.jpg" style="width: 100%;">
+                    </div>
 					<div class="col-12 text-center mb-5">
 						<h6>
 							<u>SURAT PERMOHONAN IZIN JARAK JAUH</u>
