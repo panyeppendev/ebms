@@ -104,6 +104,9 @@
                                         <button onclick="addUserMenu(<?= $data->id ?>, 'HOLIDAY')" type="button" class="btn btn-default btn-sm" title="Beri Akses Panitia Liburan">
                                             <i class="fas fa-taxi"></i>
                                         </button>
+										<button onclick="addUserMenu(<?= $data->id ?>, 'EDUCATE')" type="button" class="btn btn-default btn-sm" title="Beri Akses Pendidikan">
+											<i class="fas fa-user-graduate"></i>
+										</button>
                                     </div>
                                 </td>
                             </tr>

@@ -26,7 +26,6 @@
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
             <a class="nav-link pt-0" data-toggle="dropdown" href="#">
-                <b class="text-success"><?= $this->session->userdata('text_role') ?></b> |
                 <b class="text-dark"><?= $this->session->userdata('name') ?></b>
                 <img id="avatar-navbar" style="width: 30px;" src="<?= $avatar ?>" class="brand-image img-circle elevation-2 ml-2" style="opacity: .8">
             </a>
