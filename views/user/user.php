@@ -27,6 +27,8 @@
                             <option value="ADMIN-SECURITY">ADMIN KEAMANAN</option>
                             <option value="SECURITY">STAF KEAMANAN</option>
                             <option value="HOLIDAY">PANITIA LIBURAN</option>
+                            <option value="EDUCATE">PENDIDIKAN</option>
+                            <option value="MIQ">MIQ</option>
                         </select>
                     </div>
                 </div>
@@ -84,6 +86,8 @@
                             <option value="ADMIN-SECURITY">ADMIN KEAMANAN</option>
                             <option value="SECURITY">STAF KEAMANAN</option>
                             <option value="HOLIDAY">PANITIA LIBURAN</option>
+							<option value="EDUCATE">PENDIDIKAN</option>
+							<option value="MIQ">MIQ</option>
                         </select>
                         <small class="text-danger errors" id="errorrole"></small>
                     </div>

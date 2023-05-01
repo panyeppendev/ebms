@@ -1,11 +1,8 @@
-[CONSTITUTIONS]
-	1 => Change id type INT to VARCHAR (7)
+[USERS]
+	1 => Add EDUCATE & MIQ in role field
 
-[PUNISHMENTS]
-	1 => Change constitution_id type INT to VARCHAR (7)
-
-[PUNISHMENT_DETAIL]
-	1 => Change constitution_id type INT to VARCHAR (7)
-
-[SUSPENSIONS]
-	1 => Change constitution_id type INT to VARCHAR (7)
+[ADD TABLES]
+	1 => payments
+	2 => payment_detail
+	3 => payment_registration
+	4 => payment_registration_detail
