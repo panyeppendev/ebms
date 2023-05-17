@@ -91,7 +91,14 @@ if (file_exists($avatarPath) === FALSE || $avatarPath == NULL) {
 					<tr>
 						<td class="align-top">NIS</td>
 						<td class="align-top">:</td>
-						<td class="align-top"><?= $data->id ?></td>
+						<td class="align-top">
+							<div style="widht: 50%; display: inline-block">
+								<?= $data->id ?>
+							</div>
+							<div style="padding-right: 100px; float: right; widht: 50%; display: inline-block">
+								Gol. Darah : -
+							</div>
+						</td>
 					</tr>
 					<tr>
 						<td class="align-top">Tetala</td>

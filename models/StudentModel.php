@@ -52,8 +52,9 @@ class StudentModel extends CI_Model
             $lastId = $cek->id;
             $result = $lastId + 1;
         } else {
-            $getSubYear = substr($year, 2, 2);
-            $result = $getSubYear . '00001';
+            //$getSubYear = substr($year, 2, 2);
+            // $result = $getSubYear . '00001';
+            $result = $year . '0197001';
         }
 
         return $result;
@@ -101,10 +102,11 @@ class StudentModel extends CI_Model
             'mother_nik' => $this->input->post('mother_nik', true),
             'mother' => strtoupper($this->input->post('mother', true)),
             'phone' => $phone,
-            'status_of_domicile' => $this->input->post('status_of_domicile', true),
+            // 'status_of_domicile' => $this->input->post('status_of_domicile', true),
+            'status_of_domicile' => 'Asrama',
             'domicile' => $this->input->post('domicile', true),
             'class' => $this->input->post('class', true),
-            'level' => 'I\'dadiyah',
+            'level' => $this->input->post('level', true),
             'class_of_formal' => $this->input->post('class_of_formal', true),
             'level_of_formal' => $this->input->post('level_of_formal', true),
             'status' => 'AKTIF',
@@ -114,11 +116,12 @@ class StudentModel extends CI_Model
         $dataRegistration = [
             'student_id' => $idGenerated,
             'period' => $this->input->post('period', true),
-            'status_of_domicile' => $this->input->post('status_of_domicile', true),
+            'status_of_domicile' => 'Asrama',
+            // 'status_of_domicile' => $this->input->post('status_of_domicile', true),
             'domicile' => $this->input->post('domicile', true),
             'class' => $this->input->post('class', true),
             'rombel' => 'A',
-            'level' => 'I\'dadiyah',
+            'level' => $this->input->post('level', true),
             'class_of_formal' => $this->input->post('class_of_formal', true),
             'rombel_of_formal' => 'A',
             'level_of_formal' => $this->input->post('level_of_formal', true)

@@ -3,6 +3,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class DataModel extends CI_Model
 {
+    public function rooms()
+    {
+        return $this->db->get('rooms')->result_object();
+    }
+    
     public function provinces($name)
     {
         $this->db->like('name', $name, 'both');

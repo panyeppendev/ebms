@@ -369,6 +369,14 @@
                                     $('#class').removeClass('is-invalid')
                                 }
 
+                                if (errors.level) {
+                                    $('#errorlevel').html(errors.level)
+                                    $('#level').addClass('is-invalid')
+                                } else {
+                                    $('#errorlevel').html('')
+                                    $('#level').removeClass('is-invalid')
+                                }
+
                                 if (errors.class_of_formal) {
                                     $('#errorclass_of_formal').html(errors.class_of_formal)
                                     $('#class_of_formal').addClass('is-invalid')
@@ -520,6 +528,7 @@
                 $('#status_of_domicile').val(data.status_of_domicile)
                 $('#domicile').val(data.domicile)
                 $('#class').val(data.class)
+                $('#level').val(data.level)
                 $('#class_of_formal').val(data.class_of_formal)
                 $('#level_of_formal').val(data.level_of_formal)
                 $('#date_of_entry').val(dateEntrySeparate[2])

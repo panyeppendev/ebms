@@ -20,6 +20,7 @@
                         </form>
                         <select id="changePeriod" onchange="loadData()" class="form-control form-control-sm float-right mr-2" style="width: 150px">
                             <option value="">..:Semua:..</option>
+                            <option value="1444-1445">1444-1445</option>
                             <option value="1443-1444">1443-1444</option>
                             <option value="1442-1443">1442-1443</option>
                             <option value="1441-1442">1441-1442</option>
@@ -28,21 +29,15 @@
                         </select>
                         <select id="changeDomicile" onchange="loadData()" style="width: 150px" class="form-control form-control-sm float-right mr-2">
                             <option value="">.:Semua:.</option>
-                            <option value="Imam Ghazali">Imam Ghazali</option>
-                            <option value="Imam Maliki">Imam Maliki</option>
-                            <option value="Imam Hanafi">Imam Hanafi</option>
-                            <option value="Imam Hambali">Imam Hambali</option>
-                            <option value="Imam Sibaweh">Imam Sibaweh</option>
-                            <option value="Imam Syafi'i">Imam Syafi'i</option>
-                            <option value="Imam Ibnu Hajar Al-Haitami">Imam Ibnu Hajar Al-Haitami</option>
-                            <option value="Imam An-Nawawi">Imam An-Nawawi</option>
-                            <option value="Imam Ar-Rofi'i">Imam Ar-Rofi'i</option>
-                            <option value="Imam Haramain">Imam Haramain</option>
-                            <option value="Sayyidina Abu Bakar">Sayyidina Abu Bakar</option>
-                            <option value="Sayyidina Umar">Sayyidina Umar</option>
-                            <option value="Sayyidina Utsman">Sayyidina Utsman</option>
-                            <option value="Sayyidina Ali">Sayyidina Ali</option>
-                            <option value="Imam As-Suyuthi">Imam As-Suyuthi</option>
+                            <?php
+                            if ($rooms) {
+                                foreach ($rooms as $room) {
+                            ?>
+                                <option value="<?= $room->name ?>"><?= $room->name ?></option>
+                            <?php
+                                }
+                            }
+                            ?>
                         </select>
                         <input type="text" id="changeName" class="form-control form-control-sm float-right mr-2" style="width: 250px" placeholder="Tekan F2 lalu masukkan nama" autofocus onkeyup="loadData()">
                     </div>
@@ -248,7 +243,7 @@
                             </div>
                         </div>
 
-                        <div class="col-2">
+                        <!-- <div class="col-2">
                             <div class="form-group">
                                 <label for="status_of_domicile">Status Domisili</label>
                                 <select class="custom-select form-control-border" id="status_of_domicile" name="status_of_domicile" tabindex="19">
@@ -257,27 +252,21 @@
                                 </select>
                                 <small class="text-danger messages" id="errorstatus_of_domicile"></small>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col-3">
                             <div class="form-group">
                                 <label for="domicile">Domisili</label>
-                                <select class="custom-select form-control-border" id="domicile" name="domicile" tabindex="20">
+                                <select class="custom-select form-control-border" id="domicile" name="domicile" tabindex="19">
                                     <option value="">..:Pilih:..</option>
-                                    <option value="Imam Ghazali">Imam Ghazali</option>
-                                    <option value="Imam Maliki">Imam Maliki</option>
-                                    <option value="Imam Hanafi">Imam Hanafi</option>
-                                    <option value="Imam Hambali">Imam Hambali</option>
-                                    <option value="Imam Sibaweh">Imam Sibaweh</option>
-                                    <option value="Imam Syafi'i">Imam Syafi'i</option>
-                                    <option value="Imam Ibnu Hajar Al-Haitami">Imam Ibnu Hajar Al-Haitami</option>
-                                    <option value="Imam An-Nawawi">Imam An-Nawawi</option>
-                                    <option value="Imam Ar-Rofi'i">Imam Ar-Rofi'i</option>
-                                    <option value="Imam Haramain">Imam Haramain</option>
-                                    <option value="Sayyidina Abu Bakar">Sayyidina Abu Bakar</option>
-                                    <option value="Sayyidina Umar">Sayyidina Umar</option>
-                                    <option value="Sayyidina Utsman">Sayyidina Utsman</option>
-                                    <option value="Sayyidina Ali">Sayyidina Ali</option>
-                                    <option value="Imam As-Suyuthi">Imam As-Suyuthi</option>
+                                    <?php
+                                    if ($rooms) {
+                                        foreach ($rooms as $room) {
+                                    ?>
+                                        <option value="<?= $room->name ?>"><?= $room->name ?></option>
+                                    <?php
+                                        }
+                                    }
+                                    ?>
                                 </select>
                                 <small class="text-danger messages" id="errordomicile"></small>
                             </div>
@@ -285,7 +274,7 @@
                         <div class="col-2">
                             <div class="form-group">
                                 <label for="class">Kelas Diniyah</label>
-                                <select class="custom-select form-control-border" id="class" name="class" tabindex="21">
+                                <select class="custom-select form-control-border" id="class" name="class" tabindex="20">
                                     <option value="">.:Pilih:.</option>
                                     <option value="Pra Metode">Pra Metode</option>
                                     <option value="Jilid 1">Jilid 1</option>
@@ -295,8 +284,25 @@
                                     <option value="Pra Praktik">Pra Praktik</option>
                                     <option value="Praktik">Praktik</option>
                                     <option value="Takhossus">Takhossus</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
                                 </select>
                                 <small class="text-danger messages" id="errorclass"></small>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="form-group">
+                                <label for="level">Tingkat Diniyah</label>
+                                <select class="custom-select form-control-border" id="level" name="level" tabindex="21">
+                                    <option value="">.:Pilih:.</option>
+                                    <option value="I'dadiyah">I'dadiyah</option>
+                                    <option value="Ula">Ula</option>
+                                    <option value="Wustho">Wustho</option>
+                                    <option value="Ulya">Ulya</option>
+                                </select>
+                                <small class="text-danger messages" id="errorlevel"></small>
                             </div>
                         </div>
                         <div class="col-2">
@@ -316,7 +322,7 @@
                         </div>
                         <div class="col-3">
                             <div class="form-group">
-                                <label for="level_of_formal">Kelas Formal</label>
+                                <label for="level_of_formal">Tingkat Formal</label>
                                 <select class="custom-select form-control-border" id="level_of_formal" name="level_of_formal" tabindex="23">
                                     <option value="">.:Pilih:.</option>
                                     <option value="SD">SD</option>

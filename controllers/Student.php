@@ -16,7 +16,8 @@ class Student extends CI_Controller
     {
         $data = [
             'title' => 'Data Santri Angkatan',
-            'period' => $this->dm->getperiod()
+            'period' => $this->dm->getperiod(),
+            'rooms' => $this->dm->rooms()
         ];
         $this->load->view('student/student', $data);
     }
@@ -61,9 +62,10 @@ class Student extends CI_Controller
         $this->form_validation->set_rules('mother_nik', 'NIK Ibu', 'required|numeric|exact_length[16]');
         $this->form_validation->set_rules('mother', 'Nama Ibu', 'required');
         $this->form_validation->set_rules('phone', 'No. HP', 'required');
-        $this->form_validation->set_rules('status_of_domicile', 'Status Domisili', 'required');
+        // $this->form_validation->set_rules('status_of_domicile', 'Status Domisili', 'required');
         $this->form_validation->set_rules('domicile', 'Domisili', 'required');
         $this->form_validation->set_rules('class', 'Kelas Diniyah', 'required');
+        $this->form_validation->set_rules('level', 'Tingkat Diniyah', 'required');
         $this->form_validation->set_rules('class_of_formal', 'Kelas Formal', 'required');
         $this->form_validation->set_rules('level_of_formal', 'Tingkat Formal', 'required');
         $this->form_validation->set_rules('date_of_entry', 'Tanggal Masuk (Masehi)', 'required');
@@ -95,9 +97,10 @@ class Student extends CI_Controller
                     'mother_nik' => form_error('mother_nik'),
                     'mother' => form_error('mother'),
                     'phone' => form_error('phone'),
-                    'status_of_domicile' => form_error('status_of_domicile'),
+                    // 'status_of_domicile' => form_error('status_of_domicile'),
                     'domicile' => form_error('domicile'),
                     'class' => form_error('class'),
+                    'level' => form_error('level'),
                     'class_of_formal' => form_error('class_of_formal'),
                     'level_of_formal' => form_error('level_of_formal'),
                     'date_of_entry' => form_error('date_of_entry'),
