@@ -30,6 +30,8 @@
 								<span class="text-black"> - <?= $data['student']->place_of_birth . ', ' . dateIDFormat($data['student']->date_of_birth) ?></span> <br>
 								<span class="text-black"> - <?= $data['student']->village . ', ' . str_replace(['Kabupaten ', 'Kota '], '', $data['student']->city) ?></span> <br>
 								<span class="text-black"> - <?= $data['student']->domicile ?></span> <br>
+								<span class="text-black"> - <?= $data['student']->class.', '.$data['student']->level ?></span> <br>
+								<span class="text-black"> - <?= $data['student']->class_of_formal.', '.$data['student']->level_of_formal ?></span> <br>
 								<span class="text-black"> - <?= $data['student']->father ?></span> <br>
 							</div>
 						</div>

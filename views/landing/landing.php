@@ -31,7 +31,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
 				<span class="text-muted text-sm">Pastikan cursor aktif pada bidang inputan, masukkan NIS lalu tekan ENTER</span>
 				<input type="hidden" id="type" value="FIRST">
-				<input data-inputmask="'mask' : '9999999'" data-mask="" id="nis" autofocus type="text" class="form-control w-25" placeholder="Masukkan NIS lalu Enter">
+				<input data-inputmask="'mask' : '99999999999'" data-mask="" id="nis" autofocus type="text" class="form-control w-25" placeholder="Masukkan NIS lalu Enter">
             </div>
         </nav>
         <!-- /.navbar -->

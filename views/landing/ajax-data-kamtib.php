@@ -30,6 +30,8 @@
 								<span class="text-black"> - <?= $data['student']->place_of_birth . ', ' . dateIDFormat($data['student']->date_of_birth) ?></span> <br>
 								<span class="text-black"> - <?= $data['student']->village . ', ' . str_replace(['Kabupaten ', 'Kota '], '', $data['student']->city) ?></span> <br>
 								<span class="text-black"> - <?= $data['student']->domicile ?></span> <br>
+								<span class="text-black"> - <?= $data['student']->class.', '.$data['student']->level ?></span> <br>
+								<span class="text-black"> - <?= $data['student']->class_of_formal.', '.$data['student']->level_of_formal ?></span> <br>
 								<span class="text-black"> - <?= $data['student']->father ?></span> <br>
 							</div>
 						</div>
@@ -48,7 +50,6 @@
 							'TOP' => 'Sangat Berat',
 					];
 					if ($data['punishment']) {
-					}
 					foreach ($data['punishment'] as $item) {
 						?>
 						<div class="card">
@@ -78,6 +79,15 @@
 						</div>
 						<?php
 					}
+				}else {
+					?>
+					<div class="card">
+						<div class="card-body">
+							<h5>Belum ada pelanggaran</h5>
+						</div>
+					</div>
+					<?php
+				}
 					?>
 				</div>
 				<div class="col-4">
@@ -101,7 +111,6 @@
 							<?php
 								}
 							}
-
 							if ($data['reason']) {
 								foreach ($data['reason'] as $item) {
 							?>
