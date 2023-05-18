@@ -217,4 +217,16 @@ class Student extends CI_Controller
 
         echo json_encode($result);
     }
+
+    // public function renameFather()
+    // {
+    //     $student = $this->db->get('students')->result_object();
+    //     foreach ($student as $s) {
+    //         $avatarPath = FCPATH . 'assets/fathers/' . $s->id . '.jpg';
+    //         $id = $s->id;
+    //         if (file_exists($avatarPath)) {
+	// 			rename($avatarPath, FCPATH.'assets/fathers/'.$s->new_id.'.jpg');
+	// 		}
+    //     }
+    // }
 }
