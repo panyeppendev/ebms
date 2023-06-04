@@ -316,6 +316,14 @@
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                     <option value="6">6</option>
+                                    <option value="Semester I">Semester I</option>
+                                    <option value="Semester II">Semester II</option>
+                                    <option value="Semester III">Semester III</option>
+                                    <option value="Semester IV">Semester IV</option>
+                                    <option value="Semester V">Semester V</option>
+                                    <option value="Semester VI">Semester VI</option>
+                                    <option value="Semester VII">Semester VII</option>
+                                    <option value="Semester VIII">Semester VIII</option>
                                 </select>
                                 <small class="text-danger messages" id="errorclass_of_formal"></small>
                             </div>
