@@ -73,7 +73,7 @@ if ($step[0] != 0) {
 					</button>
 				</div>
             </div>
-            <div class="row mt-3" id="show-permission" style="min-height: 62.1vh; max-height: 63.1vh; overflow: auto"></div>
+            <div class="mt-3" id="show-permission" style="min-height: 62.1vh; max-height: 63.1vh; overflow: auto"></div>
 	<?php } ?>
 	</section>
 	<!-- /.content -->
@@ -157,6 +157,59 @@ if ($step[0] != 0) {
 			<div class="modal-footer">
 				<button class="btn btn-sm btn-block btn-primary" onclick="getPermissionClicked()">
 					Lakukan pengecekan
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modal-do-active" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-default">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h6 class="card-title">Form aktif perizinan</h6>
+			</div>
+			<div class="modal-body">
+				<form id="form-do-active">
+					<input type="hidden" name="id" id="id-active">
+					<div class="row">
+						<div class="col-sm-12">
+							<!-- text input -->
+							<div class="form-group">
+								<label>Dari Tanggal</label>
+								<input type="datetime-local" class="form-control" name="date_before" id="date-before">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+
+						<div class="col-sm-7">
+							<!-- text input -->
+							<div class="form-group">
+								<label>Tanggal Kembali</label>
+								<input type="date" class="form-control" name="date" id="date">
+							</div>
+						</div>
+						<div class="col-sm-5">
+							<div class="form-group">
+								<label>Waktu</label>
+								<select name="time" id="time" class="form-control">
+									<option value="">.:Waktu:.</option>
+									<option value="06:00:00">Pagi</option>
+									<option value="11:30:00">Siang</option>
+									<option value="17:00:00">Sore</option>
+									<option value="08:00:00">Malam</option>
+								</select>
+							</div>
+						</div>
+
+				</div>
+				</form>
+			</div>
+			<div class="modal-footer justify-content-between">
+				<button type="button" class="btn btn-danger btn-sm px-4" data-dismiss="modal">Tutup</button>
+				<button class="btn btn-sm  btn-primary px-5" onclick="saveActive()">
+					Simpan
 				</button>
 			</div>
 		</div>

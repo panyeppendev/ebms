@@ -54,25 +54,25 @@ class LongModel extends CI_Model
             ];
         }
 
-		if (date('Y-m-d', strtotime($start)) > $masehi) {
-			return [
-				'status' => 400,
-				'message' => 'Pencairan tahap ' . $step . ' belum dibuka',
-				'nis' => $nis
-			];
-		}
+//		if (date('Y-m-d', strtotime($start)) > $masehi) {
+//			return [
+//				'status' => 400,
+//				'message' => 'Pencairan tahap ' . $step . ' belum dibuka',
+//				'nis' => $nis
+//			];
+//		}
 
-        $checkPackage = $this->db->get_where('packages', [
-            'student_id' => $nis, 'period' => $period,
-            'step' => $step, 'status' => 'ACTIVE'
-        ])->row_object();
-        if (!$checkPackage) {
-            return [
-                'status' => 400,
-                'message' => 'Santri ini tidak punya paket aktif pada tahap saat ini',
-                'nis' => $nis
-            ];
-        }
+//        $checkPackage = $this->db->get_where('packages', [
+//            'student_id' => $nis, 'period' => $period,
+//            'step' => $step, 'status' => 'ACTIVE'
+//        ])->row_object();
+//        if (!$checkPackage) {
+//            return [
+//                'status' => 400,
+//                'message' => 'Santri ini tidak punya paket aktif pada tahap saat ini',
+//                'nis' => $nis
+//            ];
+//        }
 
         $checkPermission = $this->db->get_where('permissions', [
             'student_id' => $nis, 'status' => 'ACTIVE'
@@ -132,16 +132,21 @@ class LongModel extends CI_Model
 
     public function save()
     {
+		$hijri = getHijri();
+		if ($hijri == '0000-00-00') {
+			return [
+				'status' => 400,
+				'message' => 'Kalender hijrih untuk hari ini belum diatur'
+			];
+		}
+
         $nis = $this->input->post('nis', true);
         $nominal = $this->input->post('nominal', true);
         $step = $this->input->post('step', true);
         $note = $this->input->post('note', true);
 		$reason = $this->input->post('reason', true);
-		$date = $this->input->post('date', true);
-		$time = $this->input->post('time', true);
-		$expired = date('Y-m-d H:i:s', strtotime($date . $time));
 
-		if ($reason === '' || $date === '' || $time === '') {
+		if ($reason === '') {
 			return [
 				'status' => 400,
 				'message' => 'Pastikan semua inputan sudah diisi/dipilih'
@@ -174,9 +179,8 @@ class LongModel extends CI_Model
             'student_id' => $nis,
             'reason' => $reason,
             'created_at' => date('Y-m-d H:i:s'),
-            'expired_at' => $expired,
             'type' => 'LONG',
-            'status' => 'ACTIVE',
+            'status' => 'PROCESS',
 			'payment' => 'CASH',
 			'note' => $note
         ]);
@@ -208,10 +212,10 @@ class LongModel extends CI_Model
         ])->row_object();
         if ($check) {
             $order = $check->order + 1;
-			$reference = sprintf('%03d', $order).'/Kamtib/A.01/'.$textMonth[$month[1]].'/'.$month[0];
+			$reference = sprintf('%03d', $order).'/K.III/PPMU-Panyeppen/'.$textMonth[$month[1]].'/'.$month[0];
         }else {
             $order = 1;
-			$reference = '001/Kamtib/A.01/'.$textMonth[$month[1]].'/'.$month[0];
+			$reference = '001/K.III/PPMU-Panyeppen/'.$textMonth[$month[1]].'/'.$month[0];
         }
 
         return [
@@ -577,5 +581,70 @@ class LongModel extends CI_Model
 		$this->db->select('a.*, DATE(a.created_at) as created_at, DATE(a.expired_at) as expired_at, a.expired_at as date_expired, a.note, b.name, b.date_of_birth, b.place_of_birth, b.address, b.village, b.district, b.city, b.domicile, b.class, b.level, b.class_of_formal, b.level_of_formal, b.father');
 		$this->db->from('permissions AS a')->join('students AS b', 'b.id = a.student_id');
 		return $this->db->where('a.id', $id)->get()->row_object();
+	}
+
+	public function getTtd($domicile)
+	{
+		$data = $this->db->get_where('rooms', ['name' => $domicile])->row_object();
+		if ($data) {
+			$head = isset($data->head) ? $data->head : '____________________________';
+			$security = isset($data->security) ? $data->security : '____________________________';
+		}else{
+			$head = '______________________________';
+			$security = '______________________________';
+		}
+
+		return [$head, $security];
+	}
+
+	public function saveActive()
+	{
+		$id = $this->input->post('id', true);
+		$datebefore = $this->input->post('date_before', true);
+		$date = $this->input->post('date', true);
+		$time = $this->input->post('time', true);
+		$expired = date('Y-m-d H:i:s', strtotime($date . $time));
+
+		if ($id == '' || $datebefore == '' || $date == '' || $time == '') {
+			return [
+				'status' => 400,
+				'message' => 'Pastikan semua sudah diisi'
+			];
+		}
+
+		$check = $this->db->get_where('permissions', [
+			'id' => $id
+		])->row_object();
+		if (!$check) {
+			return [
+				'status' => 400,
+				'message' => 'Data tidak valid'
+			];
+		}
+
+		if ($check->status !== 'PROCESS') {
+			return [
+				'status' => 400,
+				'message' => 'Izin ini sudah diaktifkan atau telah selesai'
+			];
+		}
+
+		$this->db->where('id', $id)->update('permissions', [
+			'created_at' => $datebefore,
+			'expired_at' => $expired,
+			'status' => 'ACTIVE'
+		]);
+
+		if ($this->db->affected_rows() <= 0) {
+			return [
+				'status' => 400,
+				'message' => 'Terjadi kesalahan server'
+			];
+		}
+
+		return [
+			'status' => 200,
+			'message' => $id
+		];
 	}
 }

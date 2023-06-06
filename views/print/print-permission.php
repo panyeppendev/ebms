@@ -295,8 +295,8 @@
 				</div>
 				<div class="col-12">
 					<p>
-						Telah diberi izin untuk pulang/bepergian selama <b><?= diffDayCounter($data->created_at, $data->expired_at) ?></b> hari, berlaku sejak tanggal ditetapkan
-						dan harus kembali ke pondok pesantren selambat-lambatnya <?= dateDisplayWithDay($data->date_expired) ?>
+						Telah diberi izin untuk pulang/bepergian selama <b><?= showDiff($data->created_at, $data->expired_at) ?></b>, berlaku sejak tanggal ditetapkan
+						dan harus kembali ke pondok pesantren selambat-lambatnya <br> <?= dateDisplayWithDay($data->date_expired) ?>
 					</p>
 				</div>
 				<div class="col-12">
@@ -327,9 +327,12 @@
 							</tr>
 							<tr>
 								<td>
-									Kepala Bagian KAMTIB
+									<img src="<?= base_url() ?>assets/images/ttd.png" alt="TTD" width="60px" style="position:absolute; margin-top: 30px">
+									Ketua III,
+									<br>
+									PPMU. Panyeppen
 									<br><br><br><br><br>
-									<b><u>(____________________________________)</u></b>
+									<b><u>( UST. RUMHUL FATTAH )</u></b>
 								</td>
 							</tr>
 						</table>
@@ -435,8 +438,8 @@
 				</div>
 				<div class="col-12">
 					<p>
-						Telah diberi izin untuk pulang/bepergian selama <b><?= diffDayCounter($data->created_at, $data->expired_at) ?></b> hari, berlaku sejak tanggal ditetapkan
-						dan harus kembali ke pondok pesantren selambat-lambatnya <?= dateDisplayWithDay($data->date_expired) ?>
+						Telah diberi izin untuk pulang/bepergian selama <b><?= showDiff($data->created_at, $data->expired_at) ?></b>, berlaku sejak tanggal ditetapkan
+						dan harus kembali ke pondok pesantren selambat-lambatnya <br> <?= dateDisplayWithDay($data->date_expired) ?>
 					</p>
 				</div>
 				<div class="col-12">
@@ -467,9 +470,12 @@
 							</tr>
 							<tr>
 								<td>
-									Kepala Bagian KAMTIB
+									<img src="<?= base_url() ?>assets/images/ttd.png" alt="TTD" width="60px" style="position:absolute; margin-top: 30px">
+									Ketua III,
+									<br>
+									PPMU. Panyeppen
 									<br><br><br><br><br>
-									<b><u>(____________________________________)</u></b>
+									<b><u>( UST. RUMHUL FATTAH )</u></b>
 								</td>
 							</tr>
 						</table>

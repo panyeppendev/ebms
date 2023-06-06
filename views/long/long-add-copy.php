@@ -36,32 +36,31 @@ if ($step[0] != 0) {
                 </div>
                 <div class="col-7"></div>
                 <div class="col-2">
-                    <a href="<?= base_url() ?>short" class="btn btn-primary btn-sm btn-block">
+                    <a href="<?= base_url() ?>long" class="btn btn-primary btn-sm btn-block">
                         <i class="fas fa-list-ul"></i> Lihat data
                     </a>
                 </div>
             </div>
             <hr class="mt-0">
             <div class="row">
-                <div class="col-4">
+                <div class="col-5">
                     <div class="card">
                         <div class="card-body pb-0 px-2">
                             <div class="col-12">
                                 <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label">NO. KARTU</label>
-                                    <div class="col-sm-8">
+                                    <label class="col-sm-5 col-form-label">NO. KARTU WALI</label>
+                                    <div class="col-sm-7">
                                         <input data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" autofocus name="nis" id="nis" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div id="wrap-type" style="display: none;">
-                                <form id="form-save-short" autocomplete="off">
+                                <form id="form-save-long" autocomplete="off">
                                     <div class="col-12">
                                             <input type="hidden" id="nis-save" name="nis" value="0">
                                             <input type="hidden" id="step" name="step" value="<?= $currentStep ?>">
-                                            <input type="hidden" id="package" name="package" value="0">
                                             <input type="hidden" id="nominal" name="nominal" value="0">
-                                            <input type="hidden" id="status" name="status" value="0">
+                                            <input type="hidden" id="note" name="note" value="REGULER">
                                         <div class="form-group">
                                             <label for="reason">Alasan</label>
                                             <select name="reason" id="reason" class="form-control">
@@ -77,6 +76,7 @@ if ($step[0] != 0) {
                                                 ?>
                                             </select>
                                         </div>
+
                                         <button style="display: none;" id="show-nominal" type="button" class="btn btn-block btn-default mb-4 text-primary">
                                             <h6>Tarif : <span id="nominal-rp"></span></h6>
                                         </button>
@@ -88,16 +88,22 @@ if ($step[0] != 0) {
                             <button id="button-check" class="btn btn-primary btn-block" onclick="checkClicked()">
                                 Cek NIS
                             </button>
-                            <button id="button-save-pocket" style="display: none;" class="btn btn-primary btn-block btn-save" onclick="setStatusBeforeSave('POCKET')">
-                                <i class="fas fa-credit-card"></i> Bayar dengan Uang Saku
-                            </button>
-                            <button id="button-save-cash" style="display: none;" class="btn btn-primary btn-block btn-save" onclick="setStatusBeforeSave('CASH')">
-                                <i class="fas fa-money-bill-alt"></i> Bayar dengan Uang Tunai
-                            </button>
+							<div class="row justify-content-between btn-save" style="display: none;">
+								<div class="col-6">
+									<button class="btn btn-danger btn-block" onclick="cancelSave()">
+										<i class="fas fa-times-circle"></i> Batalkan
+									</button>
+								</div>
+								<div class="col-6">
+									<button class="btn btn-primary btn-block" id="button-save" onclick="save()">
+										<i class="fas fa-money-bill-alt"></i> Bayar dan simpan izin
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-8">
+				<div class="col-7">
                     <div class="text-center text-success pt-5" style="display: none;" id="show-success">
                         <i class="fas fa-check-circle fa-5x"></i>
                         <br>
@@ -125,4 +131,4 @@ if ($step[0] != 0) {
 </div>
 
 <?php $this->load->view('partials/footer'); ?>
-<?php $this->load->view('short/js-short-add'); ?>
+<?php $this->load->view('long/js-long-add'); ?>

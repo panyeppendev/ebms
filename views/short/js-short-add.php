@@ -74,8 +74,15 @@
                     return false
                 }
 
+				if (res.package == 0) {
+					$('#button-save-cash').show()
+					$('#button-save-pocket').hide()
+				}else{
+					$('#button-save-cash').show()
+					$('#button-save-pocket').show()
+				}
+
                 $('#wrap-type').show()
-                $('.btn-save').show()
                 $('#button-check').hide()
                 $('#show-nominal').show()
                 $('#nominal').val(res.nominal)

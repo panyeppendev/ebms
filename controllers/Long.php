@@ -130,9 +130,21 @@ class Long extends CI_Controller
 		$this->load->view('print/print-permission', $data);
 	}
 
+	public function preLicense($id)
+	{
+		redirect('long/license/'.encrypt_url($id));
+	}
+
 	public function closePrint()
 	{
 		$result = $this->lm->closePrint();
+
+		echo json_encode($result);
+	}
+
+	public function saveActive()
+	{
+		$result = $this->lm->saveActive();
 
 		echo json_encode($result);
 	}
