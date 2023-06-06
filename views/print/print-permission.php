@@ -327,6 +327,7 @@
 							</tr>
 							<tr>
 								<td>
+									<img src="<?= base_url() ?>assets/images/ttd.png" alt="TTD" width="60px" style="position:absolute; margin-top: 30px">
 									Ketua III,
 									<br>
 									PPMU. Panyeppen
@@ -469,6 +470,7 @@
 							</tr>
 							<tr>
 								<td>
+									<img src="<?= base_url() ?>assets/images/ttd.png" alt="TTD" width="60px" style="position:absolute; margin-top: 30px">
 									Ketua III,
 									<br>
 									PPMU. Panyeppen
