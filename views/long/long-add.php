@@ -10,21 +10,6 @@ if ($step[0] != 0) {
 <div class="content-wrapper">
     <!-- Main content -->
     <section class="content p-3">
-    <?php if ($setting == 'CLOSED') { ?>
-            <div class="row mt-3">
-                <div class="error-page" style="margin-top: 100px;">
-                    <div class="error-content">
-                        <h3><i class="fas fa-exclamation-triangle text-danger"></i> Oops! ada masalah nih....</h3>
-                        <p>
-                            Pencairan uang saku baik tunai maupun non-tunai belum dibuka. Segera hubungi bagian admin ~<br>
-                            <br>
-                            <a href="<?= base_url() ?>">Kilik untuk kembali ke Beranda</a>
-                        </p>
-
-                    </div>
-                </div>
-            </div>
-        <?php } else { ?>
             <div class="row">
                 <div class="col-3">
                     <div class="card">
@@ -76,27 +61,6 @@ if ($step[0] != 0) {
                                                 ?>
                                             </select>
                                         </div>
-										<div class="row">
-											<div class="col-sm-7">
-												<!-- text input -->
-												<div class="form-group">
-													<label>Tanggal Kembali</label>
-													<input type="date" class="form-control" name="date" id="date">
-												</div>
-											</div>
-											<div class="col-sm-5">
-												<div class="form-group">
-													<label>Waktu</label>
-													<select name="time" id="time" class="form-control">
-														<option value="">.:Waktu:.</option>
-														<option value="06:00:00">Pagi</option>
-														<option value="11:30:00">Siang</option>
-														<option value="17:00:00">Sore</option>
-														<option value="08:00:00">Malam</option>
-													</select>
-												</div>
-											</div>
-										</div>
                                         <button style="display: none;" id="show-nominal" type="button" class="btn btn-block btn-default mb-4 text-primary">
                                             <h6>Tarif : <span id="nominal-rp"></span></h6>
                                         </button>
@@ -134,7 +98,6 @@ if ($step[0] != 0) {
                     <div id="show-data"></div>
                 </div>
 			</div>
-	<?php } ?>
 	</section>
 	<!-- /.content -->
 </div>

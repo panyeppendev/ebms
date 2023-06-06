@@ -310,6 +310,52 @@
 		$('#nis-doback').val('').focus()
 	})
 
+	const doActive = id => {
+		Swal.fire({
+			title: 'Anda yakin?',
+			text: 'Tindakan ini akan disimpan permanen',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yakin',
+			cancelButtonText: 'Gak jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$('#id-active').val(id)
+				$('#modal-do-active').modal('show')
+			}
+		})
+	}
+
+	const saveActive = () => {
+		$.ajax({
+			url: '<?= base_url() ?>long/saveActive',
+			method: 'POST',
+			data: $('#form-do-active').serialize(),
+			dataType: 'JSON',
+			success: function(res) {
+				let status = res.status
+				if (status != 200) {
+					errorAlert(res.message)
+					return false
+				}
+
+				toastr.success('Satu izin berhasil diaktifkan')
+				$('#modal-do-active').modal('hide')
+				window.open(`<?= base_url() ?>long/prelicense/${res.message}`)
+				loadPermission()
+			}
+		})
+	}
+
+	$('#modal-do-active').one('hidden.bs.modal', function (){
+		$('#id-active').val('')
+		$('#date-before').val('')
+		$('#date').val('')
+		$('#time').val('')
+	})
+
 </script>
 </body>
 

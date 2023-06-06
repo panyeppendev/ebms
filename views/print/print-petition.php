@@ -276,12 +276,17 @@
 								<tr>
 									<td class="pl-5">Lama Izin</td>
 									<td>:</td>
-									<td><?= diffDayCounter($data->created_at, $data->expired_at) ?> Hari</td>
+									<td>________________ Hari</td>
 								</tr>
 								<tr>
-									<td class="pl-5">Tanggal</td>
+									<td class="pl-5">Dari tanggal*</td>
 									<td>:</td>
-									<td><?= dateIDFormat($data->created_at) ?> s.d. <?= dateIDFormat($data->expired_at) ?></td>
+									<td>_______________________________</td>
+								</tr>
+								<tr>
+									<td class="pl-5">Sampai tanggal*</td>
+									<td>:</td>
+									<td>_______________________________ Pagi/Siang/Sore/Malam**</td>
 								</tr>
 							</tbody>
 						</table>
@@ -311,7 +316,7 @@
 								<td>
 									Keamanan Daerah,
 									<br><br><br><br>
-									<b><u>(______________________________)</u></b>
+									<b><u>( <?= strtoupper($this->lm->getTtd($data->domicile)[1]) ?> )</u></b>
 								</td>
 							</tr>
 							<tr>
@@ -332,7 +337,7 @@
 								<td>
 									Kepala Daerah,
 									<br><br><br><br>
-									<b><u>(______________________________)</u></b>
+									<b><u>( <?= strtoupper($this->lm->getTtd($data->domicile)[0]) ?> )</u></b>
 								</td>
 							</tr>
 							<tr>
@@ -340,9 +345,9 @@
 							</tr>
 							<tr>
 								<td>
-									Kepala Bagian KAMTIB,
+									Koord. KAMTIB,
 									<br><br><br><br>
-									<b><u>(______________________________)</u></b>
+									<b><u>( UST. NASIHOL AMIN / UST. SAHRULLAH )</u></b>
 								</td>
 							</tr>
 						</table>
@@ -354,9 +359,11 @@
 							</tr>
 							<tr>
 								<td>
-									Pengurus,
+									Ketua III
+									<br>
+									PPMU. Panyeppen
 									<br><br><br><br>
-									<b><u>(______________________________)</u></b>
+									<b><u>( UST. RUMHUL FATTAH )</u></b>
 								</td>
 							</tr>
 						</table>
@@ -372,6 +379,13 @@
 								Pemohon harus menyetorkan kembali surat permohonan ini kepada bagian Kamtib apabila tanda tangan sudah selesai seluruhnya
 							</li>
 						</ol>
+						<i>
+							______________________________
+							<br>
+							* Menggunakan kalender masehi
+							<br>
+							** Coret yang tidak perlu
+						</i>
 					</div>
 				</div>
 		<?php

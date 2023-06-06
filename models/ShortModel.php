@@ -86,27 +86,6 @@ class ShortModel extends CI_Model
 			];
 		}
 
-		if (date('Y-m-d', strtotime($start)) > $masehi) {
-			return [
-				'status' => 400,
-				'message' => 'Pencairan tahap ' . $step . ' belum dibuka',
-				'nis' => $nis
-			];
-		}
-
-        $checkPackage = $this->db->get_where('packages', [
-            'student_id' => $nis, 'period' => $period,
-            'step' => $step, 'status' => 'ACTIVE'
-        ])->row_object();
-        if (!$checkPackage) {
-            return [
-                'status' => 400,
-                'message' => 'Santri ini tidak punya paket aktif pada tahap saat ini',
-                'nis' => $nis,
-                'package' => 0
-            ];
-        }
-
         $checkPermission = $this->db->get_where('permissions', [
             'student_id' => $nis, 'status' => 'ACTIVE'
         ])->row_object();
@@ -128,6 +107,32 @@ class ShortModel extends CI_Model
                 'package' => 0
             ];
         }
+
+		$checkPackage = $this->db->get_where('packages', [
+			'student_id' => $nis, 'period' => $period,
+			'step' => $step, 'status' => 'ACTIVE'
+		])->row_object();
+		if (!$checkPackage) {
+			return [
+				'status' => 200,
+				'message' => 'Santri ini tidak punya paket aktif pada tahap saat ini',
+				'nis' => $nis,
+				'package' => 0,
+				'nominal' => $checkNominal['nominal'],
+				'rp' => $checkNominal['rp']
+			];
+		}
+
+		if (date('Y-m-d', strtotime($start)) > $masehi) {
+			return [
+				'status' => 200,
+				'message' => 'Pencairan tahap ' . $step . ' belum dibuka',
+				'nis' => $nis,
+				'package' => 0,
+				'nominal' => $checkNominal['nominal'],
+				'rp' => $checkNominal['rp']
+			];
+		}
 
         return [
             'status' => 200,
