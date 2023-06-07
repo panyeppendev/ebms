@@ -39,7 +39,7 @@
                             }
                             ?>
                         </select>
-                        <input type="text" id="changeName" class="form-control form-control-sm float-right mr-2" style="width: 250px" placeholder="Tekan F2 lalu masukkan nama" autofocus onkeyup="loadData()">
+                        <input autocomplete="off" type="text" id="changeName" class="form-control form-control-sm float-right mr-2" style="width: 250px" placeholder="Tekan F2 lalu masukkan nama" autofocus onkeyup="loadData()">
                     </div>
                 </div>
             </div>
@@ -336,9 +336,10 @@
                                     <option value="SD">SD</option>
                                     <option value="SMP">SMP</option>
                                     <option value="SMA">SMA</option>
-                                    <option value="SMK">SMK</option>
-                                </select>
-                                <small class="text-danger messages" id="errorlevel_of_formal"></small>
+									<option value="SMK">SMK</option>
+									<option value="S1">S1</option>
+								</select>
+								<small class="text-danger messages" id="errorlevel_of_formal"></small>
                             </div>
                         </div>
                         <div class="col-4">
