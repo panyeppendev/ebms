@@ -323,11 +323,8 @@
 					<div class="col-12 text-center">
 						<table class="table">
 							<tr>
-								<td class="pt-5"></td>
-							</tr>
-							<tr>
 								<td>
-									<img src="<?= base_url() ?>assets/images/ttd.png" alt="TTD" width="60px" style="position:absolute; margin-top: 30px">
+									<img src="<?= base_url() ?>assets/images/ttd.png" alt="TTD" width="50px" style="position:absolute; margin-top: 20px">
 									Ketua III,
 									<br>
 									PPMU. Panyeppen
@@ -466,11 +463,8 @@
 					<div class="col-12 text-center">
 						<table class="table">
 							<tr>
-								<td class="pt-5"></td>
-							</tr>
-							<tr>
 								<td>
-									<img src="<?= base_url() ?>assets/images/ttd.png" alt="TTD" width="60px" style="position:absolute; margin-top: 30px">
+									<img src="<?= base_url() ?>assets/images/ttd.png" alt="TTD" width="50px" style="position:absolute; margin-top: 20px">
 									Ketua III,
 									<br>
 									PPMU. Panyeppen
