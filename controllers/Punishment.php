@@ -75,4 +75,12 @@ class Punishment extends CI_Controller
         ];
         $this->load->view('punishment/ajax-count-punishment', $data);
     }
+
+	public function search()
+	{
+		$data = [
+			'datas' => $this->pm->search()
+		];
+		$this->load->view('punishment/ajax-search', $data);
+	}
 }

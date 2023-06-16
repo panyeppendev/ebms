@@ -27,24 +27,24 @@ class PunishmentModel extends CI_Model
 		}
 
 
-		$checkCard = $this->db->get_where('cards', ['id' => $nis])->row_object();
-		if (!$checkCard) {
-			return [
-				'status' => 500,
-				'message' => 'Kartu tidak valid'
-			];
-		}
-
-		$statusCard = $checkCard->status;
-		if ($statusCard != 'ACTIVE') {
-			$statusText = ['INACTIVE' => 'belum diaktivasi', 'BLOCKED' => 'sudah diblokir'];
-			return [
-				'status' => 500,
-				'message' => 'Kartu ini ' . $statusText[$statusCard]
-			];
-		}
-
-		$nis = $checkCard->student_id;
+//		$checkCard = $this->db->get_where('cards', ['id' => $nis])->row_object();
+//		if (!$checkCard) {
+//			return [
+//				'status' => 500,
+//				'message' => 'Kartu tidak valid'
+//			];
+//		}
+//
+//		$statusCard = $checkCard->status;
+//		if ($statusCard != 'ACTIVE') {
+//			$statusText = ['INACTIVE' => 'belum diaktivasi', 'BLOCKED' => 'sudah diblokir'];
+//			return [
+//				'status' => 500,
+//				'message' => 'Kartu ini ' . $statusText[$statusCard]
+//			];
+//		}
+//
+//		$nis = $checkCard->student_id;
 
         $cekStudent = $this->db->get_where('students', [
             'id' => $nis, 'status' => 'AKTIF'
@@ -418,5 +418,11 @@ class PunishmentModel extends CI_Model
 			$result->num_rows(),
 			$result->result_object()
 		];
+	}
+
+	public function search()
+	{
+		$name = $this->input->post('name', true);
+		return $this->db->select('*')->from('students')->like('name', $name)->limit(15)->get()->result_object();
 	}
 }
