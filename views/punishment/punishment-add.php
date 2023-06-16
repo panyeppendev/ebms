@@ -27,7 +27,10 @@
 							<div class="form-group row">
 								<label class="col-sm-4 col-form-label">NO. KARTU</label>
 								<div class="col-sm-8">
-									<input data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" autofocus name="nis" id="nis" class="form-control">
+									<input data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" autofocus name="nis" id="nis" class="form-control mb-1">
+									<span class="text-xs text-primary" style="cursor: pointer" data-toggle="modal" data-target="#modal-search">
+										Cari nama santri
+									</span>
 								</div>
 							</div>
 						</div>
@@ -75,6 +78,36 @@
 		</div>
 	</section>
 	<!-- /.content -->
+</div>
+
+<div class="modal fade" id="modal-search" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header py-2"></div>
+			<div class="modal-body" id="showDetail" style="background-color: #f4f6f9">
+				<div class="row">
+					<div class="col-5">
+						<input type="text" placeholder="Masukkan nama" id="name-search" class="form-control" autocomplete="off">
+					</div>
+					<div class="col-2">
+						<button class="btn btn-primary btn-block" onclick="search()">
+							<i class="fas fa-search"></i> Cari
+						</button>
+					</div>
+					<div class="col-5 text-right">
+						<button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-12 overflow-auto" id="show-search" style="height: 75vh"></div>
+				</div>
+			</div>
+			<div class="modal-footer justify-content-end p-2"></div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
 </div>
 
 <?php $this->load->view('partials/footer'); ?>

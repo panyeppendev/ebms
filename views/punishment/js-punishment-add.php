@@ -118,6 +118,45 @@
 			}
 		})
 	}
+
+	const search = () => {
+		const name = $('#name-search').val()
+		if (name === '') {
+			errorAlert('Pastikan nama sudah diisi')
+			return false
+		}
+
+		$.ajax({
+			url: '<?= base_url() ?>punishment/search',
+			method: 'POST',
+			data: { name },
+			success: res => {
+				$('#show-search').html(res)
+			}
+		})
+	}
+
+	$('#modal-search').on('shown.bs.modal', function (){
+		$('#name-search').focus()
+		$('#show-search').html('')
+	})
+
+	$('#modal-search').on('hidden.bs.modal', function (){
+		$('#name-search').val('')
+		$('#show-search').html('')
+	})
+
+
+	function copyToClipboard(text) {
+		var sampleTextarea = document.createElement("textarea");
+		document.body.appendChild(sampleTextarea);
+		sampleTextarea.value = text; //save main text in it
+		sampleTextarea.select(); //select textarea contenrs
+		document.execCommand("copy");
+		document.body.removeChild(sampleTextarea);
+		toastr.success('ID berhasil disalin ke clipboard')
+		$('#nis').val(text)
+	}
 </script>
 </body>
 
