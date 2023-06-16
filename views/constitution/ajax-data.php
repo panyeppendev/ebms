@@ -4,12 +4,12 @@
 			<table class="table table-striped table-sm">
 				<thead>
 					<tr>
-						<th>NO</th>
-						<th>KATEGORY</th>
-						<th>URAIAN</th>
-						<th>PASAL</th>
-						<th>AYAT</th>
-						<th class="text-center">OPSI</th>
+						<th style="width: 5%">NO</th>
+						<th style="width: 10%">KATEGORY</th>
+						<th style="width: 60%">URAIAN</th>
+						<th style="width: 10%">PASAL</th>
+						<th style="width: 5%">AYAT</th>
+						<th style="width: 10%" class="text-center">OPSI</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -53,6 +53,9 @@
 							<td class="text-center">
 								<button <?= (in_array($data->id, $idDefault)) ? 'disabled' : '' ?> class="btn btn-default btn-sm" onclick="getById('<?= $data->id ?>')">
 									<i class="fas fa-pen-alt"></i>
+								</button>
+								<button <?= (in_array($data->id, $idDefault)) ? 'disabled' : '' ?> class="btn btn-danger btn-sm" onclick="destroy('<?= $data->id ?>')">
+									<i class="fas fa-trash"></i>
 								</button>
 							</td>
 						</tr>

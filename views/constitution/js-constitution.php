@@ -105,6 +105,37 @@
 		})
     }
 
+	const destroy = id => {
+		Swal.fire({
+			title: 'Anda yakin?',
+			text: 'Data akan dihapus permanen',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yakin',
+			cancelButtonText: 'Gak jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: '<?= base_url() ?>constitution/destroy',
+					method: 'POST',
+					data: { id },
+					dataType: 'JSON',
+					success: function(res) {
+						let status = res.status
+						if (status != 200) {
+							errorAlert(res.message)
+							return false
+						}
+						toastr.success(res.message)
+						loadData()
+					}
+				})
+			}
+		})
+	}
+
 </script>
 </body>
 

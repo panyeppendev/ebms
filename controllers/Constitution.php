@@ -43,4 +43,11 @@ class Constitution extends CI_Controller
 
 		echo json_encode($result);
 	}
+
+	public function destroy()
+	{
+		$result = $this->cm->destroy();
+
+		echo json_encode($result);
+	}
 }
