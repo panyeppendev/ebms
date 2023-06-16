@@ -149,4 +149,33 @@ class ConstitutionModel extends CI_Model
 		];
 	}
 
+	public function destroy()
+	{
+		$id = $this->input->post('id', true);
+		$check = $this->db->get_where('constitutions', ['id' => $id])->num_rows();
+		if ($check <= 0) {
+			return [
+				'status' => 400,
+				'message' => 'Data tidak valid'
+			];
+		}
+
+		$this->db->where('constitution_id', $id)->delete('suspensions');
+		$this->db->where('constitution_id', $id)->delete('punishments');
+		$this->db->where('constitution_id', $id)->delete('punishment_detail');
+		$this->db->where('id', $id)->delete('constitutions');
+
+		if ($this->db->affected_rows() <= 0) {
+			return [
+				'status' => 400,
+				'message' => 'Kesalahan server'
+			];
+		}
+
+		return [
+			'status' => 200,
+			'message' => 'Satu data berhasil dihapus'
+		];
+	}
+
 }
