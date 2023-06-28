@@ -189,7 +189,7 @@ function grade($level)
 {
 	if ($level === 'I\'dadiyah') {
 		$kelas = [
-			'Pra Jilid',
+			'Pra Metode',
 			'Jilid 1',
 			'Jilid 2',
 			'Jilid 3',

@@ -24,39 +24,10 @@ class EducationSetting extends CI_Controller
 	{
 		$level = $this->input->post('level', true);
 
-		if ($level === 'I\'dadiyah') {
-			$kelas = [
-				'Pra Jilid',
-				'Jilid 1',
-				'Jilid 2',
-				'Jilid 3',
-				'Jilid 4',
-				'Pra Paktik',
-				'Praktik',
-				'Takhossus'
-			];
-		}elseif ($level === 'Ula') {
-			$kelas = [
-				1,
-				2,
-				3,
-				4
-			];
-		}elseif ($level === 'Wustho' || $level === 'Ulya'){
-			$kelas = [
-				1,
-				2,
-				3
-			];
-		}else{
-			$kelas = [];
-		}
-
-
 		$data = [
 			'title' => 'Atur Wali Kelas',
 			'level' => $level,
-			'kelas' => $kelas
+			'kelas' => grade($level)
 		];
 		$this->load->view('education-setting/education-set', $data);
 	}
@@ -79,39 +50,10 @@ class EducationSetting extends CI_Controller
 		$level = $this->input->post('level', true);
 		$kelasFilter = $this->input->post('kelas', true);
 
-		if ($level === 'I\'dadiyah') {
-			$kelas = [
-				'Pra Jilid',
-				'Jilid 1',
-				'Jilid 2',
-				'Jilid 3',
-				'Jilid 4',
-				'Pra Paktik',
-				'Praktik',
-				'Takhossus'
-			];
-		}elseif ($level === 'Ula') {
-			$kelas = [
-				1,
-				2,
-				3,
-				4
-			];
-		}elseif ($level === 'Wustho' || $level === 'Ulya'){
-			$kelas = [
-				1,
-				2,
-				3
-			];
-		}else{
-			$kelas = [];
-		}
-
-
 		$data = [
 			'title' => 'Atur Murid Kelas',
 			'level' => $level,
-			'kelas' => $kelas,
+			'kelas' => grade($level),
 			'rombel' => $this->esm->getRombel($level, $kelasFilter),
 			'kelas_filter' => $kelasFilter
 		];
