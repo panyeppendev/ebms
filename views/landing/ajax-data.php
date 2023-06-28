@@ -41,7 +41,7 @@
         </div>
 		<div class="col-7">
 			<div class="row">
-				<div class="col-6">
+				<section class="col-6">
 					<div class="card">
 						<div class="card-body pb-2">
 							<div class="callout callout-success py-3 px-3 mb-4">
@@ -109,8 +109,8 @@
 							<?php } ?>
 						</div>
 					</div>
-				</div>
-				<div class="col-6">
+				</section>
+				<section class="col-6">
 					<div class="card">
 						<div class="card-body pb-2">
 							<div class="callout callout-success py-3 px-3 mb-4">
@@ -170,7 +170,39 @@
 							</div>
 						</div>
 					</div>
-				</div>
+					<div class="card">
+						<div class="card-body pb-2">
+							<div class="callout callout-success py-3 px-3 mb-4">
+								<b>Absensi Madrasah</b>
+							</div>
+							<?php
+							if ($data['presence']){
+								$total = 0;
+								foreach ($data['presence'] as $d) {
+									$total += $d->amount;
+							?>
+							<div class="row">
+								<div class="col-7"><?= strtoupper($d->presence) ?></div>
+								<div class="col-5 text-right">
+									<?= $d->amount ?>
+								</div>
+							</div>
+							<hr class="my-1">
+								<?php
+							}
+								?>
+							<div class="row">
+								<div class="col-7">Jumlah</div>
+								<div class="col-5 text-right">
+									<?= $total ?>
+								</div>
+							</div>
+							<?php
+							}
+							?>
+						</div>
+					</div>
+				</section>
 			</div>
 		</div>
     <?php } ?>

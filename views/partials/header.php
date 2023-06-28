@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="<?= base_url() ?>template/plugins/toastr/toastr.min.css">
     <link rel="stylesheet" href="<?= base_url() ?>template/plugins/croppie/croppie.css">
     <link rel="stylesheet" href="<?= base_url() ?>template/css/custome.css">
+	<link rel="stylesheet" href="<?= base_url() ?>template/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed layout-navbar-fixed text-sm">

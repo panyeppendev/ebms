@@ -57,7 +57,8 @@ class LandingModel extends CI_Model
             'step' => $step,
             'student' => $checkStudent,
             'package' => $this->getDetailPackage($id, $step),
-            'deposit' => $this->getDeposit($id)
+            'deposit' => $this->getDeposit($id),
+			'presence' => $this->getPresence($id)
         ];
     }
 
@@ -169,6 +170,15 @@ class LandingModel extends CI_Model
 			'detail' => $data,
 			'residual' => $total
 		];
+	}
+
+	public function getPresence($id)
+	{
+		$period = $this->dm->getperiod();
+
+		return $this->db->get_where('presences', [
+			'student_id' => $id, 'period' => $period
+		])->result_object();
 	}
 
 	public function getdatakamtib()
