@@ -184,3 +184,36 @@ function showDiffSuspension($date, $back)
 
 	return 'Non-aktif pada : '.$t . ' ' . $b . ' ' . $h . ' ' . $j . ' ' . $m;
 }
+
+function grade($level)
+{
+	if ($level === 'I\'dadiyah') {
+		$kelas = [
+			'Pra Jilid',
+			'Jilid 1',
+			'Jilid 2',
+			'Jilid 3',
+			'Jilid 4',
+			'Pra Paktik',
+			'Praktik',
+			'Takhossus'
+		];
+	}elseif ($level === 'Ula') {
+		$kelas = [
+			1,
+			2,
+			3,
+			4
+		];
+	}elseif ($level === 'Wustho' || $level === 'Ulya'){
+		$kelas = [
+			1,
+			2,
+			3
+		];
+	}else{
+		$kelas = [];
+	}
+
+	return $kelas;
+}

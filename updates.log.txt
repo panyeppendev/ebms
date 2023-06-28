@@ -1,8 +1,2 @@
-[USERS]
-	1 => Add EDUCATE & MIQ in role field
-
-[ADD TABLES]
-	1 => payments
-	2 => payment_detail
-	3 => payment_registration
-	4 => payment_registration_detail
+[STUDENTS]
+- Add rombel field and default 0
