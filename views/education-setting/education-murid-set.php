@@ -23,7 +23,7 @@
 											if ($kelas) {
 												foreach ($kelas as $item) {
 													?>
-													<option <?= ($item === $kelas_filter) ? 'selected' : '' ?> value="<?= $item ?>"><?= $item ?></option>
+													<option <?= ($item == $kelas_filter) ? 'selected' : '' ?> value="<?= $item ?>"><?= $item ?></option>
 													<?php
 												}
 											}
