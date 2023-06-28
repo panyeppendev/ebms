@@ -18,7 +18,7 @@
 					<tr>
 						<td><?= $no++ ?></td>
 						<td><?= $d->class ?></td>
-						<td><?= $d->rombel ?></td>
+						<td><?= rombel($d->rombel) ?></td>
 						<td><?= $d->teacher ?></td>
 					</tr>
 			<?php

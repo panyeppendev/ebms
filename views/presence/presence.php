@@ -23,7 +23,7 @@
 									if ($grades) {
 										foreach ($grades as $item) {
 											?>
-											<option <?= ($item === $grade) ? 'selected' : '' ?> value="<?= $item ?>"><?= $item ?></option>
+											<option <?= ($item == $grade) ? 'selected' : '' ?> value="<?= $item ?>"><?= $item ?></option>
 											<?php
 										}
 									}
