@@ -342,7 +342,9 @@ class PaymentSettingModel extends CI_Model
             'period' => $period, 'step' => $step
         ])->num_rows();
         if ($check <= 0) {
-            $get = $this->db->get_where('students', ['status' => 'AKTIF'])->result_object();
+            $get = $this->db->get_where('students', [
+				'status' => 'AKTIF', 'level' => 'I\'dadiyah'
+			])->result_object();
             if ($get) {
                 $data = [];
                 foreach ($get as $d) {

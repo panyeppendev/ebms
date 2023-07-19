@@ -218,6 +218,13 @@ class Student extends CI_Controller
         echo json_encode($result);
     }
 
+	public function destroy()
+	{
+		$result = $this->sm->destroy();
+
+		echo json_encode($result);
+	}
+
     // public function renameFather()
     // {
     //     $student = $this->db->get('students')->result_object();

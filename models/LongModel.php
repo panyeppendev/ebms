@@ -578,7 +578,7 @@ class LongModel extends CI_Model
 
 	public function loadPermissionById($id)
 	{
-		$this->db->select('a.*, DATE(a.created_at) as created_at, DATE(a.expired_at) as expired_at, a.expired_at as date_expired, a.note, b.name, b.date_of_birth, b.place_of_birth, b.address, b.village, b.district, b.city, b.domicile, b.class, b.level, b.class_of_formal, b.level_of_formal, b.father');
+		$this->db->select('a.*, DATE(a.created_at) as created_at, DATE(a.expired_at) as expired_at, a.expired_at as date_expired, a.note, b.name, b.date_of_birth, b.place_of_birth, b.address, b.village, b.district, b.city, b.domicile, b.class, b.rombel, b.level, b.class_of_formal, b.level_of_formal, b.father');
 		$this->db->from('permissions AS a')->join('students AS b', 'b.id = a.student_id');
 		return $this->db->where('a.id', $id)->get()->row_object();
 	}
@@ -646,5 +646,13 @@ class LongModel extends CI_Model
 			'status' => 200,
 			'message' => $id
 		];
+	}
+
+	public function getHomeRoom($grade, $rombel, $level)
+	{
+		$period = $this->dm->getperiod();
+		return $this->db->get_where('homerooms', [
+			'class' => $grade, 'rombel' => $rombel, 'level' => $level, 'period' => $period
+		])->row_object();
 	}
 }

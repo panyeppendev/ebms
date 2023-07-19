@@ -671,6 +671,41 @@
             }
         })
     }
+
+	const destroy = id => {
+		Swal.fire({
+			title: 'Yakin, nih?',
+			text: 'Data akan dihapus permanen',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yakin, dong',
+			cancelButtonText: 'Masih ragu'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: '<?= base_url() ?>student/destroy',
+					method: 'POST',
+					data: {
+						id
+					},
+					dataType: 'JSON',
+					success: res => {
+						let status = res.status
+						if (status == 400) {
+							toastr.error(`Oppss..! ${ re.message }`)
+							return false
+						}
+
+						toastr.success('Yeaah..! Satu data berhasil dihapus permanen')
+						$('#modal-detail').modal('hide');
+						loadData()
+					}
+				})
+			}
+		})
+	}
 </script>
 </body>
 
