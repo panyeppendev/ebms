@@ -9,7 +9,7 @@
     <style>
         * {
             /*font-family: 'Courier New', Courier, monospace;*/
-			font-family: 'Corbel', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+			font-family: 'Times New Roman', serif;
             font-size: 12pt;
         }
 
@@ -219,6 +219,7 @@
     <div class="container">
 		<?php
 			if ($data) {
+				$complete = $this->lm->getHomeRoom($data->class, $data->rombel, $data->level);
 		?>
 				<div class="row">
                     <div class="col-12">
@@ -272,7 +273,12 @@
 								<tr>
 									<td class="pl-5">Pend. Diniyah</td>
 									<td>:</td>
-									<td><?= $data->class.' - '.$data->level ?></td>
+									<td><?= $data->class.' - '.@rombel($complete->rombel).' | '.$data->level ?></td>
+								</tr>
+								<tr>
+									<td class="pl-5">Wali Kelas</td>
+									<td>:</td>
+									<td><?= 'UST. '.@$complete->teacher ?></td>
 								</tr>
 								<tr>
 									<td class="pl-5">Pend. Formal</td>
@@ -359,6 +365,7 @@
     <div class="container">
 		<?php
 			if ($data) {
+				$complete = $this->lm->getHomeRoom($data->class, $data->rombel, $data->level);
 		?>
 				<div class="row">
                     <div class="col-12">
@@ -412,7 +419,12 @@
 								<tr>
 									<td class="pl-5">Pend. Diniyah</td>
 									<td>:</td>
-									<td><?= $data->class.' - '.$data->level ?></td>
+									<td><?= $data->class.' - '.@rombel($complete->rombel).' | '.$data->level ?></td>
+								</tr>
+								<tr>
+									<td class="pl-5">Wali Kelas</td>
+									<td>:</td>
+									<td><?= 'UST. '.@$complete->teacher ?></td>
 								</tr>
 								<tr>
 									<td class="pl-5">Pend. Formal</td>

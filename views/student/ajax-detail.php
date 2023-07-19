@@ -53,6 +53,9 @@
                 <dt class="col-sm-3 font-weight-normal mb-1">Formal</dt>
                 <dd class="col-sm-9 mb-1"><?= $data->class_of_formal ?> - <?= $data->level_of_formal ?></dd>
             </dl>
+			<button class="btn btn-danger btn-sm px-3" onclick="destroy('<?= $data->id ?>')">
+				<i class="fas fa-trash"></i> Hapus data ini
+			</button>
         </div>
         <div class="col-12 col-md-12 col-sm-12 col-lg-4">
             <div class="callout callout-success py-1 px-3">

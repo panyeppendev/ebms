@@ -9,7 +9,7 @@
     <style>
         * {
             /*font-family: 'Courier New', Courier, monospace;*/
-			font-family: 'Corbel', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+			font-family: 'Times New Roman', serif;
             font-size: 12pt;
         }
 

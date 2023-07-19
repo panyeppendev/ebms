@@ -279,4 +279,29 @@ class StudentModel extends CI_Model
 
         return $data->student_id;
     }
+
+	public function destroy()
+	{
+		$id = $this->input->post('id', true);
+		$check = $this->db->get_where('students', ['id' => $id])->num_rows();
+		if ($check <= 0) {
+			return [
+				'status' => 400,
+				'message' => 'Data tidak valid'
+			];
+		}
+
+		$this->db->where('id', $id)->delete('students');
+		if ($this->db->affected_rows() <= 0){
+			return [
+				'status' => 400,
+				'message' => 'Server gagal memproses permintaan'
+			];
+		}
+
+		return [
+			'status' => 200,
+			'message' => 'Data tidak valid'
+		];
+	}
 }
