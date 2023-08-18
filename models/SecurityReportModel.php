@@ -239,7 +239,7 @@ class SecurityReportModel extends CI_Model
 			$this->db->where('DATE(a.created_at) >=', $start);
 			$this->db->where('DATE(a.created_at) <=', $end);
 		}
-		$this->db->group_by('a.student_id')->order_by('total', 'DESC')->limit(10);
+		$this->db->group_by('a.student_id')->order_by('total', 'DESC')->limit(30);
 		return $this->db->get()->result_object();
 	}
 
@@ -249,7 +249,7 @@ class SecurityReportModel extends CI_Model
 
 		$this->db->select('COUNT(a.id) AS total, b.domicile')->from('suspensions as a');
 		$this->db->join('students as b', 'a.student_id = b.id');
-		$this->db->where('a.period', $period);
+		$this->db->where(['a.period' => $period, 'a.status !=' => 'INACTIVE']);
 		if ($start !== '0' && $end !== '0') {
 			$this->db->where('DATE(a.created_at) >=', $start);
 			$this->db->where('DATE(a.created_at) <=', $end);
