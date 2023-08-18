@@ -85,6 +85,17 @@ class LongModel extends CI_Model
             ];
         }
 
+		$checkPermission = $this->db->get_where('permissions', [
+			'student_id' => $nis, 'status' => 'PROCESS'
+		])->row_object();
+		if($checkPermission){
+			return [
+				'status' => 400,
+				'message' => 'Santri sedang dalam izin yang belum diselesaikan',
+				'nis' => $nis
+			];
+		}
+
         $checkNominal = $this->checkNominal();
         if ($checkNominal['status'] === 400) {
             return [
