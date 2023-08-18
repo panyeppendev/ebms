@@ -14,7 +14,7 @@ class SecurityReport extends CI_Controller
     public function index()
     {
         $data = [
-            'title' => 'Atur Pembelian'
+            'title' => 'Laporan Keamanan'
         ];
         $this->load->view('securityreport/securityreport', $data);
     }
@@ -45,6 +45,49 @@ class SecurityReport extends CI_Controller
 			'data' => $this->sm->dataPenalty($start, $end)
 		];
 		$this->load->view('print/print-penalty', $data);
+	}
+
+	public function laporanPerizinan()
+	{
+		$start = $this->input->get('start', true);
+		$end = $this->input->get('end', true);
+		if ($start !== '0' && $end !== '0') {
+			$date = 'Tanggal: '.dateIDFormatShort($start).' - '.dateIDFormatShort($end);
+		}else{
+			$date = '';
+		}
+		$data = [
+			'title' => 'Laporan Perizinan',
+			'date' => $date,
+			'data' => $this->sm->laporanPerizinan($start, $end),
+			'reason' => $this->sm->laporanAlasan($start, $end),
+			'ten' => $this->sm->tenTop($start, $end),
+			'payment' => $this->sm->laporanPayment($start, $end),
+			'late' => $this->sm->laporanLate($start, $end),
+		];
+
+		$this->load->view('print/print-laporan-perizinan', $data);
+	}
+
+	public function laporanPelanggaran()
+	{
+		$start = $this->input->get('start', true);
+		$end = $this->input->get('end', true);
+		if ($start !== '0' && $end !== '0') {
+			$date = 'Tanggal: '.dateIDFormatShort($start).' - '.dateIDFormatShort($end);
+		}else{
+			$date = '';
+		}
+		$data = [
+			'title' => 'Laporan Pelanggaran',
+			'date' => $date,
+			'data' => $this->sm->laporanPelanggaran($start, $end),
+			'constitution' => $this->sm->orderPelanggaran($start, $end),
+			'santri' => $this->sm->pelanggaranSantri($start, $end),
+			'skorsing' => $this->sm->skorsing($start, $end)
+		];
+
+		$this->load->view('print/print-laporan-pelanggaran', $data);
 	}
 
 }
