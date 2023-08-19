@@ -84,7 +84,8 @@ class SecurityReport extends CI_Controller
 			'data' => $this->sm->laporanPelanggaran($start, $end),
 			'constitution' => $this->sm->orderPelanggaran($start, $end),
 			'santri' => $this->sm->pelanggaranSantri($start, $end),
-			'skorsing' => $this->sm->skorsing($start, $end)
+			'skorsing' => $this->sm->skorsing($start, $end),
+			'skorsing_pelanggaran' => $this->sm->skorsingPelanggaran($start, $end)
 		];
 
 		$this->load->view('print/print-laporan-pelanggaran', $data);
