@@ -244,7 +244,7 @@
 	<div class="row mt-2">
 		<div class="col-12">
 			<h6 class="text-center mb-1">
-				LAPORAN PERIZINAN BERDASARKAN JENIS PELANGGARAN
+				LAPORAN PELANGGARAN BERDASARKAN JENIS
 				<br>
 				<?= $date ?>
 			</h6>
@@ -333,7 +333,7 @@
 	<div class="row">
 		<div class="col-12">
 			<h6 class="text-center mb-1">
-				LAPORAN SKORSING ASRAMA
+				LAPORAN SKORSING BERDASARKAN ASRAMA
 				<br>
 				<?= $date ?>
 			</h6>
@@ -367,6 +367,49 @@
 				<tr style="font-weight: bold">
 					<td colspan="2" class="text-center">TOTAL</td>
 					<td class="text-center"><?= $skorsing[1]->total ?></td>
+					<td class="text-center">100%</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-12">
+			<h6 class="text-center mb-1">
+				LAPORAN SKORSING BERDASARKAN PELANGGARAN
+				<br>
+				<?= $date ?>
+			</h6>
+			<table class="tablestripped table-xl">
+				<thead>
+				<tr>
+					<th>NO</th>
+					<th>PELANGGARAN</th>
+					<th>JUMLAH</th>
+					<th>%</th>
+				</tr>
+				</thead>
+				<tbody>
+				<?php
+				if ($skorsing_pelanggaran[0]) {
+					$no = 1;
+					foreach ($skorsing_pelanggaran[0] as $d) {
+						?>
+						<tr>
+							<td class="text-center"><?= $no++ ?></td>
+							<td><?= $d->name ?></td>
+							<td class="text-center"><?= $d->total ?></td>
+							<td class="text-center"><?= round(($d->total/$skorsing_pelanggaran[1]->total) * 100, 1).' %' ?></td>
+						</tr>
+						<?php
+					}
+				}else{
+					echo '<tr><td colspan="3" class="text-center">Tidak ada data untuk ditampilkan</td></tr>';
+				}
+				?>
+				<tr style="font-weight: bold">
+					<td colspan="2" class="text-center">TOTAL</td>
+					<td class="text-center"><?= $skorsing_pelanggaran[1]->total ?></td>
 					<td class="text-center">100%</td>
 				</tr>
 				</tbody>

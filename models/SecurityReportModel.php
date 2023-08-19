@@ -257,7 +257,31 @@ class SecurityReportModel extends CI_Model
 		$data = $this->db->group_by('b.domicile')->order_by('total', 'DESC')->get()->result_object();
 
 		$this->db->select('COUNT(id) AS total')->from('suspensions');
-		$this->db->where('period', $period);
+		$this->db->where(['period' => $period, 'status !=' => 'INACTIVE']);
+		if ($start !== '0' && $end !== '0') {
+			$this->db->where('DATE(created_at) >=', $start);
+			$this->db->where('DATE(created_at) <=', $end);
+		}
+		$total = $this->db->get()->row_object();
+//		return $this->db->last_query();
+		return [$data, $total];
+	}
+
+	public function skorsingPelanggaran($start, $end)
+	{
+		$period = $this->dm->getperiod();
+
+		$this->db->select('COUNT(a.id) AS total, b.name')->from('suspensions as a');
+		$this->db->join('constitutions as b', 'a.constitution_id = b.id');
+		$this->db->where(['a.period' => $period, 'a.status !=' => 'INACTIVE']);
+		if ($start !== '0' && $end !== '0') {
+			$this->db->where('DATE(a.created_at) >=', $start);
+			$this->db->where('DATE(a.created_at) <=', $end);
+		}
+		$data = $this->db->group_by('b.id')->order_by('total', 'DESC')->get()->result_object();
+
+		$this->db->select('COUNT(id) AS total')->from('suspensions');
+		$this->db->where(['period' => $period, 'status !=' => 'INACTIVE']);
 		if ($start !== '0' && $end !== '0') {
 			$this->db->where('DATE(created_at) >=', $start);
 			$this->db->where('DATE(created_at) <=', $end);
