@@ -69,35 +69,41 @@
 						</div>
 						<div class="col-2 pr-4 pt-1 text-right">
 							<?php
-							if (!$permission->checked_at) {
+							if ($permission->status === 'PROCESS' || $permission->status === 'ACTIVE' || $permission->status === 'LATE') {
 							?>
-							<div class="dropdown pt-1">
-								<a class="btn btn-default dropdown-toggle btn-sm btn-block" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									Opsi
-								</a>
-
-								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-									<?php
-									if ($permission->status === 'PROCESS') {
-										?>
-										<a class="dropdown-item" target="_blank" href="<?= base_url() ?>long/petition/<?= encrypt_url($permission->id) ?>">Print Angket</a>
-										<span class="dropdown-item" style="cursor: pointer" onclick="doActive(<?= $permission->id ?>)">Aktifkan</span>
-										<?php
-									}elseif ($permission->status === 'ACTIVE') {
-										?>
-										<a class="dropdown-item" target="_blank" href="<?= base_url() ?>long/license/<?= encrypt_url($permission->id) ?>">Print Surat</a>
-										<span class="dropdown-item" style="cursor: pointer" onclick="doBack(<?= $permission->id ?>)">Selesaikan</span>
-										<?php
-									}elseif ($permission->status === 'LATE') {
-										?>
-										<span class="dropdown-item" style="cursor: pointer" onclick="doPunishment(<?= $permission->student_id ?>, <?= $permission->id ?>)">Tindakan</span>
-										<?php
-									}else {
-										echo '';
-									}
+								<?php
+								if ($permission->status !== 'LATE') {
 									?>
-								</div>
-							</div>
+									<div class="dropdown pt-1">
+										<a class="btn btn-default dropdown-toggle btn-sm btn-block" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											Opsi
+										</a>
+
+										<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+											<?php
+											if ($permission->status === 'PROCESS') {
+												?>
+												<a class="dropdown-item" target="_blank" href="<?= base_url() ?>long/petition/<?= encrypt_url($permission->id) ?>">Print Angket</a>
+												<span class="dropdown-item" style="cursor: pointer" onclick="doActive(<?= $permission->id ?>)">Aktifkan</span>
+												<?php
+											}elseif ($permission->status === 'ACTIVE') {
+												?>
+												<a class="dropdown-item" target="_blank" href="<?= base_url() ?>long/license/<?= encrypt_url($permission->id) ?>">Print Surat</a>
+												<span class="dropdown-item" style="cursor: pointer" onclick="doBack(<?= $permission->id ?>)">Selesaikan</span>
+												<?php
+											}else {
+												echo '';
+											}
+											?>
+										</div>
+									</div>
+									<?php
+								}else{
+									?>
+									<button type="button" class="btn btn-danger btn-sm btn-block" onclick="doPunishment(<?= $permission->student_id ?>, <?= $permission->id ?>)">Tindakan</button>
+									<?php
+								}
+								?>
 							<?php
 							}else{
 							?>
