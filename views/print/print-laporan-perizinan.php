@@ -189,7 +189,7 @@
         <div class="row">
             <div class="col-12">
                 <h6 class="text-center mb-1">
-                    LAPORAN PELANGGARAN BERDASARKAN ASRAMA
+                    LAPORAN PERIZINAN BERDASARKAN ASRAMA
                     <br>
                     <?= $date ?>
                 </h6>
@@ -198,6 +198,8 @@
                         <tr>
                             <th>NO</th>
                             <th>KAMAR</th>
+							<th>PENDEK</th>
+							<th>JAUH</th>
                             <th>JUMLAH</th>
                             <th>%</th>
 						</tr>
@@ -210,9 +212,11 @@
                         ?>
                         <tr>
                             <td class="text-center"><?= $no++ ?></td>
-                            <td><?= $d->domicile ?></td>
-							<td class="text-center"><?= $d->total ?></td>
-							<td class="text-center"><?= round(($d->total/$data[1]->total) * 100, 1).' %' ?></td>
+                            <td><?= $d['domicile'] ?></td>
+							<td class="text-center"><?= $d['short'] ?></td>
+							<td class="text-center"><?= $d['long'] ?></td>
+							<td class="text-center"><?= $d['total'] ?></td>
+							<td class="text-center"><?= round(($d['total']/$data[1]->total) * 100, 1).' %' ?></td>
 						</tr>
                         <?php
                             }
@@ -222,6 +226,8 @@
                         ?>
 						<tr style="font-weight: bold">
 							<td colspan="2" class="text-center">TOTAL</td>
+							<td class="text-center"><?= $data[2] ?></td>
+							<td class="text-center"><?= $data[3] ?></td>
 							<td class="text-center"><?= $data[1]->total ?></td>
 							<td class="text-center">100%</td>
 						</tr>
@@ -232,7 +238,7 @@
 		<div class="row mt-2">
 			<div class="col-12">
 				<h6 class="text-center mb-1">
-					LAPORAN PERIZINAN BERDASARKAN ALASAN
+					LAPORAN PERIZINAN JARAK PENDEK BERDASARKAN ALASAN
 					<br>
 					<?= $date ?>
 				</h6>
@@ -247,15 +253,15 @@
 					</thead>
 					<tbody>
 					<?php
-					if ($reason) {
+					if ($short[0]) {
 						$no = 1;
-						foreach ($reason as $d) {
+						foreach ($short[0] as $d) {
 							?>
 							<tr>
 								<td class="text-center"><?= $no++ ?></td>
 								<td><?= $d->reason ?></td>
 								<td class="text-center"><?= $d->total ?></td>
-								<td class="text-center"><?= round(($d->total/$data[1]->total) * 100, 1).' %' ?></td>
+								<td class="text-center"><?= round(($d->total/$short[1]) * 100, 1).' %' ?></td>
 							</tr>
 							<?php
 						}
@@ -265,7 +271,50 @@
 					?>
 					<tr style="font-weight: bold">
 						<td colspan="2" class="text-center">TOTAL</td>
-						<td class="text-center"><?= $data[1]->total ?></td>
+						<td class="text-center"><?= $short[1] ?></td>
+						<td class="text-center">100%</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-12">
+				<h6 class="text-center mb-1">
+					LAPORAN PERIZINAN JARAK JAUH BERDASARKAN ALASAN
+					<br>
+					<?= $date ?>
+				</h6>
+				<table class="tablestripped table-xl">
+					<thead>
+					<tr>
+						<th>NO</th>
+						<th>ALASAN</th>
+						<th>JUMLAH</th>
+						<th>%</th>
+					</tr>
+					</thead>
+					<tbody>
+					<?php
+					if ($long[0]) {
+						$no = 1;
+						foreach ($long[0] as $d) {
+							?>
+							<tr>
+								<td class="text-center"><?= $no++ ?></td>
+								<td><?= $d->reason ?></td>
+								<td class="text-center"><?= $d->total ?></td>
+								<td class="text-center"><?= round(($d->total/$long[1]) * 100, 1).' %' ?></td>
+							</tr>
+							<?php
+						}
+					}else{
+						echo '<tr><td colspan="3" class="text-center">Tidak ada data untuk ditampilkan</td></tr>';
+					}
+					?>
+					<tr style="font-weight: bold">
+						<td colspan="2" class="text-center">TOTAL</td>
+						<td class="text-center"><?= $long[1] ?></td>
 						<td class="text-center">100%</td>
 					</tr>
 					</tbody>
@@ -431,6 +480,86 @@
 						<td class="text-center"><?= $late[1]->total ?></td>
 						<td class="text-center">100%</td>
 					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-12">
+				<h6 class="text-center mb-1">
+					LAPORAN PERIZINAN JARAK DEKAT BELUM KEMBALI
+					<br>
+					<?= $date ?>
+				</h6>
+				<table class="tablestripped table-xl">
+					<thead>
+					<tr>
+						<th>NO</th>
+						<th>NAMA</th>
+						<th>KAMAR</th>
+						<th>ALASAN</th>
+						<th>TANGGAL</th>
+					</tr>
+					</thead>
+					<tbody>
+					<?php
+					if ($short_late) {
+						$no = 1;
+						foreach ($short_late as $d) {
+							?>
+							<tr>
+								<td class="text-center"><?= $no++ ?></td>
+								<td><?= $d->name ?></td>
+								<td><?= $d->domicile ?></td>
+								<td><?= $d->reason ?></td>
+								<td><?= datetimeIDFormat($d->expired_at) ?></td>
+							</tr>
+							<?php
+						}
+					}else{
+						echo '<tr><td colspan="5" class="text-center">Tidak ada data untuk ditampilkan</td></tr>';
+					}
+					?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-12">
+				<h6 class="text-center mb-1">
+					LAPORAN PERIZINAN JARAK JAUH BELUM KEMBALI
+					<br>
+					<?= $date ?>
+				</h6>
+				<table class="tablestripped table-xl">
+					<thead>
+					<tr>
+						<th>NO</th>
+						<th>NAMA</th>
+						<th>KAMAR</th>
+						<th>ALASAN</th>
+						<th>TANGGAL</th>
+					</tr>
+					</thead>
+					<tbody>
+					<?php
+					if ($long_late) {
+						$no = 1;
+						foreach ($long_late as $d) {
+							?>
+							<tr>
+								<td class="text-center"><?= $no++ ?></td>
+								<td><?= $d->name ?></td>
+								<td><?= $d->domicile ?></td>
+								<td><?= $d->reason ?></td>
+								<td><?= datetimeIDFormat($d->expired_at) ?></td>
+							</tr>
+							<?php
+						}
+					}else{
+						echo '<tr><td colspan="5" class="text-center">Tidak ada data untuk ditampilkan</td></tr>';
+					}
+					?>
 					</tbody>
 				</table>
 			</div>

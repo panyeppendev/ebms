@@ -60,10 +60,13 @@ class SecurityReport extends CI_Controller
 			'title' => 'Laporan Perizinan',
 			'date' => $date,
 			'data' => $this->sm->laporanPerizinan($start, $end),
-			'reason' => $this->sm->laporanAlasan($start, $end),
+			'short' => $this->sm->laporanAlasan($start, $end, 'SHORT'),
+			'long' => $this->sm->laporanAlasan($start, $end, 'LONG'),
 			'ten' => $this->sm->tenTop($start, $end),
 			'payment' => $this->sm->laporanPayment($start, $end),
 			'late' => $this->sm->laporanLate($start, $end),
+			'short_late' => $this->sm->belumKembali($start, $end, 'SHORT'),
+			'long_late' => $this->sm->belumKembali($start, $end, 'LONG')
 		];
 
 		$this->load->view('print/print-laporan-perizinan', $data);

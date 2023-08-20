@@ -38,6 +38,19 @@ class SecurityReportModel extends CI_Model
 			$this->db->where('DATE(a.created_at) <=', $end);
 		}
 		$data = $this->db->group_by('b.domicile')->order_by('total', 'DESC')->get()->result_object();
+		$result = [];
+		if ($data){
+			foreach ($data as $d){
+				$result[] = [
+					'domicile' => $d->domicile,
+					'total' => $d->total,
+					'short' => $this->typePerizinanPerAsrama($start, $end, $d->domicile, 'SHORT'),
+					'long' => $this->typePerizinanPerAsrama($start, $end, $d->domicile, 'LONG')
+				];
+			}
+		}else{
+			$result = '';
+		}
 
 		$this->db->select('COUNT(id) AS total')->from('permissions');
 		$this->db->where('period', $period);
@@ -47,22 +60,64 @@ class SecurityReportModel extends CI_Model
 		}
 		$total = $this->db->get()->row_object();
 //		return $this->db->last_query();
-		return [$data, $total];
+
+		$short = $this->typePerizinan($start, $end, 'SHORT');
+		$long = $this->typePerizinan($start, $end, 'LONG');
+		return [$result, $total, $short, $long];
 	}
 
-	public function laporanAlasan($start, $end)
+	public function typePerizinanPerAsrama($start, $end, $domicile, $type)
+	{
+		$period = $this->dm->getperiod();
+
+		$this->db->select('COUNT(a.id) AS total, b.domicile')->from('permissions as a');
+		$this->db->join('students as b', 'a.student_id = b.id');
+		$this->db->where(['a.period' => $period, 'a.type' => $type, 'b.domicile' => $domicile]);
+		if ($start !== '0' && $end !== '0') {
+			$this->db->where('DATE(a.created_at) >=', $start);
+			$this->db->where('DATE(a.created_at) <=', $end);
+		}
+
+		$data = $this->db->get()->row_object();
+		if ($data) {
+			return $data->total;
+		}else{
+			return 0;
+		}
+	}
+
+	public function typePerizinan($start, $end, $type)
+	{
+		$period = $this->dm->getperiod();
+
+		$this->db->select('COUNT(id) AS total')->from('permissions');
+		$this->db->where(['period' => $period, 'type' => $type]);
+		if ($start !== '0' && $end !== '0') {
+			$this->db->where('DATE(created_at) >=', $start);
+			$this->db->where('DATE(created_at) <=', $end);
+		}
+
+		$data = $this->db->get()->row_object();
+		if ($data) {
+			return $data->total;
+		}else{
+			return 0;
+		}
+	}
+
+	public function laporanAlasan($start, $end, $type)
 	{
 		$period = $this->dm->getperiod();
 
 		$this->db->select('reason, COUNT(id) AS total')->from('permissions');
-		$this->db->where('period', $period);
+		$this->db->where(['period' => $period, 'type' => $type]);
 		if ($start !== '0' && $end !== '0') {
 			$this->db->where('DATE(created_at) >=', $start);
 			$this->db->where('DATE(created_at) <=', $end);
 		}
 		$total = $this->db->group_by('reason')->order_by('total', 'DESC')->get()->result_object();
 //		return $this->db->last_query();
-		return $total;
+		return [$total, $this->typePerizinan($start, $end, $type)];
 	}
 
 	public function tenTop($start, $end)
@@ -71,7 +126,7 @@ class SecurityReportModel extends CI_Model
 
 		$this->db->select('COUNT(a.id) AS total, b.name, b.domicile')->from('permissions as a');
 		$this->db->join('students as b', 'a.student_id = b.id');
-		$this->db->where(['a.period' => $period, 'type' => 'LONG']);
+		$this->db->where(['a.period' => $period, 'a.type' => 'LONG']);
 		if ($start !== '0' && $end !== '0') {
 			$this->db->where('DATE(a.created_at) >=', $start);
 			$this->db->where('DATE(a.created_at) <=', $end);
@@ -80,7 +135,7 @@ class SecurityReportModel extends CI_Model
 
 		$this->db->select('COUNT(a.id) AS total, b.name, b.domicile')->from('permissions as a');
 		$this->db->join('students as b', 'a.student_id = b.id');
-		$this->db->where(['a.period' => $period, 'type' => 'SHORT']);
+		$this->db->where(['a.period' => $period, 'a.type' => 'SHORT']);
 		if ($start !== '0' && $end !== '0') {
 			$this->db->where('DATE(a.created_at) >=', $start);
 			$this->db->where('DATE(a.created_at) <=', $end);
@@ -289,6 +344,21 @@ class SecurityReportModel extends CI_Model
 		$total = $this->db->get()->row_object();
 //		return $this->db->last_query();
 		return [$data, $total];
+	}
+
+	public function belumKembali($start, $end, $type)
+	{
+		$period = $this->dm->getperiod();
+		$now = date('Y-m-d H:i:s');
+
+		$this->db->select('a.expired_at, a.reason, b.name, b.domicile')->from('permissions as a');
+		$this->db->join('students as b', 'a.student_id = b.id');
+		$this->db->where(['a.period' => $period, 'a.type' => $type, 'a.expired_at <' => $now, 'a.status' => 'ACTIVE']);
+		if ($start !== '0' && $end !== '0') {
+			$this->db->where('DATE(a.created_at) >=', $start);
+			$this->db->where('DATE(a.created_at) <=', $end);
+		}
+		return $this->db->get()->result_object();
 	}
 
 }
