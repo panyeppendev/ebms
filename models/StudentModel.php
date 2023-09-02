@@ -304,4 +304,9 @@ class StudentModel extends CI_Model
 			'message' => 'Data tidak valid'
 		];
 	}
+
+	public function exportStudent()
+	{
+		return $this->db->get_where('students', ['status' => 'AKTIF'])->result_object();
+	}
 }
