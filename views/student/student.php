@@ -11,6 +11,10 @@
                             <i class="fa fa-plus-circle"></i>
                             Entri Data
                         </button>
+						<a href="<?= base_url() ?>student/exportData" type="submit" class="btn mr-2 btn-sm btn-primary float-right">
+							<i class="fa fa-file-excel"></i>
+							Ekspor Excel
+						</a>
                         <form action="<?= base_url() ?>student/print" method="post" target="_blank">
                             <input type="hidden" name="domicile_print" id="domicile_print" value="0">
                             <button type="submit" class="btn mr-2 btn-sm btn-primary float-right">
