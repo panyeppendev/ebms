@@ -1,2 +1,49 @@
-[STUDENTS]
-- Add rombel field and default 0
+USERS
+- Update role field
+
+ROLES
+- Add table
+create table roles
+(
+    id   int auto_increment
+        primary key,
+    name varchar(50) null
+);
+
+ROLE_USER
+- Add table
+create table role_user
+(
+    id      int auto_increment
+        primary key,
+    user_id int null,
+    role_id int null
+);
+
+ROLE_MENU
+- Add table
+create table role_menu
+(
+    id      int auto_increment
+        primary key,
+    menu_id int not null,
+    role_id int not null,
+    `order` int null
+);
+
+ACCOUNTS
+- Add table
+create table accounts
+(
+    id         int auto_increment
+        primary key,
+    name       varchar(100)             not null,
+    category   enum ('DEBIT', 'CREDIT') not null,
+    created_at datetime                 null
+);
+
+
+
+
+
+

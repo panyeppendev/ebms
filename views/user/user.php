@@ -18,17 +18,15 @@
                         </select>
                         <select onchange="getdata()" id="changeRole" class="form-control form-control-sm float-right mr-2" style="width: 150px">
                             <option value="">..:Semua Akses:..</option>
-                            <option value="SUPER-ADMIN">SUPER ADMIN</option>
-                            <option value="ADMIN">ADMIN</option>
-                            <option value="KASIR-DPU">KASIR DPU</option>
-                            <option value="KASIR-TOKO">KASIR TOKO</option>
-                            <option value="STORE">KASIR KOPERASI</option>
-                            <option value="LIBRARY">KASIR PERPUS</option>
-                            <option value="ADMIN-SECURITY">ADMIN KEAMANAN</option>
-                            <option value="SECURITY">STAF KEAMANAN</option>
-                            <option value="HOLIDAY">PANITIA LIBURAN</option>
-                            <option value="EDUCATE">PENDIDIKAN</option>
-                            <option value="MIQ">MIQ</option>
+							<?php
+							if ($roles) {
+								foreach ($roles as $role) {
+									?>
+									<option value="<?= $role->id ?>"><?= $role->name ?></option>
+									<?php
+								}
+							}
+							?>
                         </select>
                     </div>
                 </div>
@@ -74,23 +72,6 @@
                             <span>Sembunyikan Password</span> <i class="fa fa-eye-slash"></i>
                         </small>
                     </div>
-                    <div class="form-group">
-                        <label for="role">Hak Akses</label>
-                        <select class="form-control form-control-border" name="role" id="role">
-                            <option value="">..:Pilih:..</option>
-                            <option value="SUPER-ADMIN">SUPER-ADMIN</option>
-                            <option value="ADMIN">ADMIN</option>
-                            <option value="KASIR-DPU">KASIR-DPU</option>
-                            <option value="KASIR-TOKO">KASIR-TOKO</option>
-                            <option value="STORE">KASIR KOPERASI</option>
-                            <option value="ADMIN-SECURITY">ADMIN KEAMANAN</option>
-                            <option value="SECURITY">STAF KEAMANAN</option>
-                            <option value="HOLIDAY">PANITIA LIBURAN</option>
-							<option value="EDUCATE">PENDIDIKAN</option>
-							<option value="MIQ">MIQ</option>
-                        </select>
-                        <small class="text-danger errors" id="errorrole"></small>
-                    </div>
                 </form>
             </div>
             <div class="modal-footer justify-content-end p-2">
@@ -100,6 +81,44 @@
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-set" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-default">
+		<div class="modal-content">
+			<div class="modal-header py-2">
+				<h6 class="modal-title">Form Atur Akses</h6>
+				<div class="align-middle" data-dismiss="modal" title="Tutup" style="cursor: pointer">
+					<i class="fas fa-times-circle text-danger"></i>
+				</div>
+			</div>
+			<div class="modal-body">
+				<form autocomplete="off" id="form-set">
+					<input type="hidden" name="user" id="user-id" value="">
+					<div class="form-group">
+						<label for="role">Jabatan</label>
+						<select name="role" id="role" class="form-control form-control-border">
+							<option value="">..:Pilih:..</option>
+							<?php
+							if ($roles) {
+								foreach ($roles as $role) {
+									?>
+									<option value="<?= $role->id ?>"><?= $role->name ?></option>
+									<?php
+								}
+							}
+							?>
+						</select>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer justify-content-end p-2">
+				<button type="button" class="btn btn-primary btn-sm" onclick="saveSetRole()">Simpan</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
 </div>
 
 <?php $this->load->view('partials/footer'); ?>

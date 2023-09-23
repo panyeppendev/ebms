@@ -7,29 +7,28 @@
 				<tr>
 					<th>NO</th>
 					<th>NAMA</th>
-					<th>KATEGORY</th>
+					<th>OPSI</th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php
-				if ($accounts) {
-					$categories = ['DEBIT' => 'Pengeluaran', 'CREDIT' => 'Pemasukan'];
+				if ($roles) {
 					$no = 1;
-					foreach ($accounts as $account) {
+					foreach ($roles as $role) {
 						?>
 						<tr>
 							<td class="align-middle"><?= $no++ ?></td>
 							<td class="align-middle">
-								<?= $account->name ?>
+								<b><?= $role->name ?></b>
 							</td>
 							<td class="align-middle">
-								<?= $categories[$account->category] ?>
+								EDIT
 							</td>
 						</tr>
 						<?php
 					}
 				} else {
-					echo '<tr class="text-center"><td colspan="6"><h6 class="text-danger">Tak ada data untuk ditampilkan</h6></td></tr>';
+					echo '<tr class="text-center"><td colspan="5"><h6 class="text-danger">Tak ada data untuk ditampilkan</h6></td></tr>';
 				}
 				?>
 				</tbody>

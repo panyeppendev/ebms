@@ -78,6 +78,15 @@
                 <h6 class="modal-title">Data Check In Liburan</h6>
                 <select id="changeDomicile" onchange="loadData()" style="width: 200px" class="form-control form-control-sm float-right mr-2">
                     <option value="">.:Semua:.</option>
+					<?php
+					if ($rooms) {
+						foreach ($rooms as $room) {
+					?>
+						<option value="<?= $room->name ?>>"><?= $room->name ?></option>
+					<?php
+						}
+					}
+					?>
                     <option value="Imam Ghazali">Imam Ghazali</option>
                     <option value="Imam Maliki">Imam Maliki</option>
                     <option value="Imam Hanafi">Imam Hanafi</option>

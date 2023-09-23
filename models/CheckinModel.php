@@ -187,4 +187,9 @@ class CheckinModel extends CI_Model
         $this->db->where('requirement_id', $requirement);
         return $this->db->order_by('b.id', 'ASC')->get()->result_object();
     }
+
+	public function rooms()
+	{
+		return $this->db->get('rooms')->result_object();
+	}
 }

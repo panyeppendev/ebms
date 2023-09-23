@@ -55,7 +55,7 @@ $username = $this->session->userdata('username');
                     <dt class="col-sm-2 font-weight-normal">Hak Akses</dt>
                     <dd class="col-sm-10 text-primary">
                         <span class="badge badge-success">
-                            <?= $this->session->userdata('text_role') ?>
+                            <?= $this->session->userdata('role') ?>
                         </span>
                     </dd>
                 </dl>

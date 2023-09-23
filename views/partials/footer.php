@@ -24,3 +24,25 @@
 <script src="<?= base_url() ?>template/plugins/croppie/exif.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="<?= base_url() ?>template/dist/js/demo.js"></script>
+<script>
+	const switchRole = role_id => {
+		$.ajax({
+			url: '<?= base_url() ?>auth/switchRole',
+			method: 'POST',
+			data: {
+				role_id
+			},
+			dataType: 'JSON',
+			success: data => {
+				let status = data.status
+				if (status !== 200) {
+					console.log(data.message)
+					return false
+				}
+
+				window.location.href = '<?= base_url() ?>'
+			}
+
+		})
+	}
+</script>

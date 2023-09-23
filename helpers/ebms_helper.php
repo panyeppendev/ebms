@@ -14,7 +14,7 @@ function CekLoginAkses()
     $ci = get_instance();
 
     $id = $ci->session->userdata('user_id');
-    $role = $ci->session->userdata('role');
+    $role = $ci->session->userdata('role_id');
 
     if (!$id) {
         redirect('auth');
@@ -25,17 +25,27 @@ function CekLoginAkses()
 
         $cekAkses = $ci->mm->cekUserMenu($idMenu, $role);
 
-        if ($cekAkses <= 0 && $role != 'DEV') {
+        if ($cekAkses <= 0 && $role != '1') {
             redirect('block');
         }
     }
+}
+
+function roles()
+{
+	$ci = get_instance();
+	$id = $ci->session->userdata('user_id');
+	$role = $ci->session->userdata('role_id');
+	$ci->load->model('UserModel');
+
+	return $ci->UserModel->roleUserForSwitch($id, $role);
 }
 
 function getMenu()
 {
     $ci = get_instance();
     $ci->load->model('menuModel');
-    $role = $ci->session->userdata('role');
+    $role = $ci->session->userdata('role_id');
 
     return $ci->menuModel->getMenu($role);
 }

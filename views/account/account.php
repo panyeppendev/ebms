@@ -51,6 +51,7 @@
 					<p><b>Akun Keuangan</b> hanya disimpan sekali. Selanjutnya tidak bisa diedit dan atau dihapus</p>
 				</div>
 				<form autocomplete="off" id="form-role">
+					<input type="hidden" name="id" id="id" value="">
 					<div class="form-group">
 						<label for="category">Kategori</label>
 						<select name="category" id="category" class="form-control form-control-border">
@@ -64,6 +65,11 @@
 						<label for="name">Nama</label>
 						<input type="text" name="name" class="form-control form-control-border text-uppercase" id="name">
 						<small class="text-danger errors" id="error-name"></small>
+					</div>
+					<div class="form-group">
+						<label for="nominal">Nominal Bawaan</label>
+						<input type="text" name="nominal" class="form-control form-control-border" id="nominal">
+						<small class="text-danger errors" id="error-nominal"></small>
 					</div>
 				</form>
 			</div>

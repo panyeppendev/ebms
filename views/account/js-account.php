@@ -1,3 +1,4 @@
+<script src="<?= base_url('template') ?>/plugins/autoNumeric.js"></script>
 <script>
 	toastr.options = {
 		"positionClass": "toast-top-center",
@@ -9,12 +10,23 @@
 	})
 
 	let modalElement = $('#modal-account')
+	let idElement = $('#id')
 	let categoryElement = $('#category')
 	let nameElement = $('#name')
+	let nominalElement = $('#nominal')
+
+	nominalElement.autoNumeric('init', {
+		aSign: 'Rp.   ',
+		aSep: '.',
+		aDec: ',',
+		mDec: '0'
+	});
 
 	modalElement.on('hidden.bs.modal', () => {
+		idElement.val('')
 		nameElement.val('')
 		categoryElement.val('')
+		nominalElement.val('')
 		$('.form-control-border').removeClass('is-invalid')
 		$('.errors').html('')
 	})
@@ -24,8 +36,10 @@
 			url: '<?= base_url() ?>account/save',
 			method: 'post',
 			data: {
+				id: idElement.val(),
 				category: categoryElement.val(),
-				name: nameElement.val()
+				name: nameElement.val(),
+				nominal: nominalElement.autoNumeric('get')
 			},
 			dataType: 'JSON',
 			beforeSend: function() {
@@ -65,7 +79,8 @@
 				nameElement.val('');
 				accounts()
 
-				toastr.success('Yeaah, satu akun berhasil ditambahkan')
+				toastr.success(`Yeaah, satu akun berhasil ${response.message}`)
+				modalElement.modal('hide')
 			}
 		})
 	})
@@ -80,6 +95,30 @@
 			method: 'POST',
 			success: response => {
 				$('#show-account').html(response)
+			}
+		})
+	}
+
+	const edit = id => {
+		$.ajax({
+			url: '<?= base_url() ?>account/edit',
+			data: {
+				id
+			},
+			method: 'POST',
+			dataType: 'JSON',
+			success: response => {
+				let status = response.status
+				if (status != 200) {
+					toastr.error(response.message)
+					return false
+				}
+
+				idElement.val(id)
+				categoryElement.val(response.data.category)
+				nameElement.val(response.data.name)
+				nominalElement.autoNumeric('set', response.data.nominal)
+				modalElement.modal('show')
 			}
 		})
 	}

@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Package extends CI_Controller
+class Account extends CI_Controller
 {
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->library('form_validation');
-		$this->load->model('PackageModel', 'am');
+		$this->load->model('AccountModel', 'am');
 		CekLoginAkses();
 	}
 
@@ -46,5 +46,13 @@ class Package extends CI_Controller
 		}
 
 		echo json_encode($response);
+	}
+
+	public function edit()
+	{
+		$id = $this->input->post('id', true);
+		$result = $this->am->edit($id);
+
+		echo json_encode($result);
 	}
 }

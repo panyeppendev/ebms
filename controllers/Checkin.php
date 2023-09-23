@@ -16,7 +16,8 @@ class Checkin extends CI_Controller
         $data = [
             'title' => 'Check In Santri Liburan',
             'setting' => $this->cm->getSetting(),
-            'data' => $this->cm->showSetting()
+            'data' => $this->cm->showSetting(),
+			'rooms' => $this->cm->rooms()
         ];
         $this->load->view('checkin/checkin', $data);
     }

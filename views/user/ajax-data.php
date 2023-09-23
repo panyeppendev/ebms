@@ -7,6 +7,7 @@
                     <tr>
                         <th>NO</th>
                         <th colspan="2" class="text-center">NAMA</th>
+                        <th>JABATAN</th>
                         <th>STATUS</th>
                         <th>OPSI</th>
                     </tr>
@@ -24,50 +25,50 @@
                                 $avatar = base_url('assets/images/users/' . $data->id . '.jpg');
                             }
 
-                            $role = $data->role;
-                            if ($role == 'SUPER-ADMIN') {
-                                $icon = 'fas fa-user-cog';
-                                $textRole = 'SUPER ADMIN';
-                            } elseif ($role == 'ADMIN') {
-                                $icon = 'fas fa-user-edit';
-                                $textRole = 'ADMIN';
-                            } else {
-                                $icon = 'fas fa-users';
-                                $textRole = str_replace('-', ' ', $role);
-                            }
-
-                            $status = $data->status;
-                            if ($status == 'ACTIVE') {
-                                $classStatus = 'success';
-                                $text = 'AKTIF';
-                            } else {
-                                $classStatus = 'danger';
-                                $text = 'NON-AKTIF';
-                            }
-
+							$status = $data->status;
                     ?>
                             <tr>
                                 <td class="align-middle"><?= $no++ ?></td>
-                                <td>
+                                <td class="align-middle">
                                     <img style="border-radius: 5px;" alt="Foto <?= $data->name ?>" width="45px" class="table-avatar" src="<?= $avatar ?>">
                                 </td>
                                 <td class="align-middle">
                                     <b><?= $data->name ?></b>
-                                    <br>
-                                    <small class="text-success"><i class="<?= $icon ?>"></i> <?= $textRole ?></small>
+                                </td>
+								<td class="align-middle">
+									<ul>
+										<?php
+										$roleUser = $this->um->roleUser($data->id);
+										if ($roleUser) {
+											foreach ($roleUser as $d) {
+												?>
+												<li>
+													<?= $d->name ?>
+													<a href="javascript:" onclick="deleteRoleUser(<?= $d->id ?>)">
+														<small>Cabut Jabatan</small>
+													</a>
+												</li>
+												<?php
+											}
+										} else {
+											echo '<li class="text-danger">Jabatan user belum diatur</li>';
+										}
+										?>
+									</ul>
+								</td>
+                                <td class="align-middle">
+									<button onclick="updateStatus(<?= $data->id ?>, 'ACTIVE')" type="button" class="btn btn-default btn-sm <?= ($status == 'ACTIVE') ? 'd-none' : '' ?>" title="Aktifkan Pengguna Ini">
+										<i class="fas fa-user-check text-success"></i> Aktifkan
+									</button>
+
+									<button onclick="updateStatus(<?= $data->id ?>, 'INACTIVE')" type="button" class="btn btn-default btn-sm <?= ($status != 'ACTIVE') ? 'd-none' : '' ?>" title="Non-Aktifkan Pengguna Ini">
+										<i class="fas fa-user-slash text-danger"></i> Non-Aktifkan
+									</button>
                                 </td>
                                 <td class="align-middle">
-                                    <span class="badge badge-<?= $classStatus ?>"><?= $text ?></span>
-                                </td>
-                                <td class="align-middle">
-                                    <div class="btn-group">
-                                        <button onclick="updateStatus(<?= $data->id ?>, 'ACTIVE')" <?= ($status == 'ACTIVE') ? 'disabled' : '' ?> type="button" class="btn btn-default btn-sm" title="Aktifkan Pengguna Ini">
-                                            <i class="fas fa-user-check text-success"></i>
-                                        </button>
-                                        <button onclick="updateStatus(<?= $data->id ?>, 'INACTIVE')" <?= ($status != 'ACTIVE') ? 'disabled' : '' ?> type="button" class="btn btn-default btn-sm" title="Non-Aktifkan Pengguna Ini">
-                                            <i class="fas fa-user-slash text-danger"></i>
-                                        </button>
-                                    </div>
+									<button onclick="setID('<?= $data->id ?>')" data-toggle="modal" data-target="#modal-set" type="button" class="btn btn-default btn-sm" title="Atur Jabatan">
+										<i class="fas fa-cogs"></i>
+									</button>
                                 </td>
                             </tr>
                     <?php
