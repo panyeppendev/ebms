@@ -35,14 +35,41 @@ class CheckinModel extends CI_Model
     {
         $domicile = $this->input->post('domicile', true);
 
-        $this->db->select('a.created_at, b.*')->from('students AS b');
-        $this->db->join('holidays AS a', 'b.id = a.student_id', 'left');
-        $this->db->where('b.status', 'AKTIF');
-        if ($domicile) {
-            $this->db->where('b.domicile', $domicile);
-        }
-        return $this->db->order_by('a.id', 'DESC')->get()->result_object();
+        $this->db->select('id, name, domicile, village, city')->from('students');
+		if ($domicile) {
+			$this->db->where('domicile', $domicile);
+		}
+		$result = $this->db->where('status', 'AKTIF')->get()->result_object();
+		$data = [];
+		if ($result) {
+			foreach ($result as $d) {
+				$data[] = [
+					'id' => $d->id,
+					'name' => $d->name,
+					'domicile' => $d->domicile,
+					'address' => $d->village.', '.str_replace(['Kabupaten', 'Kota '], '', $d->city),
+                    'status' => $this->checkInData($d->id)
+				];
+			}
+		}
+
+		return $data;
     }
+
+	public function checkInData($id)
+	{
+		$period = $this->dm->getperiod();
+		$holiday = $this->showSetting()[0];
+		$data = $this->db->get_where('holidays', [
+			'student_id' => $id, 'holiday' => $holiday, 'period' => $period
+		])->row_object();
+
+		if ($data) {
+			return 1;
+		}else{
+			return 0;
+		}
+	}
 
     public function checkCheckin($nis, $period, $holiday)
     {
@@ -191,5 +218,30 @@ class CheckinModel extends CI_Model
 	public function rooms()
 	{
 		return $this->db->get('rooms')->result_object();
+	}
+
+	public function printOut()
+	{
+		$domicile = $this->input->post('domicile', true);
+
+        $this->db->select('id, name, domicile, village, city')->from('students');
+		if ($domicile) {
+			$this->db->where('domicile', $domicile);
+		}
+		$result = $this->db->where('status', 'AKTIF')->get()->result_object();
+		$data = [];
+		if ($result) {
+			foreach ($result as $d) {
+				$data[] = [
+					'id' => $d->id,
+					'name' => $d->name,
+					'domicile' => $d->domicile,
+					'address' => $d->village.', '.str_replace(['Kabupaten', 'Kota '], '', $d->city),
+                    'status' => $this->checkInData($d->id)
+				];
+			}
+		}
+
+		return $data;
 	}
 }

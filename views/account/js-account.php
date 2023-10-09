@@ -101,7 +101,7 @@
 
 	const edit = id => {
 		$.ajax({
-			url: '<?= base_url() ?>account/edit',
+			url: `<?= base_url() ?>account/edit`,
 			data: {
 				id
 			},
@@ -119,6 +119,41 @@
 				nameElement.val(response.data.name)
 				nominalElement.autoNumeric('set', response.data.nominal)
 				modalElement.modal('show')
+			}
+		})
+	}
+
+	const setStatus = (id, status) => {
+		Swal.fire({
+			title: 'Yakin, nih?',
+			text: 'Anda bisa mengubah status di lain waktu',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yakin dong',
+			cancelButtonText: 'Gak jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: `<?= base_url() ?>account/setstatus`,
+					data: {
+						id,
+						status
+					},
+					method: 'POST',
+					dataType: 'JSON',
+					success: response => {
+						let status = response.status
+						if (!status) {
+							toastr.error(response.message)
+							return false
+						}
+
+						accounts()
+						toastr.success('Status akun berhasil diperbarui')
+					}
+				})
 			}
 		})
 	}

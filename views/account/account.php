@@ -2,32 +2,25 @@
 <div class="content-wrapper">
 	<!-- Main content -->
 	<section class="content p-3">
-		<div class="row">
-			<div class="col-12">
-				<div class="card">
-					<div class="card-header py-2 pr-2">
-						<div class="row justify-content-between">
-							<div class="col-3">
-								<h6 class="card-title mt-1">Akun Keuangan</h6>
-							</div>
-							<div class="col-9">
-								<div class="row justify-content-end">
-									<div class="col-3">
-										<select name="change_category" id="change-category" class="form-control form-control-sm" onchange="accounts()">
-											<option value="">:Kategori:</option>
-											<option value="CREDIT">Pemasukan</option>
-											<option value="DEBIT">Pengeluaran</option>
-										</select>
-									</div>
-									<div class="col-2">
-										<button data-toggle="modal" data-target="#modal-account" type="button" class="btn btn-sm btn-primary btn-block" id="adduser">
-											<i class="fa fa-plus-circle"></i>
-											Tambah Akun
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
+		<div class="row justify-content-between mb-4">
+			<div class="col-3">
+				<h6 class="card-title mt-1">Rekening</h6>
+			</div>
+			<div class="col-9">
+				<div class="row justify-content-end">
+					<div class="col-3">
+						<select name="change_category" id="change-category" class="form-control form-control-sm" onchange="accounts()">
+							<option value="">:Kategori:</option>
+							<option value="PACKAGE">Paket</option>
+							<option value="ADDON">Tambahan</option>
+							<option value="OTHER">Lain-lain</option>
+						</select>
+					</div>
+					<div class="col-3">
+						<button data-toggle="modal" data-target="#modal-account" type="button" class="btn btn-sm btn-primary btn-block" id="adduser">
+							<i class="fa fa-plus-circle"></i>
+							Tambah Rekening
+						</button>
 					</div>
 				</div>
 			</div>
@@ -48,7 +41,10 @@
 			<div class="modal-body">
 				<div class="callout callout-warning mb-4">
 					<h5>PERHATIAN!</h5>
-					<p><b>Akun Keuangan</b> hanya disimpan sekali. Selanjutnya tidak bisa diedit dan atau dihapus</p>
+					<ul>
+						<li><b>Rekening</b> hanya disimpan sekali. Selanjutnya tidak bisa dihapus</li>
+						<li>Selain <b>nama rekening</b> bisa diedit</li>
+					</ul>
 				</div>
 				<form autocomplete="off" id="form-role">
 					<input type="hidden" name="id" id="id" value="">
@@ -56,8 +52,9 @@
 						<label for="category">Kategori</label>
 						<select name="category" id="category" class="form-control form-control-border">
 							<option value="">:Pilih:</option>
-							<option value="CREDIT">Pemasukan</option>
-							<option value="DEBIT">Pengeluaran</option>
+							<option value="PACKAGE">Paket</option>
+							<option value="ADDON">Tambahan</option>
+							<option value="OTHER">Lain-lain</option>
 						</select>
 						<small class="text-danger errors" id="error-category"></small>
 					</div>

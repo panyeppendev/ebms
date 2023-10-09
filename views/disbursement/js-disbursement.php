@@ -13,53 +13,6 @@
         }
     })
 
-    $(function() {
-        loadRecap()
-        let currentStep = $('#current-step').val()
-        if (currentStep == 0) {
-            Swal.fire({
-                title: 'Tahap pencairan belum diatur',
-                icon: 'error',
-                html: 'Anda akan diarahkan dalam <strong>2</strong> detik.<br/><br/>',
-                timer: 2000,
-                timerProgressBar: true
-            })
-            setTimeout(function() {
-                window.location.href = '<?= base_url() ?>paymentsetting'
-            }, 2000)
-        }
-    })
-
-    const loadData = () => {
-        let name = $('#changeName').val()
-        let filter = $('#filter-date').val()
-        $.ajax({
-            url: '<?= base_url() ?>disbursement/loaddata',
-            method: 'POST',
-            data: {
-                name,
-                filter
-            },
-            success: function(res) {
-                $('#show-detail').html(res)
-            }
-        })
-    }
-
-    const loadRecap = () => {
-        let filter = $('#filter-date').val()
-        $.ajax({
-            url: '<?= base_url() ?>disbursement/loadrecap',
-            method: 'POST',
-            data: {
-                filter
-            },
-            success: function(res) {
-                $('#show-recap').html(res)
-            }
-        })
-    }
-
     $('#reservation').daterangepicker({
         singleDatePicker: true,
         autoUpdateInput: false,
@@ -95,77 +48,83 @@
         toastr.error(`Opss.! ${ message }`)
     }
 
-    $('#nis').on('keyup', function(e) {
-        let nis = $(this).val()
+    $('#card').on('keyup', function(e) {
+        let card = $(this).val()
         let key = e.which
         if (key != 13) {
             return false
         }
 
-        if (key == 13 && nis == '') {
+        if (key == 13 && card == '') {
             return false
         }
 
-        checkNis(nis)
+        checkCard(card)
     })
 
-    $('#form-disbursement').on('submit', function(e) {
-        e.preventDefault()
-
-        const nominal = $('#nominal').val()
-        if (nominal == '' || nominal == 0) {
-            errorAlert('Nominal tidak boleh kosong')
-            return false
-        }
-
-        save()
-    })
-
-    const checkNis = nis => {
-        let step = $('#current-step').val()
+    const checkCard = card => {
+		let nominalEl = $('#nominal')
         $.ajax({
-            url: '<?= base_url() ?>disbursement/checknis',
+            url: '<?= base_url() ?>disbursement/checkCard',
             method: 'POST',
             data: {
-                nis,
-                step
+                card
             },
             dataType: 'JSON',
             success: function(res) {
                 let status = res.status
-                if (status == 500) {
+                if (status != 200) {
                     errorAlert(res.message)
-                    $('#nis').focus().val('')
-                    $('#show-data').html('')
-                    $('#nominal').prop('readonly', true)
+                    $('#card').focus().val('')
+                    $('#show-data').hide()
+                    nominalEl.prop('readonly', true)
                     return false
                 }
 
-                if (status == 400) {
-                    $('#nominal').prop('readonly', true)
-                } else {
-                    $('#nominal').prop('readonly', false).focus().val('')
-                }
-                $('#package').val(res.package)
-                $('#nis-save').val(res.nis)
-                getData(res)
+				nominalEl.prop('readonly', false).focus()
+				$('#nominal').autoNumeric('set', res.total)
+				$('#nis').val(res.nis)
+				$('#purchase').val(res.purchase)
+				$('#account').val(res.account)
+				$('#total').val(res.total)
+				$('#name').text(res.name)
+				$('#address').text(res.address)
+				$('#domicile').text(res.domicile)
+				$('#diniyah').text(res.diniyah)
+				$('#formal').text(res.formal)
+				$('#total-text').text(res.total)
+				$('#show-data').show()
             }
         })
     }
 
-    const getData = data => {
-        $.ajax({
-            url: '<?= base_url() ?>disbursement/getdata',
-            method: 'POST',
-            data: {
-                nis: data.nis,
-                package: data.package
-            },
-            success: function(res) {
-                $('#show-data').html(res)
-            }
-        })
-    }
+	$('#form-disbursement').on('submit', function(e) {
+		e.preventDefault()
+
+		const nominal = $('#nominal').autoNumeric('get')
+
+		if (nominal == '' || nominal == 0) {
+			errorAlert('Nominal tidak boleh kosong')
+			return false
+		}
+
+		$('#nominal-real').val(nominal)
+		Swal.fire({
+			title: 'Yakin, nih?',
+			text: 'Tindakan ini hanya bisa dilakukan sekali',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			showLoaderOnConfirm: true,
+			confirmButtonText: 'OK, Lanjut',
+			cancelButtonText: 'Nggak jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				save()
+			}
+		})
+	})
 
     const save = () => {
         $.ajax({
@@ -179,21 +138,91 @@
             success: function(res) {
                 $('#loading').hide()
                 let status = res.status
-                if (status == 400) {
+                if (status != 200) {
                     errorAlert(res.message)
                     $('#nominal').focus().val('')
                     return false
                 }
-                loadRecap()
-                getData(res)
-                toastr.success(`Yeaah! ${ res.message }`)
-                $('#nis').focus().val('')
-                $('#package').val(0)
-                $('#nis-save').val(0)
+
+                toastr.success('Satu data berhasil ditambahkan')
+                $('#card').focus().val('')
+				$('#purchase').val('')
+				$('#account').val('')
+				$('#total').val('')
+				$('#nominal-real').val('')
                 $('#nominal').prop('readonly', true).val('')
+				$('#show-data').hide()
+				disbursements()
             }
         })
     }
+
+	const disbursements = () => {
+	  	const name = $('#filter-name').val()
+		$.ajax({
+			url: '<?= base_url() ?>disbursement/disbursements',
+			method: 'POST',
+			data: {
+				name,
+				date: $('#date').val()
+			},
+			success: (res) => {
+				$('#show-disbursement').html(res)
+			}
+		})
+	}
+
+	$('#filter-name').on('keyup', function(e) {
+		let key = e.which
+		if (key != 13) {
+			return false
+		}
+
+		if (key == 13 && card == '') {
+			return false
+		}
+
+		disbursements()
+	})
+
+	$(function (){
+		disbursements()
+	})
+
+	const destroy = id => {
+		Swal.fire({
+			title: 'Yakin, nih?',
+			text: 'Tindakan ini hanya bisa dilakukan sekali',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			showLoaderOnConfirm: true,
+			confirmButtonText: 'OK, Lanjut',
+			cancelButtonText: 'Nggak jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: '<?= base_url() ?>disbursement/destroy',
+					method: 'POST',
+					dataType: 'JSON',
+					data: {
+						id
+					},
+					success: (res) => {
+						let status = res.status
+						if (status != 200) {
+							toastr.error(res.message)
+							return false
+						}
+
+						toastr.success(res.message)
+						disbursements()
+					}
+				})
+			}
+		})
+	}
 </script>
 </body>
 

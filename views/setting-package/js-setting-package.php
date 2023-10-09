@@ -5,7 +5,8 @@
 	}
 
 	$(function() {
-		packages()
+		$('#package-selected').val($('#change-package').val())
+		settings()
 	})
 
 	let modalElement = $('#modal-package')
@@ -14,10 +15,14 @@
 		$('#sow-detail').html('')
 	})
 
-	const packages = () => {
+	const settings = () => {
+		let id = $('#change-package').val()
 		$.ajax({
-			url: '<?= base_url() ?>package/packages',
+			url: '<?= base_url() ?>settingpackage/settings',
 			method: 'POST',
+			data: {
+				package: id
+			},
 			success: response => {
 				$('#show-package').html(response)
 			}
@@ -36,6 +41,15 @@
 				modalElement.modal('show')
 			}
 		})
+	}
+
+	const packageSelected = (el) => {
+		$('#package-selected').val($(el).val())
+		settings()
+	}
+
+	const createLimit = () => {
+	  	$('#form-create').submit()
 	}
 
 </script>

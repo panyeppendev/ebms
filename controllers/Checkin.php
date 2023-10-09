@@ -44,9 +44,19 @@ class Checkin extends CI_Controller
     public function loaddata()
     {
         $data = [
-            'datas' => $this->cm->loaddata()
+            'datas' => $this->cm->loaddata(),
         ];
 
         $this->load->view('checkin/ajax-data', $data);
     }
+
+	public function printOut()
+	{
+		$data = [
+			'title' => 'Print Out Checkin Liburan',
+			'data' => $this->cm->printOut(),
+			'domicile' => $this->input->post('domicile', true)
+		];
+		$this->load->view('print/checkin', $data);
+	}
 }

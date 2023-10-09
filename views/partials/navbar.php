@@ -10,7 +10,6 @@
         </li>
         <li class="nav-item d-none d-sm-inline-block">
             <a class="nav-link"><b><?= dateHijriFormat(getHijri()) ?> H</b></a>
-
         </li>
     </ul>
     <?php
@@ -26,8 +25,8 @@
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
             <a class="nav-link pt-0" data-toggle="dropdown" href="#">
-				<span class="text-primary"><?= $this->session->userdata('role') ?></span>
-				<i class="fas fa-grip-lines-vertical"></i>
+				<span><?= $this->session->userdata('role') ?></span>
+				<span style="font-size: 8px" class="mx-2 text-success"><i class="fas fa-circle fa-xs"></i></span>
                 <b class="text-dark"><?= $this->session->userdata('name') ?></b>
                 <img id="avatar-navbar" style="width: 30px;" src="<?= $avatar ?>" class="brand-image img-circle elevation-2 ml-2" style="opacity: .8">
             </a>

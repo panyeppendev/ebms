@@ -32,12 +32,13 @@ class AccountModel extends CI_Model
 				'name' => strtoupper($name),
 				'category' => $category,
 				'nominal' => $nominal,
-				'created_at' => date('Y-m-d H:i:s')
+				'created_at' => date('Y-m-d H:i:s'),
+				'status' => 'ACTIVE'
 			]);
-
 			$message = ['Tidak ada data yang berhasil ditambahkan', 'ditambahkan'];
 		}else{
 			$this->db->where('id', $id)->update('accounts', [
+				'category' => $category,
 				'nominal' => $nominal
 			]);
 
@@ -85,6 +86,24 @@ class AccountModel extends CI_Model
 				'name' => $data->name,
 				'nominal' => $data->nominal,
 			]
+		];
+	}
+
+	public function setStatus()
+	{
+		$id = $this->input->post('id', true);
+		$status = $this->input->post('status', true);
+		$this->db->where('id', $id)->update('accounts', ['status' => $status]);
+		if ($this->db->affected_rows() <= 0) {
+			return [
+				'status' => false,
+				'message' => 'Server gagal memperbarui status'
+			];
+		}
+
+		return [
+			'status' => true,
+			'message' => 'Sukses'
 		];
 	}
 }

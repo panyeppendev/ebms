@@ -55,4 +55,11 @@ class Account extends CI_Controller
 
 		echo json_encode($result);
 	}
+
+	public function setStatus()
+	{
+		$result = $this->am->setStatus();
+
+		echo json_encode($result);
+	}
 }

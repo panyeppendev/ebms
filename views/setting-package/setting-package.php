@@ -11,10 +11,26 @@
 					<div class="col-9">
 						<div class="row justify-content-end">
 							<div class="col-2">
-								<a href="<?= base_url() ?>package/create" class="btn btn-sm btn-primary btn-block">
+								<select id="change-package" class="form-control form-control-sm" onchange="packageSelected(this)">
+									<?php
+									if ($packages){
+										foreach ($packages as $package) {
+											?>
+											<option value="<?= $package->id ?>"><?= $package->name ?></option>
+									<?php
+										}
+									}
+									?>
+								</select>
+							</div>
+							<div class="col-2">
+								<form action="<?= base_url() ?>settingpackage/create" id="form-create" method="post">
+									<input type="hidden" name="package" id="package-selected" value="">
+								</form>
+								<button type="button" class="btn btn-sm btn-primary btn-block" onclick="createLimit()">
 									<i class="fa fa-plus-circle"></i>
-									Tambah Paket
-								</a>
+									Atur Limit
+								</button>
 							</div>
 						</div>
 					</div>
@@ -44,4 +60,4 @@
 </div>
 
 <?php $this->load->view('partials/footer'); ?>
-<?php $this->load->view('package/js-package'); ?>
+<?php $this->load->view('setting-package/js-setting-package'); ?>

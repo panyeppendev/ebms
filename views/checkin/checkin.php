@@ -1,118 +1,245 @@
-<?php $this->load->view('partials/header'); ?>
-<div class="content-wrapper">
-    <!-- Main content -->
-    <section class="content p-3">
-        <?php if ($setting == 'OPEN') { ?>
-            <div class="row mt-3">
-                <div class="error-page" style="margin-top: 100px;">
-                    <div class="error-content">
-                        <h3><i class="fas fa-exclamation-triangle text-danger"></i> Oops! ada masalah nih....</h3>
-                        <p>
-                            Liburan belum diatur. Segera hubungi bagian admin ~<br>
-                            <br>
-                            <a href="<?= base_url() ?>">Kilik untuk kembali ke Beranda</a>
-                        </p>
+<!DOCTYPE html>
+<html lang="en">
 
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
-        <?php if ($setting == 'CLOSE' && date('Y-m-d H:i:s') < $data[1]) { ?>
-            <div class="row mt-3">
-                <div class="error-page" style="margin-top: 100px;">
-                    <div class="error-content">
-                        <h3><i class="fas fa-exclamation-triangle text-danger"></i> Oops! ada masalah nih....</h3>
-                        <p>
-                            Check In liburan akan dibuka pada <b class="text-success"> <?= datetimeIDFormat($data[1]) ?></b> ~<br>
-                            <br>
-                            <a href="<?= base_url() ?>">Kilik untuk kembali ke Beranda</a>
-                        </p>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= $title; ?></title>
+    <link rel="shortcut icon" href="<?= base_url() ?>/assets/logo.png">
+    <style>
+        * {
+            font-family: 'Courier New', Courier, monospace;
+            /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
+            font-size: 10pt;
+        }
 
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
-        <?php if ($setting == 'CLOSE' && (date('Y-m-d H:i:s') >= $data[1])) { ?>
-            <div class="row">
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="form-group row mb-2">
-                                <label for="nis" class="col-sm-4 col-form-label">ID Card</label>
-                                <div class="col-sm-8">
-                                    <input data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="nis" name="nis" autofocus>
-                                </div>
-                            </div>
-                            <div class="p-2 d-flex text-success">
-                                <span class="mr-1">
-                                    <i class="fas fa-info-circle"></i>
-                                </span>
-                                <small class="pt-1">Pastikan cursor fokus pada bidang inputan, lalu masukkan nomor kartu santri lalu tekan ENTER</small>
-                            </div>
-                            <div class="mt-3">
-                                <button onclick="loadData()" data-toggle="modal" data-target="#modal-data" type="button" class="btn btn-primary btn-block">Lihat Data</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="alert-no" class="alert alert-danger d-none" role="alert">
-                        Santri ini tidak memenuhi syarat liburan
-                    </div>
-                    <div id="alert-yes" class="alert alert-success d-none" role="alert">
-                        Syarat sudah terpenuhi dan boleh berlibur
-                    </div>
-                </div>
-                <div class="col-8">
-                    <div class="row" id="show-data">
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
-    </section>
-    <!-- /.content -->
-</div>
+        .container {
+            width: 800px;
+            display: relative;
+        }
 
-<div class="modal fade" id="modal-data">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header py-2">
-                <h6 class="modal-title">Data Check In Liburan</h6>
-                <select id="changeDomicile" onchange="loadData()" style="width: 200px" class="form-control form-control-sm float-right mr-2">
-                    <option value="">.:Semua:.</option>
-					<?php
-					if ($rooms) {
-						foreach ($rooms as $room) {
-					?>
-						<option value="<?= $room->name ?>>"><?= $room->name ?></option>
-					<?php
-						}
-					}
-					?>
-                    <option value="Imam Ghazali">Imam Ghazali</option>
-                    <option value="Imam Maliki">Imam Maliki</option>
-                    <option value="Imam Hanafi">Imam Hanafi</option>
-                    <option value="Imam Hambali">Imam Hambali</option>
-                    <option value="Imam Sibaweh">Imam Sibaweh</option>
-                    <option value="Imam Syafi'i">Imam Syafi'i</option>
-                    <option value="Imam Ibnu Hajar Al-Haitami">Imam Ibnu Hajar Al-Haitami</option>
-                    <option value="Imam An-Nawawi">Imam An-Nawawi</option>
-                    <option value="Imam Ar-Rofi'i">Imam Ar-Rofi'i</option>
-                    <option value="Imam Haramain">Imam Haramain</option>
-                    <option value="Sayyidina Abu Bakar">Sayyidina Abu Bakar</option>
-                    <option value="Sayyidina Umar">Sayyidina Umar</option>
-                    <option value="Sayyidina Utsman">Sayyidina Utsman</option>
-                    <option value="Sayyidina Ali">Sayyidina Ali</option>
-                    <option value="Imam As-Suyuthi">Imam As-Suyuthi</option>
-                </select>
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .col-12 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .col-8 {
+            flex: 0 0 66.666667%;
+            max-width: 66.666667%;
+        }
+
+        .col-7 {
+            flex: 0 0 58.333333%;
+            max-width: 58.333333%;
+        }
+
+        .col-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+
+        .col-5 {
+            flex: 0 0 41.666667%;
+            max-width: 41.666667%;
+        }
+
+        .col-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+
+        .logo {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin-top: 0.1rem;
+            margin-bottom: 0.1rem;
+            margin-block-start: 0px;
+            margin-block-end: 0px;
+            font-family: inherit;
+            font-weight: bold;
+            color: inherit;
+        }
+
+        .invoice-title {
+            font-size: 3.5rem;
+        }
+
+        .text-right {
+            text-align: end;
+        }
+
+        hr {
+            margin-top: 0.6rem;
+            margin-bottom: 0.6rem;
+            border: 0;
+            border-top: 1px solid rgb(0 0 0 / 82%)
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+            background-color: transparent;
+        }
+
+        .tablestripped {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+            background-color: transparent;
+        }
+
+        .tablebottom {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+            background-color: transparent;
+        }
+
+        .mb-0 {
+            margin-bottom: 0px;
+        }
+
+        .mt-2 {
+            margin-top: 3rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 2rem;
+        }
+
+        .tablestripped th {
+            vertical-align: top;
+            border-top: 1px solid #999797;
+            border-bottom: 1px solid #999797;
+        }
+
+        .tablestripped td {
+            vertical-align: top;
+            border-top: 1px solid #999797;
+        }
+
+        .tablebottom td,
+        .tablebottom th {
+            vertical-align: top;
+            border-top: 1px dashed #999797;
+        }
+
+        #line-bottom {
+            border-top: 1px solid #999797;
+        }
+
+        .table-xl th {
+            padding: 0.5rem;
+        }
+
+        .table-xl td {
+            padding: 0.3rem;
+        }
+
+        .table-sm td,
+        .table-sm th {
+            padding: 0.2rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-bold {
+            font-weight: bold;
+        }
+
+        .notes {
+            padding-left: 25px;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="text-center mb-2">
+                    DATA SANTRI TIDAK CHECKIN LIBURAN MAULID 1445 H
+                    <br>
+                    <?= ($domicile != '') ? 'DOMISILI '.strtoupper($domicile) : 'SEMUA DOMISILI' ?>
+                </h6>
+                <table class="tablestripped table-xl">
+                    <thead>
+                        <tr>
+                            <th>NO</th>
+                            <th>NIS</th>
+                            <th>NAMA</th>
+                            <th>ALAMAT</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        if ($datas) {
+                            $no = 1;
+                            $key_values = array_column($datas, 'status'); 
+                            array_multisort($key_values, SORT_ASC, $datas);
+
+                            foreach ($datas as $data) {
+                                $status = $data['status'];
+                                if ($status) {
+                                    $status = '<span class="badge badge-success">Checkin</span>';
+                                }else{
+                                    $status = '<span class="badge badge-danger">Tidak</span>';
+                                }
+                                ?>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= $data['id'] ?></td>
+                                    <td>
+                                        <b><?= $data['name'] ?></b>
+                                    </td>
+                                    <td><?= $data['address'] ?></td>
+                                    <td><?= $status ?></td>
+                                </tr>
+                        <?php
+                            }
+                        } else {
+                            echo '<tr class="text-center"><td colspan="6"><h6 class="text-danger">Tak ada data untuk ditampilkan</h6></td></tr>';
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
-            <div class="modal-body pt-0" style="max-height: 80vh; overflow-y: auto">
-                <div class="row" id="load-data"></div>
-            </div>
-            <div class="modal-footer justify-content-end p-2"></div>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
-</div>
+<!--    <script>-->
+<!--        window.print()-->
+<!--        setTimeout(() => {-->
+<!--            window.close()-->
+<!--        }, 2000);-->
+<!--    </script>-->
+</body>
 
-<?php $this->load->view('partials/footer'); ?>
-<?php $this->load->view('checkin/js-checkin'); ?>
+</html>

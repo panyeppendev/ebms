@@ -1,4 +1,4 @@
-<div class="col-12 px-0">
+<div class="col-12">
 	<div class="card" style="height: 71.8vh;">
 		<!-- /.card-header -->
 		<div class="card-body table-responsive p-0" style="height: 100%;" id="cardScroll">
@@ -7,42 +7,33 @@
 				<tr>
 					<th>NO</th>
 					<th>NAMA</th>
-					<th>ALAMAT</th>
-					<th>DOMISILI</th>
 					<th class="text-right">NOMINAL</th>
 					<th class="text-center">OPSI</th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php
-				if ($disbursements) {
+				if ($packages) {
 					$no = 1;
-					foreach ($disbursements as $disbursement) {
+					foreach ($packages as $package) {
 						?>
 						<tr>
 							<td class="align-middle"><?= $no++ ?></td>
 							<td class="align-middle">
-								<?= $disbursement->name ?>
-							</td>
-							<td class="align-middle">
-								<?= $disbursement->village.', '.str_replace(['Kota ', 'Kabupaten '], '', $disbursement->city) ?>
-							</td>
-							<td class="align-middle">
-								<?= $disbursement->domicile ?>
+								<?= $package->name ?>
 							</td>
 							<td class="align-middle text-right">
-								<?= number_format($disbursement->amount, 0, ',', '.') ?>
+								<?= number_format($package->amount, 0, ',', '.') ?>
 							</td>
 							<td class="align-middle text-center">
-								<button onclick="destroy('<?= $disbursement->id ?>')" class="btn btn-danger px-2" title="Hapus transaksi ini">
-									<i class="fas fa-trash"></i>
-								</button>
+								<a href="<?= base_url() ?>package/edit/<?= $package->id ?>">Edit</a> |
+								<span style="cursor: pointer" class="text-primary" onclick="detail('<?= $package->id ?>')">Detil</span>
 							</td>
 						</tr>
 						<?php
 					}
 				} else {
-					echo '<tr class="text-center"><td colspan="6"><h6 class="text-danger">Tak ada data untuk ditampilkan</h6></td></tr>';
+					echo '<tr class="text-center"><td colspan="4"><h6 class="text-danger">Tak ada data untuk ditampilkan</h6></td></tr>';
 				}
 				?>
 				</tbody>
