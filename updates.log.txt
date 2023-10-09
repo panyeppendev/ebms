@@ -245,6 +245,20 @@ create table reserved_pocket
         foreign key (student_id) references students (id)
 );
 
+ACCOUNT_POCKET
+- Add table
+create table account_pocket
+(
+    id         int auto_increment
+        primary key,
+    account_id int null,
+    constraint account_pocket_accounts_id_fk
+        foreign key (account_id) references accounts (id)
+            on delete cascade
+);
+
+
+
 
 
 
