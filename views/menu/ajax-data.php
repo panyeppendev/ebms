@@ -8,6 +8,7 @@
                         <th>NO</th>
                         <th>NAMA</th>
                         <th>AKSES</th>
+						<th>URL</th>
                         <th>STATUS</th>
                         <th>OPSI</th>
                     </tr>
@@ -36,13 +37,13 @@
                                 <td class="align-middle">
                                     <ul>
                                         <?php
-                                        $getRole = $this->mm->getrole($data->id);
-                                        if ($getRole) {
-                                            foreach ($getRole as $rowRole) {
+										$roleMenu = $this->mm->roleMenu($data->id);
+                                        if ($roleMenu) {
+                                            foreach ($roleMenu as $d) {
                                         ?>
                                                 <li>
-                                                    <?= $rowRole->role ?>
-                                                    <a href="javascript:" onclick="deleteUserMenu(<?= $rowRole->id ?>)">
+                                                    <?= $d->name ?>
+                                                    <a href="javascript:" onclick="deleteRoleMenu(<?= $d->id ?>)">
                                                         <small>Hentikan Akses</small>
                                                     </a>
                                                 </li>
@@ -54,6 +55,7 @@
                                         ?>
                                     </ul>
                                 </td>
+								<td><?= $data->url ?></td>
                                 <td class="align-middle">
                                     <span class="badge badge-<?= $classStatus ?>"><?= $text ?></span>
                                     <?php
@@ -76,38 +78,9 @@
                                     ?>
                                 </td>
                                 <td class="align-middle">
-                                    <div class="btn-group">
-                                        <button onclick="addUserMenu(<?= $data->id ?>, 'SUPER-ADMIN')" type="button" class="btn btn-default btn-sm" title="Beri Akses Super Admin">
-                                            <i class="fas fa-user-cog"></i>
-                                        </button>
-                                        <button onclick="addUserMenu(<?= $data->id ?>, 'ADMIN')" type="button" class="btn btn-default btn-sm" title="Beri Akses Admin">
-                                            <i class="fas fa-user-edit"></i>
-                                        </button>
-                                        <button onclick="addUserMenu(<?= $data->id ?>, 'KASIR-DPU')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir DPU">
-                                            <i class="fas fa-house-user"></i>
-                                        </button>
-                                        <button onclick="addUserMenu(<?= $data->id ?>, 'KASIR-TOKO')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir Toko">
-                                            <i class="fas fa-user-tag"></i>
-                                        </button>
-                                        <button onclick="addUserMenu(<?= $data->id ?>, 'STORE')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir Koperasi">
-                                            <i class="fas fa-user-clock"></i>
-                                        </button>
-                                        <button onclick="addUserMenu(<?= $data->id ?>, 'LIBRARY')" type="button" class="btn btn-default btn-sm" title="Beri Akses Kasir Perpustakaan">
-                                            <i class="fas fa-user-astronaut"></i>
-                                        </button>
-                                        <button onclick="addUserMenu(<?= $data->id ?>, 'ADMIN-SECURITY')" type="button" class="btn btn-default btn-sm" title="Beri Akses Admin Keamanan">
-                                            <i class="fas fa-user-shield"></i>
-                                        </button>
-                                        <button onclick="addUserMenu(<?= $data->id ?>, 'SECURITY')" type="button" class="btn btn-default btn-sm" title="Beri Akses Staf Keamanan">
-                                            <i class="fas fa-user-shield"></i>
-                                        </button>
-                                        <button onclick="addUserMenu(<?= $data->id ?>, 'HOLIDAY')" type="button" class="btn btn-default btn-sm" title="Beri Akses Panitia Liburan">
-                                            <i class="fas fa-taxi"></i>
-                                        </button>
-										<button onclick="addUserMenu(<?= $data->id ?>, 'EDUCATE')" type="button" class="btn btn-default btn-sm" title="Beri Akses Pendidikan">
-											<i class="fas fa-user-graduate"></i>
-										</button>
-                                    </div>
+									<button onclick="getID('<?= $data->id ?>')" data-toggle="modal" data-target="#modal-set" type="button" class="btn btn-default btn-sm">
+										<i class="fas fa-cogs"></i>
+									</button>
                                 </td>
                             </tr>
                     <?php

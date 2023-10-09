@@ -1,16 +1,22 @@
 <?php $this->load->view('partials/header'); ?>
-<?php
-if ($step[0] != 0) {
-    $currentStep = $step[0];
-} else {
-    $currentStep = 0;
-}
-?>
-<input type="hidden" id="current-step" value="<?= $currentStep ?>">
 <div class="content-wrapper">
     <!-- Main content -->
     <section class="content p-3">
-        <?php if ($setting == 'CLOSED') { ?>
+		<div class="row justify-content-between">
+			<div class="col-3">
+				<h4 class="card-title mt-1">Transaksi Pencairan</h4>
+			</div>
+			<div class="col-9">
+				<div class="row justify-content-end">
+					<div class="col-3">
+						<button class="btn btn-sm btn-primary btn-block" data-toggle="modal" data-target="#modal-data">
+							Riwayat Transaksi
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+        <?php if (!$setting) { ?>
             <div class="row mt-3">
                 <div class="error-page" style="margin-top: 100px;">
                     <div class="error-content">
@@ -25,39 +31,22 @@ if ($step[0] != 0) {
                 </div>
             </div>
         <?php } else { ?>
-            <div class="row">
-                <div class="col-3">
-                    <div class="callout callout-success py-1">
-                        <i class="fas fa-info-circle"></i>
-                        Pencairan uang saku paket - <?= @$currentStep ?>
-                    </div>
-                </div>
-                <div class="col-6" data-toggle="modal" data-target="#modal-detail" id="show-recap"></div>
-                <div class="col-3">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="far fa-calendar-alt"></i>
-                            </span>
-                        </div>
-                        <input type="text" class="form-control form-control-sm" id="reservation" placeholder="Hari ini">
-                        <input type="hidden" id="filter-date" value="">
-                    </div>
-                </div>
-            </div>
-            <hr class="mt-0">
-            <div class="row">
+            <div class="row mt-2">
                 <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="nis">NIS <small class="text-success">Tekan F2 untuk fokus inputan NIS</small> </label>
-                                <input autofocus data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="nis" name="nis">
+                                <label for="card">NIS <small class="text-success">Tekan F2 untuk fokus inputan Kartu</small> </label>
+                                <input autofocus data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="card" name="card">
                             </div>
                             <div class="form-group">
                                 <form id="form-disbursement" autocomplete="off">
-                                    <input type="hidden" name="package" id="package" value="0">
-                                    <input type="hidden" name="nis_save" id="nis-save" value="0">
+                                    <input type="hidden" name="date" id="date" value="<?= $setting->created_at ?>">
+                                    <input type="hidden" name="nis" id="nis" value="">
+                                    <input type="hidden" name="purchase" id="purchase" value="">
+                                    <input type="hidden" name="account" id="account" value="">
+                                    <input type="hidden" name="total" id="total" value="">
+									<input type="hidden" name="nominal_real" id="nominal-real" value="">
                                     <label for="nominal">Nominal</label>
                                     <input readonly type="text" class="form-control indonesian-currency" id="nominal" name="nominal">
                                 </form>
@@ -65,24 +54,37 @@ if ($step[0] != 0) {
                         </div>
                     </div>
                 </div>
-                <div class="col-8" id="show-data"></div>
+                <div class="col-8" id="show-data" style="display: none">
+					<b id="name"></b> <br>
+					<hr class="my-2">
+					<span id="address"></span>
+					<br>
+					<span id="domicile"></span>
+					<hr class="my-2">
+					<span id="diniyah"></span>
+					<br>
+					<span id="formal"></span>
+					<hr class="my-2">
+					<span id="total-text"></span>
+				</div>
             </div>
         <?php } ?>
     </section>
     <!-- /.content -->
 </div>
 
-
-<div class="modal fade" id="modal-detail">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <input type="text" onkeyup="loadData()" id="changeName" class="form-control form-control-sm" placeholder="Cari nama">
-            </div>
-            <div class="modal-body" id="show-detail" style="min-height: 45vh; max-height: 85vh; overflow: auto"></div>
-        </div>
-    </div>
+<div class="modal fade" id="modal-data">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<input autocomplete="off" type="text" id="filter-name" class="form-control form-control-sm" placeholder="Ketik nama lalu tekan enter">
+			</div>
+			<div class="modal-body" id="show-disbursement" style="min-height: 45vh; max-height: 85vh; overflow: auto"></div>
+		</div>
+	</div>
 </div>
+
+
 <?php $this->load->view('partials/footer'); ?>
 <script src="<?= base_url('template') ?>/plugins/moment/moment.min.js"></script>
 <script src="<?= base_url('template') ?>/plugins/daterangepicker/daterangepicker.js"></script>

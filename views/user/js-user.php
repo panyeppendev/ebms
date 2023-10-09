@@ -93,13 +93,6 @@
                         $('#password_confirmation').removeClass('is-invalid')
                     }
 
-                    if (error.role) {
-                        $('#errorrole').html(error.role)
-                        $('#role').addClass('is-invalid')
-                    } else {
-                        $('#errorrole').html('')
-                        $('#role').removeClass('is-invalid')
-                    }
                     return false
                 }
 
@@ -172,4 +165,88 @@
             }
         })
     }
+
+	const setID = id => {
+		$('#user-id').val(id)
+	}
+
+	const saveSetRole = () => {
+		const user = $('#user-id').val()
+		const role = $('#role').val()
+		if (user == '' || role == '') {
+			toastr.error('Pastikan semua sudah dipilih')
+			return false
+		}
+
+		Swal.fire({
+			title: 'Yakin, nih?',
+			text: 'Tindakan ini sangat berpengaruh pada hak akses',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yakin dong',
+			cancelButtonText: 'Nggak Jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: '<?= base_url() ?>user/saveSetRole',
+					method: 'POST',
+					data: {
+						user,
+						role
+					},
+					dataType: 'JSON',
+					success: function(response) {
+						let status = response.status
+						if (status != 200) {
+							toastr.error(`Opppss..! ${response.message}`)
+							return false
+						}
+
+						toastr.success('Yeaah...! Satu pengguna berhasil diperbarui')
+						getdata()
+					}
+				})
+			}
+		})
+	}
+
+	const deleteRoleUser = id => {
+		Swal.fire({
+			title: 'Yakin, nih?',
+			text: 'Tindakan ini sangat berpengaruh',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yakin dong!',
+			cancelButtonText: 'Nggak jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: '<?= base_url() ?>user/deleteRoleUser',
+					method: 'POST',
+					data: {
+						id
+					},
+					dataType: 'JSON',
+					success: function(response) {
+						let status = response.status
+						if (status != 200) {
+							toastr.error(`Oppsss..! ${response.message}`)
+							return false
+						}
+
+						toastr.success('Yeaahh..! Satu akses berhasil dihentikan')
+						getdata()
+					}
+				})
+			}
+		})
+	}
+
+	$('#modal-set').on('hidden.bs.modal', () => {
+		$('#role').val('')
+	})
 </script>

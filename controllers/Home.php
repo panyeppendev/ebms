@@ -15,8 +15,8 @@ class Home extends CI_Controller
     {
         $data = [
             'title' => 'e-bms Sistem',
-            'step' => $this->hm->step(),
-            'data' => $this->hm->getdata(),
+//            'step' => $this->hm->step(),
+//            'data' => $this->hm->getdata(),
             'class' => 'active'
         ];
         $this->load->view('home/home', $data);

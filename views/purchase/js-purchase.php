@@ -8,7 +8,7 @@
     }
 
     $(function() {
-        loadRecap()
+        purchases()
     })
 
     $('body').on('keydown', e => {
@@ -17,28 +17,39 @@
         }
     })
 
-    $('#reservation').daterangepicker({
-        singleDatePicker: true,
-        autoUpdateInput: false,
-        locale: {
-            cancelLabel: 'Reset',
-            applyLabel: 'Terapkan'
-        }
-    })
+	$('#reservation').daterangepicker({
+		ranges: {
+			'Hari ini': [moment(), moment()],
+			'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+			'7 hari terakhir': [moment().subtract(6, 'days'), moment()],
+			'30 hari terakhir': [moment().subtract(29, 'days'), moment()],
+			'Bulan ini': [moment().startOf('month'), moment().endOf('month')],
+			'Bulan lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+		},
+		autoUpdateInput: false,
+		locale: {
+			cancelLabel: 'Reset',
+			applyLabel: 'Terapkan'
+		}
+	})
 
-    $('#reservation').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val('').attr('placeholder', picker.startDate.format('DD/MM/YYYY'));
-        $('#filter-date').val(picker.startDate.format('YYYY-MM-DD'))
+	$('#reservation').on('apply.daterangepicker', function(ev, picker) {
+		$(this).val('').attr('placeholder', picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+		$('#start-date').val(picker.startDate.format('YYYY-MM-DD'))
+		$('#end-date').val(picker.endDate.format('YYYY-MM-DD'))
+		$('#start-date-download').val(picker.startDate.format('YYYY-MM-DD'))
+		$('#end-date-download').val(picker.endDate.format('YYYY-MM-DD'))
 
-        loadRecap()
-    });
+	});
 
-    $('#reservation').on('cancel.daterangepicker', function(ev, picker) {
-        $(this).attr('placeholder', 'Hari ini').val('');
-        $('#filter-date').val('')
+	$('#reservation').on('cancel.daterangepicker', function(ev, picker) {
+		$(this).attr('placeholder', 'Semua waktu').val('');
+		$('#start-date').val('')
+		$('#end-date').val('')
+		$('#start-date-download').val('')
+		$('#end-date-download').val('')
 
-        loadRecap()
-    });
+	});
 
     $('#nominal').on('keyup', e => {
         if (e.keyCode == 113) {
@@ -47,16 +58,16 @@
         }
     })
 
-    const loadRecap = () => {
-        let filter = $('#filter-date').val()
+    const purchases = () => {
+        let filter = $('#change-type').val()
         $.ajax({
-            url: '<?= base_url() ?>purchase/loadrecap',
+            url: '<?= base_url() ?>purchase/purchases',
             method: 'POST',
             data: {
                 filter
             },
             success: function(res) {
-                $('#show-recap').html(res)
+                $('#show-data').html(res)
             }
         })
     }

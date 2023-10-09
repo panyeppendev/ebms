@@ -15,49 +15,25 @@ class Disbursement extends CI_Controller
     {
         $data = [
             'title' => 'Pencairan Uang Saku',
-            'step' => $this->dbm->step(),
             'setting' => $this->dbm->setting(),
         ];
         $this->load->view('disbursement/disbursement', $data);
     }
 
-    public function loadData()
+	public function checkCard()
+	{
+		$result = $this->dbm->checkCard();
+
+		echo json_encode($result);
+	}
+
+    public function disbursements()
     {
-        $get = $this->dbm->loadRecap();
+        $data = $this->dbm->disbursements();
         $data = [
-            'data' => $get[2]
+            'disbursements' => $data
         ];
         $this->load->view('disbursement/ajax-data', $data);
-    }
-
-    public function loadRecap()
-    {
-        $data = $this->dbm->loadRecap();
-        $data = [
-            'data' => $data
-        ];
-        $this->load->view('disbursement/ajax-recap', $data);
-    }
-
-    public function setPocket()
-    {
-        $result = $this->dbm->setPocket();
-
-        echo json_encode($result);
-    }
-
-    public function setFasting()
-    {
-        $result = $this->dbm->setFasting();
-
-        echo json_encode($result);
-    }
-
-    public function checkNis()
-    {
-        $result = $this->dbm->checkNis();
-
-        echo json_encode($result);
     }
 
     public function save()
@@ -67,11 +43,10 @@ class Disbursement extends CI_Controller
         echo json_encode($result);
     }
 
-    public function getData()
-    {
-        $data = [
-            'data' => $this->dbm->getData()
-        ];
-        $this->load->view('disbursement/ajax-check', $data);
-    }
+	public function destroy()
+	{
+		$result = $this->dbm->destroy();
+
+		echo json_encode($result);
+	}
 }

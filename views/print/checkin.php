@@ -184,68 +184,32 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h6>
-                    DATA PEMBAYARAN PAKET TAHAP KE-5
+                <h6 class="text-center mb-2">
+                    DATA SANTRI TIDAK CHECKIN LIBURAN MAULID 1445 H
                 </h6>
-                <table>
+                <table class="tablestripped table-xl">
                     <thead>
                         <tr>
                             <th>NO</th>
+                            <th>NIS</th>
                             <th>NAMA</th>
-                            <th>DOMISILI</th>
                             <th>ALAMAT</th>
-                            <th>PAKET</th>
-                            <th>SAKU</th>
-                            <th>SARAPAN</th>
-                            <th>DPU</th>
-                            <th>ADMIN</th>
-                            <th>TRANSPORT</th>
+                            <th>DOMISILI</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $pocket = [
-                            'A' => 150000,
-                            'B' => 150000,
-                            'C' => 300000,
-                            'D' => 300000,
-                            'UNKNOWN' => 0,
-                            '' => 0,
-                            NULL => 0
-                        ];
-
-                        $moorning = [
-                            'A' => 0,
-                            'B' => 120000,
-                            'C' => 0,
-                            'D' => 120000,
-                            'UNKNOWN' => 0,
-                            '' => 0,
-                            NULL => 0
-                        ];
-                        if ($datas) {
+                        if ($data) {
                             $no = 1;
-                            foreach ($datas as $d) {
-                                $package = $d->package;
-                                if ($package == 'UNKNOWN' || $package == '' || $package == NULL) {
-                                    $packageFinal = '';
-                                } else {
-                                    $packageFinal = $package;
-                                }
-                                $qty = $d->amount;
+                            foreach ($data as $d) {
                         ?>
-                                <tr>
-                                    <td class="text-center"><?= $no++ ?></td>
-                                    <td><?= $d->name ?></td>
-                                    <td><?= $d->domicile ?></td>
-                                    <td><?= $d->village . ', ' . $d->city ?></td>
-                                    <td class="text-center"><?= $packageFinal ?></td>
-                                    <td><?= $pocket[$package] ?></td>
-                                    <td><?= $moorning[$package] ?></td>
-                                    <td><?= ($package == 'UNKNOWN') ? 0 : 200000 ?></td>
-                                    <td><?= ($package == 'UNKNOWN') ? 0 : 15000 ?></td>
-                                    <td><?= $d->transport ?></td>
-                                </tr>
+                        <tr>
+                            <td class="text-center"><?= $no++ ?></td>
+                            <td class="text-center"><?= $d->id ?></td>
+                            <td><?= $d->name ?></td>
+                            <td><?= $d->village.', '.str_replace(['Kabupaten', 'Kota '], '', $d->city) ?></td>
+                            <td class="text-center"><?= $d->domicile ?></td>
+                        </tr>
                         <?php
                             }
                         }
@@ -255,12 +219,12 @@
             </div>
         </div>
     </div>
-    <!-- <script>
-        window.print()
-        setTimeout(() => {
-            window.close()
-        }, 2000);
-    </script> -->
+<!--    <script>-->
+<!--        window.print()-->
+<!--        setTimeout(() => {-->
+<!--            window.close()-->
+<!--        }, 2000);-->
+<!--    </script>-->
 </body>
 
 </html>

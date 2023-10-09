@@ -14,7 +14,8 @@ class User extends CI_Controller
     public function index()
     {
         $data = [
-            'title' => 'Data User | e-bms'
+            'title' => 'Data User | e-bms',
+			'roles' => $this->um->roles()
         ];
         $this->load->view('user/user', $data);
     }
@@ -41,7 +42,6 @@ class User extends CI_Controller
         $this->form_validation->set_rules('name', 'Nama', 'required');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]');
         $this->form_validation->set_rules('password_confirmation', 'Password Konfirmasi', 'required|matches[password]');
-        $this->form_validation->set_rules('role', 'Akses', 'required');
         if ($this->form_validation->run() == FALSE) {
             $response = [
                 'status' => 400,
@@ -69,4 +69,18 @@ class User extends CI_Controller
 
         echo json_encode($response);
     }
+
+	public function saveSetRole()
+	{
+		$result = $this->um->saveSetRole();
+
+		echo json_encode($result);
+	}
+
+	public function deleteRoleUser()
+	{
+		$result = $this->um->deleteRoleUser();
+
+		echo json_encode($result);
+	}
 }

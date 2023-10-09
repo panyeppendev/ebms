@@ -61,5 +61,46 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+<div class="modal fade" id="modal-set" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-default">
+			<div class="modal-content">
+				<div class="modal-header py-2">
+					<h6 class="modal-title">Form Atur Menu</h6>
+					<div class="align-middle" data-dismiss="modal" title="Tutup" style="cursor: pointer">
+						<i class="fas fa-times-circle text-danger"></i>
+					</div>
+				</div>
+				<div class="modal-body">
+					<form id="form-set" autocomplete="off">
+						<input type="hidden" name="menu" id="id-menu" value="">
+						<div class="form-group">
+							<label for="name">Urut</label>
+							<input type="number" name="order" class="form-control form-control-border text-capitalize" id="order">
+						</div>
+						<div class="form-group">
+							<label for="icon">Role</label>
+							<select name="role" class="form-control form-control-border" id="role">
+								<option value="">:Pilih:</option>
+								<?php
+									if ($roles) {
+										foreach ($roles as $role) {
+								?>
+											<option value="<?= $role->id ?>"><?= $role->name ?></option>
+								<?php
+										}
+									}
+								?>
+							</select>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer justify-content-end p-2">
+					<button type="button" class="btn btn-primary btn-sm" onclick="saveSet()" id="save-set">Simpan</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
 <?php $this->load->view('partials/footer'); ?>
 <?php $this->load->view('menu/js-menu'); ?>

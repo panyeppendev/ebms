@@ -1,72 +1,48 @@
 <?php $this->load->view('partials/header'); ?>
-<?php
-if ($step[0] != 0) {
-    $currentStep = $step[0];
-} else {
-    $currentStep = 0;
-}
-?>
-<input type="hidden" id="current_step" value="<?= $currentStep ?>">
 <div class="content-wrapper">
     <!-- Main content -->
     <section class="content p-3">
-        <?php if ($setting == 'CLOSED') { ?>
-            <div class="row mt-3">
-                <div class="error-page" style="margin-top: 100px;">
-                    <div class="error-content">
-                        <h3><i class="fas fa-exclamation-triangle text-danger"></i> Oops! ada masalah nih....</h3>
-                        <p>
-                            Pencairan uang saku baik tunai maupun non-tunai belum dibuka. Segera hubungi bagian admin ~<br>
-                            <br>
-                            <a href="<?= base_url() ?>">Kilik untuk kembali ke Beranda</a>
-                        </p>
-
-                    </div>
-                </div>
-            </div>
-        <?php } else { ?>
-            <div class="row mb-2">
-                <div class="col-3">
-                    <div class="callout callout-success py-1">
-                        <i class="fas fa-info-circle"></i>
-                        Pencairan non tunai paket - <?= @$currentStep ?>
-                    </div>
-                </div>
-                <div class="col-6" id="show-recap" data-toggle="modal" data-target="#modal-detail"></div>
-                <div class="col-3">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="far fa-calendar-alt"></i>
-                            </span>
-                        </div>
-                        <input type="text" class="form-control form-control-sm" id="reservation" placeholder="Hari ini">
-                        <input type="hidden" id="filter-date" value="">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="nis">NIS <small class="text-success">Tekan F2 untuk fokus inputan NIS</small> </label>
-                                <input data-inputmask="'mask' : '999999999999999'" data-mask="" type="text" class="form-control" id="nis" name="nis" autofocus>
-                            </div>
-                            <form id="form-purchase" autocomplete="off">
-                                <input type="hidden" name="package" id="package" value="0">
-                                <input type="hidden" name="nis_save" id="nis-save" value="0">
-                                <div class="form-group">
-                                    <label for="nominal">Nominal</label>
-                                    <input readonly type="text" class="form-control" id="nominal" name="nominal">
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-8" id="show-data"></div>
-            </div>
-        <?php } ?>
+		<div class="row justify-content-between">
+			<div class="col-3">
+				<h4 class="card-title mt-1">Transaksi Paket</h4>
+			</div>
+			<div class="col-9">
+				<div class="row justify-content-end">
+<!--					<div class="col-4">-->
+<!--						<div class="input-group">-->
+<!--							<div class="input-group-prepend">-->
+<!--                        <span class="input-group-text">-->
+<!--                            <i class="far fa-calendar-alt"></i>-->
+<!--                        </span>-->
+<!--							</div>-->
+<!--							<input type="text" class="form-control form-control-sm" id="reservation" placeholder="Semua waktu">-->
+<!--							<input type="hidden" id="start-date" value="">-->
+<!--							<input type="hidden" id="end-date" value="">-->
+<!--						</div>-->
+<!--					</div>-->
+					<div class="col-3">
+						<select name="" id="change-type" class="form-control form-control-sm" onchange="purchases()">
+							<option value="INACTIVE">TIDAK AKTIF</option>
+							<option value="ACTIVE">AKTIF</option>
+							<option value="DONE">SELESAI</option>
+						</select>
+					</div>
+					<div class="col-3">
+						<a href="<?= base_url() ?>purchase/activation" class="btn btn-sm btn-primary btn-block">
+							<i class="fa fa-plus-circle"></i>
+							Tambah Aktivasi
+						</a>
+					</div>
+					<div class="col-3">
+						<a href="<?= base_url() ?>purchase/create" class="btn btn-sm btn-primary btn-block">
+							<i class="fa fa-plus-circle"></i>
+							Tambah Pembelian
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row mt-4" id="show-data"></div>
     </section>
     <!-- /.content -->
 </div>

@@ -10,7 +10,6 @@
         </li>
         <li class="nav-item d-none d-sm-inline-block">
             <a class="nav-link"><b><?= dateHijriFormat(getHijri()) ?> H</b></a>
-
         </li>
     </ul>
     <?php
@@ -26,12 +25,26 @@
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
             <a class="nav-link pt-0" data-toggle="dropdown" href="#">
+				<span><?= $this->session->userdata('role') ?></span>
+				<span style="font-size: 8px" class="mx-2 text-success"><i class="fas fa-circle fa-xs"></i></span>
                 <b class="text-dark"><?= $this->session->userdata('name') ?></b>
                 <img id="avatar-navbar" style="width: 30px;" src="<?= $avatar ?>" class="brand-image img-circle elevation-2 ml-2" style="opacity: .8">
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-item dropdown-header"><?= $this->session->userdata('username') ?></span>
                 <div class="dropdown-divider"></div>
+				<?php
+				$roles = roles();
+				if ($roles) {
+					foreach ($roles as $role) {
+						?>
+						<span class="dropdown-item" style="cursor: pointer" onclick="switchRole('<?= $role->id ?>')">
+							<i class="fas fa-angle-right"></i> Switch as <b><?= $role->name ?></b>
+						</span>
+						<?php
+					}
+				}
+				?>
+				<div class="dropdown-divider"></div>
                 <a href="<?= base_url() ?>profile" class="dropdown-item">
                     <i class="fas fa-user-circle mr-2"></i> Lihat Akun
                 </a>

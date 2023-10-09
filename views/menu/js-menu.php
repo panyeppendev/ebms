@@ -122,7 +122,7 @@
         })
     }
 
-    const addUserMenu = (id, role) => {
+    const deleteRoleMenu = (id) => {
         Swal.fire({
             title: 'Yakin, nih?',
             text: 'Tindakan ini sangat berpengaruh',
@@ -135,47 +135,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '<?= base_url() ?>menu/addusermenu',
-                    method: 'POST',
-                    data: {
-                        id,
-                        role
-                    },
-                    dataType: 'JSON',
-                    success: function(response) {
-                        let status = response.status
-                        if (status == 400) {
-                            toastr.error('Oppsss..! Ada kesalahan server nih')
-                            return false
-                        }
-
-                        if (status == 500) {
-                            toastr.error('Oppsss..! Akses sudah ditambahkan sebelumnya')
-                            return false
-                        }
-
-                        toastr.success('Yeaahh..! Satu akses berhasil ditambahkan')
-                        getdata()
-                    }
-                })
-            }
-        })
-    }
-
-    const deleteUserMenu = (id) => {
-        Swal.fire({
-            title: 'Yakin, nih?',
-            text: 'Tindakan ini sangat berpengaruh',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yakin dong!',
-            cancelButtonText: 'Nggak jadi'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '<?= base_url() ?>menu/deleteusermenu',
+                    url: '<?= base_url() ?>menu/deleteRoleMenu',
                     method: 'POST',
                     data: {
                         id
@@ -183,8 +143,8 @@
                     dataType: 'JSON',
                     success: function(response) {
                         let status = response.status
-                        if (status == 400) {
-                            toastr.error('Oppsss..! Ada kesalahan server nih')
+                        if (status != 200) {
+                            toastr.error(`Oppsss..! ${response.message}`)
                             return false
                         }
 
@@ -195,6 +155,40 @@
             }
         })
     }
+
+	const getID = id => {
+	  	$('#id-menu').val(id)
+	}
+
+	const saveSet = () => {
+		let menu = $('#id-menu').val()
+		let order = $('#order').val()
+		let role = $('#role').val()
+		if (order == '' || order <= 0 || role == '') {
+			toastr.error('Pastikan sudah diisi')
+			return false
+		}
+		$.ajax({
+			url: '<?= base_url() ?>menu/saveset',
+			method: 'POST',
+			data: {
+				menu,
+				order,
+				role
+			},
+			dataType: 'JSON',
+			success: function(response) {
+				let status = response.status
+				if (status != 200) {
+					toastr.error(`Oppsss..! ${response.message}`)
+					return false
+				}
+
+				toastr.success('Yeaahh..! Satu akses berhasil diatur')
+				getdata()
+			}
+		})
+	}
 </script>
 </body>
 

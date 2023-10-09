@@ -14,57 +14,83 @@ class Purchase extends CI_Controller
     public function index()
     {
         $data = [
-            'title' => 'Transaksi Pembelian',
-            'step' => $this->pm->step(),
-            'setting' => $this->pm->setting()
+            'title' => 'Transaksi Paket',
         ];
         $this->load->view('purchase/purchase', $data);
     }
 
-    public function checkNIS()
-    {
-        $result = $this->pm->checkNIS();
-        echo json_encode($result);
-    }
-
-    public function getData()
-    {
-        $data = [
-            'data' => $this->pm->getData()
-        ];
-        $this->load->view('purchase/ajax-check', $data);
-    }
-
-    public function getcheck()
-    {
-        $data = [
-            'data' => $this->pm->getData()
-        ];
-        $this->load->view('purchase/ajax-check-deposit', $data);
-    }
+	public function create()
+	{
+		$data = [
+			'title' => 'Pembelian Paket',
+			'packages' => $this->pm->packages(),
+			'addons' => $this->pm->addons()
+		];
+		$this->load->view('purchase/create/purchase-create', $data);
+	}
 
     public function save()
     {
-        $result = $this->pm->save();
-
-        echo json_encode($result);
-    }
-
-    public function loadData()
-    {
-        $get = $this->pm->loadRecap();
         $data = [
-            'data' => $get
-        ];
-        $this->load->view('purchase/ajax-data', $data);
+			'data' => $this->pm->save()
+		];
+		$this->load->view('purchase/create/ajax-check-purchase', $data);
     }
 
-    public function loadRecap()
-    {
-        $get = $this->pm->loadRecap();
-        $data = [
-            'data' => $get
-        ];
-        $this->load->view('purchase/ajax-recap', $data);
+	public function purchases()
+	{
+		$data = [
+			'purchases' => $this->pm->purchases()
+		];
+		$this->load->view('purchase/ajax-data', $data);
     }
+
+	public function store()
+	{
+		$result = $this->pm->store();
+
+		echo json_encode($result);
+	}
+
+	public function invoice()
+	{
+		$data = [
+			'title' => 'Print Invoice',
+			'data' => $this->pm->invoice()[0],
+			'package' => $this->pm->invoice()[1],
+			'addon' => $this->pm->invoice()[2]
+		];
+
+		$this->load->view('print/purchase', $data);
+	}
+
+	public function activation()
+	{
+		$data = [
+			'title' => 'Aktivasi Paket'
+		];
+		$this->load->view('purchase/activation/purchase-activation', $data);
+	}
+
+	public function purchasebyid()
+	{
+		$data = [
+			'purchases' => $this->pm->purchasebyid()
+		];
+		$this->load->view('purchase/activation/ajax-check-activation', $data);
+	}
+
+	public function activate()
+	{
+		$result = $this->pm->activate();
+
+		echo json_encode($result);
+	}
+
+	public function finished()
+	{
+		$result = $this->pm->finished();
+
+		echo json_encode($result);
+	}
 }

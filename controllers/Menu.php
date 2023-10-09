@@ -8,13 +8,15 @@ class Menu extends CI_Controller
         parent::__construct();
         $this->load->library('form_validation');
         $this->load->model('MenuModel', 'mm');
+        $this->load->model('RoleModel', 'rm');
         CekLoginAkses();
     }
 
     public function index()
     {
         $data = [
-            'title' => 'Menage Menu'
+            'title' => 'Menage Menu',
+			'roles' => $this->rm->roles()
         ];
         $this->load->view('menu/menu', $data);
     }
@@ -74,41 +76,18 @@ class Menu extends CI_Controller
         echo json_encode($response);
     }
 
-    public function addusermenu()
+    public function saveSet()
     {
-        $result = $this->mm->addusermenu();
-        if ($result <= 0) {
-            $response = [
-                'status' => 400
-            ];
-        } else {
-            if ($result == 500) {
-                $response = [
-                    'status' => 500
-                ];
-            } else {
-                $response = [
-                    'status' => 200
-                ];
-            }
-        }
+        $result = $this->mm->saveSet();
 
-        echo json_encode($response);
+        echo json_encode($result);
     }
 
-    public function deleteusermenu()
+    public function deleteRoleMenu()
     {
-        $result = $this->mm->deleteusermenu();
-        if ($result > 0) {
-            $response = [
-                'status' => 200
-            ];
-        } else {
-            $response = [
-                'status' => 400
-            ];
-        }
+        $result = $this->mm->deleteRoleMenu();
 
-        echo json_encode($response);
+
+        echo json_encode($result);
     }
 }

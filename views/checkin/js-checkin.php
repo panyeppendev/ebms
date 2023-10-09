@@ -90,6 +90,7 @@
 
     const loadData = () => {
         let domicile = $('#changeDomicile').val()
+		$('#id-print').val(domicile)
         $.ajax({
             url: '<?= base_url() ?>checkin/loaddata',
             method: 'POST',
@@ -101,6 +102,15 @@
             }
         })
     }
+
+	const printOut = () => {
+		let id = $('#id-print').val()
+		if (!id) {
+			toastr.error('Pilih dulu domisili santri')
+			return false
+		}
+	  	$('#form-print').submit()
+	}
 </script>
 </body>
 

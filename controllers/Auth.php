@@ -43,6 +43,14 @@ class Auth extends CI_Controller
         echo json_encode($response);
     }
 
+	public function switchRole()
+	{
+		$roleId = $this->input->post('role_id', true);
+		$result = $this->am->switchRole($roleId);
+
+		echo json_encode($result);
+	}
+
     public function logout()
     {
         $data = [
