@@ -233,6 +233,20 @@ create table disbursements
         foreign key (student_id) references students (id)
 );
 
+RESERVED_POCKET
+- Add table
+create table reserved_pocket
+(
+    id         int auto_increment
+        primary key,
+    student_id varchar(15)   not null,
+    amount     int default 0 null,
+    constraint reserved_pocket_students_id_fk
+        foreign key (student_id) references students (id)
+);
+
+
+
 
 
 
