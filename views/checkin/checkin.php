@@ -78,21 +78,15 @@
 					<h6 class="modal-title">Data Check In Liburan</h6>
 					<select id="changeDomicile" onchange="loadData()" style="width: 200px" class="form-control form-control-sm float-right mr-2">
 						<option value="">.:Semua:.</option>
-						<option value="Imam Ghazali">Imam Ghazali</option>
-						<option value="Imam Maliki">Imam Maliki</option>
-						<option value="Imam Hanafi">Imam Hanafi</option>
-						<option value="Imam Hambali">Imam Hambali</option>
-						<option value="Imam Sibaweh">Imam Sibaweh</option>
-						<option value="Imam Syafi'i">Imam Syafi'i</option>
-						<option value="Imam Ibnu Hajar Al-Haitami">Imam Ibnu Hajar Al-Haitami</option>
-						<option value="Imam An-Nawawi">Imam An-Nawawi</option>
-						<option value="Imam Ar-Rofi'i">Imam Ar-Rofi'i</option>
-						<option value="Imam Haramain">Imam Haramain</option>
-						<option value="Sayyidina Abu Bakar">Sayyidina Abu Bakar</option>
-						<option value="Sayyidina Umar">Sayyidina Umar</option>
-						<option value="Sayyidina Utsman">Sayyidina Utsman</option>
-						<option value="Sayyidina Ali">Sayyidina Ali</option>
-						<option value="Imam As-Suyuthi">Imam As-Suyuthi</option>
+						<?php
+						if ($rooms) {
+							foreach ($rooms as $room) {
+								?>
+								<option value="<?= $room->name ?>"><?= $room->name ?></option>
+						<?php
+							}
+						}
+						?>
 					</select>
 				</div>
 				<div class="modal-body pt-0" style="max-height: 80vh; overflow-y: auto">
