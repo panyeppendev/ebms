@@ -103,6 +103,10 @@
         })
     }
 
+	$('#changeDomicile').on('change', function (){
+		$('#id-print').val($(this).val())
+	})
+
 	const printOut = () => {
 		let id = $('#id-print').val()
 		if (!id) {
