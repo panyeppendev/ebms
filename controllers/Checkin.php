@@ -54,7 +54,7 @@ class Checkin extends CI_Controller
 	{
 		$data = [
 			'title' => 'Print Out Checkin Liburan',
-			'data' => $this->cm->printOut(),
+			'datas' => $this->cm->printOut(),
 			'domicile' => $this->input->post('domicile', true)
 		];
 		$this->load->view('print/checkin', $data);
