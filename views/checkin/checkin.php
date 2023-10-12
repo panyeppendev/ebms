@@ -88,7 +88,7 @@
 						}
 						?>
 					</select>
-					<form action="<?= base_url() ?>checkin/printOut" method="post" target="_blank">
+					<form action="<?= base_url() ?>checkin/printOut" method="post" target="_blank" id="form-print">
 						<input type="hidden" name="domicile" id="id-print" value="">
 					</form>
 					<button class="btn btn-sm btn-primary" onclick="printOut()">Print</button>
