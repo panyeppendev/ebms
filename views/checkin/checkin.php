@@ -88,6 +88,10 @@
 						}
 						?>
 					</select>
+					<form action="<?= base_url() ?>checkin/printOut" method="post" target="_blank">
+						<input type="hidden" name="domicile" id="id-print" value="">
+					</form>
+					<button class="btn btn-sm btn-primary" onclick="printOut()">Print</button>
 				</div>
 				<div class="modal-body pt-0" style="max-height: 80vh; overflow-y: auto">
 					<div class="row" id="load-data"></div>
