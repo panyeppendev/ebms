@@ -7,7 +7,7 @@ class DisbursementModel extends CI_Model
 	{
 		$date = $this->input->post('date', true);
 		$name = $this->input->post('name', true);
-		$this->db->select('a.amount, a.id, b.name, b.village, b.city, b.domicile')->from('disbursements as a');
+		$this->db->select('a.amount, a.id, b.name, b.village, b.city, b.domicile, b.class, b.level, b.class_of_formal, b.level_of_formal')->from('disbursements as a');
 		$this->db->join('students as b', 'b.id = a.student_id')->where('a.created_at', $date);
 		if ($name) {
 			$this->db->like('b.name', $name);
@@ -22,6 +22,20 @@ class DisbursementModel extends CI_Model
 	public function account()
 	{
 		return $this->db->get('account_pocket')->row_object();
+	}
+
+	public function dailyTotal()
+	{
+		$date = $this->input->post('date', true);
+		$data = $this->db->select('SUM(amount) as total')->from('disbursements')->where([
+			'created_at' => $date
+		])->get()->row_object();
+
+		if ($data) {
+			return 'Rp. '.number_format($data->total, 0, ',', '.');
+		}
+
+		return 'Rp. 0';
 	}
 
     public function checkCard()
@@ -88,20 +102,72 @@ class DisbursementModel extends CI_Model
 		$disbursement = $this->getDisbursement($nis, $setting->created_at);
         return [
             'status' => 200,
-            'balance' => $balance,
+            'balance' => $balance[0],
 			'disbursement' => $disbursement,
-			'total' => $balance - $disbursement,
+			'total' => $balance[0] - $disbursement,
             'nis' => $nis,
             'purchase' => $checkPurchase->id,
 			'account' => $account->account_id,
-			'name' => $cekStudent->name,
-			'address' => $cekStudent->village.', '.$cekStudent->city,
-			'domicile' => $cekStudent->domicile,
-			'diniyah' => $cekStudent->class.', '.$cekStudent->level,
-			'formal' => $cekStudent->class_of_formal.', '.$cekStudent->level_of_formal,
 			'date' => $setting->created_at
         ];
     }
+
+	public function getData()
+	{
+		$nis = $this->input->post('nis', true);
+		$setting = $this->setting();
+
+		$name = '';
+		$address = '';
+		$domicile = '';
+		$diniyah = '';
+		$formal = '';
+		$package = '';
+		$daily = '';
+		$reserved = '';
+		$disbursement = '';
+
+		$student = $this->db->get_where('students', ['id' => $nis])->row_object();
+
+		$this->db->select('b.name')->from('purchases as a')->join('packages as b', 'b.id = a.package_id');
+		$purchase = $this->db->where(['a.student_id' => $nis, 'a.status' => 'ACTIVE'])->get()->row_object();
+		if ($student) {
+			$name = $student->name;
+			$address = $student->village.', '.str_replace(['Kota ', 'Kabupaten '], '', $student->city);
+			$domicile = $student->domicile;
+			$diniyah = $student->class.' - '.$student->level;
+			$formal = $student->class_of_formal.' - '.$student->level_of_formal;
+		}
+
+		if ($purchase) {
+			$package = $purchase->name;
+		}
+
+		$balance = $this->getBalance($nis);
+		if ($balance) {
+			$daily = $balance[0];
+			$reserved = $balance[1];
+		}
+
+		$disbursementLog = $this->getDisbursement($nis, $setting->created_at);
+		if ($disbursementLog) {
+			$disbursement = $disbursementLog;
+		}
+
+		return [
+			'nis' => $nis,
+			'name' => $name,
+			'address' => $address,
+			'domicile' => $domicile,
+			'diniyah' => $diniyah,
+			'formal' => $formal,
+			'package' => $package,
+			'daily' => $daily,
+			'reserved' => $reserved,
+			'disbursement' => $disbursement,
+			'total' => $daily - $disbursement
+		];
+	}
 
 	public function getBalance($id)
 	{
@@ -109,10 +175,10 @@ class DisbursementModel extends CI_Model
 			'student_id' => $id
 		])->row_object();
 		if ($data) {
-			return $data->pocket + $data->reserved;
+			return [$data->pocket, $data->reserved];
 		}
 
-		return 0;
+		return [0, 0];
 	}
 
 	public function getDisbursement($nis, $date)
