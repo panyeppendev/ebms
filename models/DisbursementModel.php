@@ -123,9 +123,9 @@ class DisbursementModel extends CI_Model
 		$diniyah = '';
 		$formal = '';
 		$package = '';
-		$daily = '';
-		$reserved = '';
-		$disbursement = '';
+		$daily = 0;
+		$reserved = 0;
+		$disbursement = 0;
 
 		$student = $this->db->get_where('students', ['id' => $nis])->row_object();
 
