@@ -81,22 +81,38 @@
                     return false
                 }
 
-				nominalEl.prop('readonly', false).focus()
-				$('#nominal').autoNumeric('set', res.total)
+				if (res.total <= 0) {
+					nominalEl.prop('readonly', true).val('')
+					errorAlert('Saldo limit tidak tersedia')
+				}else {
+					nominalEl.prop('readonly', false).focus()
+					nominalEl.autoNumeric('set', res.total)
+					nominalEl.select()
+				}
+
+
 				$('#nis').val(res.nis)
 				$('#purchase').val(res.purchase)
 				$('#account').val(res.account)
 				$('#total').val(res.total)
-				$('#name').text(res.name)
-				$('#address').text(res.address)
-				$('#domicile').text(res.domicile)
-				$('#diniyah').text(res.diniyah)
-				$('#formal').text(res.formal)
-				$('#total-text').text(res.total)
-				$('#show-data').show()
+
+				getData(res.nis)
             }
         })
     }
+
+	const getData = nis => {
+		$.ajax({
+			url: '<?= base_url() ?>disbursement/getdata',
+			method: 'POST',
+			data: {
+				nis
+			},
+			success: function(res) {
+				$('#show-data').html(res)
+			}
+		})
+	}
 
 	$('#form-disbursement').on('submit', function(e) {
 		e.preventDefault()
@@ -152,6 +168,8 @@
 				$('#nominal-real').val('')
                 $('#nominal').prop('readonly', true).val('')
 				$('#show-data').hide()
+
+				dailyTotal()
 				disbursements()
             }
         })
@@ -172,6 +190,21 @@
 		})
 	}
 
+	const dailyTotal = () => {
+		const name = $('#filter-name').val()
+		$.ajax({
+			url: '<?= base_url() ?>disbursement/dailytotal',
+			method: 'POST',
+			data: {
+				date: $('#date').val()
+			},
+			dataType: 'JSON',
+			success: (res) => {
+				$('#daily-total').text(res)
+			}
+		})
+	}
+
 	$('#filter-name').on('keyup', function(e) {
 		let key = e.which
 		if (key != 13) {
@@ -187,6 +220,7 @@
 
 	$(function (){
 		disbursements()
+		dailyTotal()
 	})
 
 	const destroy = id => {
@@ -217,6 +251,7 @@
 						}
 
 						toastr.success(res.message)
+						dailyTotal()
 						disbursements()
 					}
 				})

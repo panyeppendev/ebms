@@ -20,6 +20,13 @@ class Disbursement extends CI_Controller
         $this->load->view('disbursement/disbursement', $data);
     }
 
+	public function dailyTotal()
+	{
+		$result = $this->dbm->dailyTotal();
+
+		echo json_encode($result);
+	}
+
 	public function checkCard()
 	{
 		$result = $this->dbm->checkCard();
@@ -48,5 +55,14 @@ class Disbursement extends CI_Controller
 		$result = $this->dbm->destroy();
 
 		echo json_encode($result);
+	}
+
+	public function getData()
+	{
+		$result = $this->dbm->getData();
+		$data = [
+			'data' => $result
+		];
+		$this->load->view('disbursement/ajax-check', $data);
 	}
 }

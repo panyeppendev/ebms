@@ -9,6 +9,7 @@
 					<th>NAMA</th>
 					<th>ALAMAT</th>
 					<th>DOMISILI</th>
+					<th>PENDIDIKAN</th>
 					<th class="text-right">NOMINAL</th>
 					<th class="text-center">OPSI</th>
 				</tr>
@@ -29,6 +30,9 @@
 							</td>
 							<td class="align-middle">
 								<?= $disbursement->domicile ?>
+							</td>
+							<td class="align-middle text-sm">
+								<?= $disbursement->class.' - '.$disbursement->level ?>
 							</td>
 							<td class="align-middle text-right">
 								<?= number_format($disbursement->amount, 0, ',', '.') ?>

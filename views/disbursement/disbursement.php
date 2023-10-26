@@ -10,7 +10,7 @@
 				<div class="row justify-content-end">
 					<div class="col-3">
 						<button class="btn btn-sm btn-primary btn-block" data-toggle="modal" data-target="#modal-data">
-							Riwayat Transaksi
+							Riwayat: <span id="daily-total"></span>
 						</button>
 					</div>
 				</div>
@@ -31,7 +31,7 @@
                 </div>
             </div>
         <?php } else { ?>
-            <div class="row mt-2">
+            <div class="row mt-4">
                 <div class="col-4">
                     <div class="card">
                         <div class="card-body">
@@ -54,18 +54,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-8" id="show-data" style="display: none">
-					<b id="name"></b> <br>
-					<hr class="my-2">
-					<span id="address"></span>
-					<br>
-					<span id="domicile"></span>
-					<hr class="my-2">
-					<span id="diniyah"></span>
-					<br>
-					<span id="formal"></span>
-					<hr class="my-2">
-					<span id="total-text"></span>
+                <div class="col-8" id="show-data">
+
 				</div>
             </div>
         <?php } ?>
