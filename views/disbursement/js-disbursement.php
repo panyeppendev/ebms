@@ -9,32 +9,9 @@
 
     $('body').on('keydown', e => {
         if (e.keyCode == 113) {
-            $('#nis').focus().val('')
+            $('#card').focus().val('')
         }
     })
-
-    $('#reservation').daterangepicker({
-        singleDatePicker: true,
-        autoUpdateInput: false,
-        locale: {
-            cancelLabel: 'Reset',
-            applyLabel: 'Terapkan'
-        }
-    })
-
-    $('#reservation').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val('').attr('placeholder', picker.startDate.format('DD/MM/YYYY'));
-        $('#filter-date').val(picker.startDate.format('YYYY-MM-DD'))
-
-        loadRecap()
-    });
-
-    $('#reservation').on('cancel.daterangepicker', function(ev, picker) {
-        $(this).attr('placeholder', 'Hari ini').val('');
-        $('#filter-date').val('')
-
-        loadRecap()
-    });
 
     $('.indonesian-currency').autoNumeric('init', {
         aSep: '.',
@@ -61,6 +38,42 @@
 
         checkCard(card)
     })
+
+	$('#nominal').on('keyup', function (e){
+		let cardEl = $('#card')
+		let nominal = $(this).autoNumeric('get')
+		let key = e.which
+		let card = cardEl.val()
+
+		if (key != 13) {
+			return false
+		}
+
+		if (key == 13 && card == '') {
+			cardEl.val('').focus()
+			$(this).val('').prop('readonly', true)
+			return false
+		}
+		if (key == 13 && nominal == '' || nominal == 0) {
+			errorAlert('Nominal tidak boleh kosong')
+			return false
+		}
+		$('#nominal-real').val(nominal)
+		Swal.fire({
+			title: 'Yakin, nih?',
+			text: 'Tindakan ini hanya bisa dilakukan sekali',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'OK, Lanjut',
+			cancelButtonText: 'Nggak jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				save()
+			}
+		})
+	})
 
     const checkCard = card => {
 		let nominalEl = $('#nominal')
@@ -114,34 +127,6 @@
 		})
 	}
 
-	$('#form-disbursement').on('submit', function(e) {
-		e.preventDefault()
-
-		const nominal = $('#nominal').autoNumeric('get')
-
-		if (nominal == '' || nominal == 0) {
-			errorAlert('Nominal tidak boleh kosong')
-			return false
-		}
-
-		$('#nominal-real').val(nominal)
-		Swal.fire({
-			title: 'Yakin, nih?',
-			text: 'Tindakan ini hanya bisa dilakukan sekali',
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			showLoaderOnConfirm: true,
-			confirmButtonText: 'OK, Lanjut',
-			cancelButtonText: 'Nggak jadi'
-		}).then((result) => {
-			if (result.isConfirmed) {
-				save()
-			}
-		})
-	})
-
     const save = () => {
         $.ajax({
             url: '<?= base_url() ?>disbursement/save',
@@ -161,16 +146,17 @@
                 }
 
                 toastr.success('Satu data berhasil ditambahkan')
-                $('#card').focus().val('')
+				$('#show-data').html('')
 				$('#purchase').val('')
 				$('#account').val('')
 				$('#total').val('')
 				$('#nominal-real').val('')
                 $('#nominal').prop('readonly', true).val('')
-				$('#show-data').hide()
 
 				dailyTotal()
 				disbursements()
+
+				$('#card').val('').focus()
             }
         })
     }
@@ -191,7 +177,6 @@
 	}
 
 	const dailyTotal = () => {
-		const name = $('#filter-name').val()
 		$.ajax({
 			url: '<?= base_url() ?>disbursement/dailytotal',
 			method: 'POST',

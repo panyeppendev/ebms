@@ -108,20 +108,20 @@ class ShortModel extends CI_Model
             ];
         }
 
-		$checkPackage = $this->db->get_where('packages', [
-			'student_id' => $nis, 'period' => $period,
-			'step' => $step, 'status' => 'ACTIVE'
-		])->row_object();
-		if (!$checkPackage) {
-			return [
-				'status' => 200,
-				'message' => 'Santri ini tidak punya paket aktif pada tahap saat ini',
-				'nis' => $nis,
-				'package' => 0,
-				'nominal' => $checkNominal['nominal'],
-				'rp' => $checkNominal['rp']
-			];
-		}
+//		$checkPackage = $this->db->get_where('packages', [
+//			'student_id' => $nis, 'period' => $period,
+//			'step' => $step, 'status' => 'ACTIVE'
+//		])->row_object();
+//		if (!$checkPackage) {
+//			return [
+//				'status' => 200,
+//				'message' => 'Santri ini tidak punya paket aktif pada tahap saat ini',
+//				'nis' => $nis,
+//				'package' => 0,
+//				'nominal' => $checkNominal['nominal'],
+//				'rp' => $checkNominal['rp']
+//			];
+//		}
 
 		if (date('Y-m-d', strtotime($start)) > $masehi) {
 			return [
@@ -138,7 +138,7 @@ class ShortModel extends CI_Model
             'status' => 200,
             'message' => 'Sukses',
             'nis' => $nis,
-            'package' => $checkPackage->id,
+            'package' => 0,
             'nominal' => $checkNominal['nominal'],
             'rp' => $checkNominal['rp']
         ];
@@ -155,10 +155,10 @@ class ShortModel extends CI_Model
 
         return [
             'student' => $data,
-            'package' => $this->getDetailPackage($package),
-            'pocket' => $this->getPocket($package, $this->getDetailPackage($package)['limit']),
-            'daily' => $this->getPocketDaily($package, $this->getDetailPackage($package)['pocket']),
-            'deposit' => $this->getDeposit($nis)
+//            'package' => $this->getDetailPackage($package),
+//            'pocket' => $this->getPocket($package, $this->getDetailPackage($package)['limit']),
+//            'daily' => $this->getPocketDaily($package, $this->getDetailPackage($package)['pocket']),
+//            'deposit' => $this->getDeposit($nis)
         ];
     }
 

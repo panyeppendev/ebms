@@ -47,9 +47,10 @@
                                     <input type="hidden" name="account" id="account" value="">
                                     <input type="hidden" name="total" id="total" value="">
 									<input type="hidden" name="nominal_real" id="nominal-real" value="">
-                                    <label for="nominal">Nominal</label>
-                                    <input readonly type="text" class="form-control indonesian-currency" id="nominal" name="nominal">
-                                </form>
+								</form>
+								<label for="nominal">Nominal</label>
+								<input readonly type="text" class="form-control indonesian-currency" id="nominal" name="nominal">
+
                             </div>
                         </div>
                     </div>
