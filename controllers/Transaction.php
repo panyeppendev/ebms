@@ -11,37 +11,58 @@ class Transaction extends CI_Controller
         CekLoginAkses();
     }
 
-    public function index()
-    {
-        $data = [
-            'title' => 'Transaksi DPU',
-            'step' => $this->tm->step(),
-            'setting' => $this->tm->setting(),
-            'shift' => $this->tm->getShift()
-        ];
-        $this->load->view('transaction/transaction', $data);
-    }
+	public function index()
+	{
+		$data = [
+			'title' => 'Pencairan Non Tunai',
+			'setting' => $this->tm->setting(),
+		];
+		$this->load->view('transaction/transaction', $data);
+	}
 
-    public function loadData()
-    {
-        $data = [
-            'data' => $this->tm->loadData()
-        ];
-        $this->load->view('transaction/ajax-data', $data);
-    }
+	public function dailyTotal()
+	{
+		$result = $this->tm->dailyTotal();
 
-    public function checkNIS()
-    {
-        $result = $this->tm->checkNIS();
+		echo json_encode($result);
+	}
 
-        echo json_encode($result);
-    }
+	public function checkCard()
+	{
+		$result = $this->tm->checkCard();
 
-    public function getData()
-    {
-        $data = [
-            'data' => $this->tm->getData()
-        ];
-        $this->load->view('transaction/ajax-check', $data);
-    }
+		echo json_encode($result);
+	}
+
+	public function transactions()
+	{
+		$data = $this->tm->transactions();
+		$data = [
+			'transactions' => $data
+		];
+		$this->load->view('transaction/ajax-data', $data);
+	}
+
+	public function save()
+	{
+		$result = $this->tm->save();
+
+		echo json_encode($result);
+	}
+
+	public function destroy()
+	{
+		$result = $this->tm->destroy();
+
+		echo json_encode($result);
+	}
+
+	public function getData()
+	{
+		$result = $this->tm->getData();
+		$data = [
+			'data' => $result
+		];
+		$this->load->view('transaction/ajax-check', $data);
+	}
 }

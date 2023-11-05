@@ -15,10 +15,43 @@ class SetDailyModel extends CI_Model
 		])->result_object();
 	}
 
+	public function store()
+	{
+		$table = $this->input->post('table', true);
+		$account = $this->input->post('account', true);
+
+		if ($table == '' || $account == '') {
+			return [
+				'status' => 400,
+				'message' => 'Pastikan rekening telah dipilih'
+			];
+		}
+
+		$checkAccount = $this->db->get_where('accounts', ['id' => $account])->row_object();
+		if (!$checkAccount) {
+			return [
+				'status' => 400,
+				'message' => 'Rekening tidak valid'
+			];
+		}
+
+		$this->db->empty_table($table);
+		$this->db->insert($table, ['account_id' => $account]);
+		if ($this->db->affected_rows() <= 0) {
+			return [
+				'status' => 400,
+				'message' => 'Gagal menyimpan permintaan'
+			];
+		}
+
+		return [
+			'status' => 200,
+			'message' => 'Success'
+		];
+	}
 	public function open()
 	{
 		$date = date('Y-m-d');
-		$account = $this->input->post('account', true);
 		$check = $this->db->get_where('set_daily', ['created_at' => $date])->row_object();
 
 		if ($check) {
@@ -27,6 +60,26 @@ class SetDailyModel extends CI_Model
 				'message' => "Tanggal $date sudah diset sebelumnya"
 			];
 		}
+
+		$checkLog = $this->db->get_where('set_daily_log', ['created_at' => $date])->row_object();
+		if ($checkLog) {
+			return [
+				'status' => 400,
+				'message' => "Tanggal $date sudah pernah diset"
+			];
+		}
+
+		$account = $this->checkAccount();
+		if (!$account['status']) {
+			return [
+				'status' => 400,
+				'message' => $account['message']
+			];
+		}
+
+		$this->db->insert('set_daily_log', [
+			'created_at' => $date
+		]);
 
 		$this->db->insert('set_daily', [
 			'created_at' => $date, 'amount' => 0, 'status' => 'OPEN'
@@ -39,12 +92,41 @@ class SetDailyModel extends CI_Model
 			];
 		}
 
-		$this->setLimit($account);
-		$this->db->insert('account_pocket', ['account_id' => $account]);
+		$this->setLimit($account['account']);
 
 		return [
 			'status' => 200,
 			'message' => 'Sukses'
+		];
+	}
+
+	public function checkAccount()
+	{
+		$account = $this->db->get('account_breakfast')->row_object();
+		if (!$account) {
+			return [
+				'status' => false,
+				'message' => "Rekening pencairan sarapan belum diatur"
+			];
+		}
+		$account = $this->db->get('account_dpu')->row_object();
+		if (!$account) {
+			return [
+				'status' => false,
+				'message' => "Rekening pencairan DPU belum diatur"
+			];
+		}
+		$account = $this->db->get('account_pocket')->row_object();
+		if (!$account) {
+			return [
+				'status' => false,
+				'message' => "Rekening pencairan uang saku belum diatur"
+			];
+		}
+
+		return [
+			'status' => true,
+			'account' => $account->account_id
 		];
 	}
 
@@ -94,7 +176,6 @@ class SetDailyModel extends CI_Model
 
 	public function close()
 	{
-		$data = $this->db->get('daily_pocket_limit')->result_object();
 		$setting = $this->setting();
 		if (!$setting) {
 			return [
@@ -102,28 +183,44 @@ class SetDailyModel extends CI_Model
 				'message' => 'Tanggal transaksi belum diatur'
 			];
 		}
+		$date = $setting->created_at;
 
-		if ($data) {
-			foreach ($data as $d) {
-				$total = $d->pocket + $d->reserved;
-				$date = $setting->created_at;
-				$disbursement = $this->getDisbursement($d->student_id, $date);
-				$final = $total - $disbursement;
-				if ($final > 0) {
-					$this->db->where('student_id', $d->student_id)->delete('reserved_pocket');
-					$this->db->insert('reserved_pocket', [
-						'student_id' => $d->student_id, 'amount' => $final
-					]);
-				}
-			}
-			$this->db->truncate('daily_pocket_limit');
-			$this->db->truncate('set_daily');
-		}
+		$this->setPocket($date);
+		$this->setDisbursementRecap($date);
+		$this->setTransactionRecap($date);
+
+		$this->db->empty_table('set_transaction_daily');
 
 		return [
 			'status' => 200,
 			'message' => 'Tarnsaksi berhasil ditutup'
 		];
+	}
+
+	public function setPocket($date)
+	{
+		$data = $this->db->get('daily_pocket_limit')->result_object();
+		if ($data) {
+			foreach ($data as $d) {
+				$total = $d->pocket + $d->reserved;
+				$disbursement = $this->getDisbursement($d->student_id, $date);
+				$final = $total - $disbursement;
+				if ($final > 0) {
+					$reserved = $this->db->get_where('reserved_pocket', ['student_id' => $d->student_id])->row_object();
+					if ($reserved) {
+						$this->db->where('id', $reserved->id)->update('reserved_pocket', [
+							'amount' => $final
+						]);
+					}else{
+						$this->db->insert('reserved_pocket', [
+							'student_id' => $d->student_id, 'amount' => $final
+						]);
+					}
+				}
+			}
+			$this->db->truncate('daily_pocket_limit');
+			$this->db->truncate('set_daily');
+		}
 	}
 
 	public function getDisbursement($id, $date)
@@ -135,6 +232,48 @@ class SetDailyModel extends CI_Model
 		}
 
 		return 0;
+	}
+
+	public function setDisbursementRecap($date)
+	{
+		$this->db->select('SUM(amount) as total, student_id as student, purchase_id as purchase, account_id as account, role_id as role');
+		$this->db->from('disbursements')->where('created_at', $date)->group_by(['student_id', 'account_id', 'role_id']);
+		$result = $this->db->get()->result_object();
+		$data = [];
+		if ($result) {
+			foreach ($result as $item) {
+				$data[] = [
+					'student_id' => $item->student,
+					'purchase_id' => $item->purchase,
+					'account_id' => $item->account,
+					'role_id' => $item->role,
+					'nominal' => $item->total,
+					'created_at' => $date
+				];
+			}
+			$this->db->insert_batch('distribution_daily', $data);
+		}
+	}
+
+	public function setTransactionRecap($date)
+	{
+		$this->db->select('SUM(amount) as total, student_id as student, purchase_id as purchase, account_id as account, role_id as role');
+		$this->db->from('transactions')->where('created_at', $date)->group_by(['student_id', 'account_id', 'role_id']);
+		$result = $this->db->get()->result_object();
+		$data = [];
+		if ($result) {
+			foreach ($result as $item) {
+				$data[] = [
+					'student_id' => $item->student,
+					'purchase_id' => $item->purchase,
+					'account_id' => $item->account,
+					'role_id' => $item->role,
+					'nominal' => $item->total,
+					'created_at' => $date
+				];
+			}
+			$this->db->insert_batch('distribution_daily', $data);
+		}
 	}
 
 }

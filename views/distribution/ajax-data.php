@@ -16,29 +16,29 @@
 				</thead>
 				<tbody>
 				<?php
-				if ($disbursements) {
+				if ($distributions) {
 					$no = 1;
-					foreach ($disbursements as $disbursement) {
+					foreach ($distributions as $transaction) {
 						?>
 						<tr>
 							<td class="align-middle"><?= $no++ ?></td>
 							<td class="align-middle">
-								<?= $disbursement->name ?>
+								<?= $transaction->name ?>
 							</td>
 							<td class="align-middle">
-								<?= $disbursement->village.', '.str_replace(['Kota ', 'Kabupaten '], '', $disbursement->city) ?>
+								<?= $transaction->village.', '.str_replace(['Kota ', 'Kabupaten '], '', $transaction->city) ?>
 							</td>
 							<td class="align-middle">
-								<?= $disbursement->domicile ?>
+								<?= $transaction->domicile ?>
 							</td>
 							<td class="align-middle text-sm">
-								<?= $disbursement->class.' - '.$disbursement->level ?>
+								<?= $transaction->class.' - '.$transaction->level ?>
 							</td>
 							<td class="align-middle text-right">
-								<?= number_format($disbursement->amount, 0, ',', '.') ?>
+								<?= number_format($transaction->amount, 0, ',', '.') ?>
 							</td>
 							<td class="align-middle text-center">
-								<button onclick="destroy('<?= $disbursement->id ?>')" class="btn btn-danger px-2" title="Hapus transaksi ini">
+								<button onclick="destroy('<?= $transaction->id ?>')" class="btn btn-danger px-2" title="Hapus transaksi ini">
 									<i class="fas fa-trash"></i>
 								</button>
 							</td>

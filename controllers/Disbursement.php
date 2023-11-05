@@ -14,7 +14,7 @@ class Disbursement extends CI_Controller
     public function index()
     {
         $data = [
-            'title' => 'Pencairan Uang Saku',
+            'title' => 'Pencairan Tunai',
             'setting' => $this->dbm->setting(),
         ];
         $this->load->view('disbursement/disbursement', $data);

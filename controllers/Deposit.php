@@ -14,8 +14,7 @@ class Deposit extends CI_Controller
     public function index()
     {
         $data = [
-            'title' => 'Data Tabungan',
-            'step' => $this->dpm->step(),
+            'title' => 'Data Tabungan'
         ];
         $this->load->view('deposit/deposit', $data);
     }
@@ -27,6 +26,14 @@ class Deposit extends CI_Controller
         ];
         $this->load->view('deposit/ajax-data', $data);
     }
+
+	public function create()
+	{
+		$data = [
+			'title' => 'Tambah Tabungan'
+		];
+		$this->load->view('deposit/create/deposit-create', $data);
+	}
 
     public function detail()
     {
@@ -48,12 +55,12 @@ class Deposit extends CI_Controller
         $data = [
             'data' => $this->dpm->showCheck()
         ];
-        $this->load->view('deposit/ajax-check', $data);
+        $this->load->view('deposit/create/ajax-check', $data);
     }
 
-    public function save()
+    public function store()
     {
-        $result = $this->dpm->save();
+        $result = $this->dpm->store();
 
         echo json_encode($result);
     }

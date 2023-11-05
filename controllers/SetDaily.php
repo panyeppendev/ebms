@@ -16,14 +16,29 @@ class SetDaily extends CI_Controller
     {
 		$setting = $this->sdm->setting();
         $data = [
-            'title' => 'Buka Tutup Harian',
+            'title' => 'Transaksi Harian',
 			'setting' => $setting,
 			'open' => 'BUKA TRANSAKSI TANGGAL '.date('Y-m-d'),
-			'close' => 'TUTUP TRANSAKSI TANGGAL '.@$setting->created_at,
-			'accounts' => $this->sdm->accounts()
+			'close' => 'TUTUP TRANSAKSI TANGGAL '.@$setting->created_at
         ];
         $this->load->view('set-daily/set-daily', $data);
     }
+
+	public function create()
+	{
+		$data = [
+			'title' => 'Rekening Pencairan',
+			'accounts' => $this->sdm->accounts()
+		];
+		$this->load->view('set-daily/create/set-daily-create', $data);
+	}
+
+	public function store()
+	{
+		$result = $this->sdm->store();
+
+		echo json_encode($result);
+	}
 
 	public function open()
 	{

@@ -25,12 +25,12 @@ class Landing extends CI_Controller
         echo json_encode($result);
     }
 
-    public function getdata()
+    public function check()
     {
 		$type = $this->input->post('type', true);
 
 		if ($type === 'FIRST') {
-			$data = ['data' => $this->lm->getdata()];
+			$data = ['data' => $this->lm->check()];
 
 			$this->load->view('landing/ajax-data', $data);
 		} else {

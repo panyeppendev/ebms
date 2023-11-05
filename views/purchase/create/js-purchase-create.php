@@ -40,7 +40,7 @@
 		nis.focus()
 	}
 
-	const store = (nis, packageId, amount) => {
+	const store = (nis, packageId, packageName, amount) => {
 		Swal.fire({
 			title: 'Yakin, nih?',
 			text: 'Pastikan pilihan paket dan tambahan sudah benar',
@@ -57,6 +57,7 @@
 					data: {
 						nis,
 						packageId,
+						packageName,
 						amount
 					},
 					method: 'POST',

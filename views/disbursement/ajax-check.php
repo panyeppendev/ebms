@@ -45,21 +45,21 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Debit Tunai</td>
-							<td class="text-right">
-								<?= number_format($data['disbursement'], 0, ',', '.') ?>
+							<td style="width: 65%">Cadangan</td>
+							<td style="width: 35%" class="text-right">
+								<?= number_format($data['reserved'], 0, ',', '.') ?>
 							</td>
 						</tr>
-<!--						<tr>-->
-<!--							<td>Debet Non-Tunai</td>-->
-<!--							<td class="text-right">-->
-<!--								-->
-<!--							</td>-->
-<!--						</tr>-->
 						<tr>
-							<td>Saldo Limit</td>
+							<td>Debet Tunai</td>
 							<td class="text-right">
-								<?= number_format($data['total'], 0, ',', '.') ?>
+								<?= number_format($data['disbursement_cash'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						<tr>
+							<td>Debet Non-Tunai</td>
+							<td class="text-right">
+								<?= number_format($data['disbursement_debit'], 0, ',', '.') ?>
 							</td>
 						</tr>
 						</tbody>
@@ -68,38 +68,43 @@
 					<table style="width: 100%">
 						<tbody>
 							<tr>
-								<td style="width: 65%">Cadangan</td>
+								<td style="width: 65%">Saldo Uang Saku</td>
 								<td style="width: 35%" class="text-right text-success">
-									<?= number_format($data['reserved'], 0, ',', '.') ?>
+									<?= number_format($data['pocket'], 0, ',', '.') ?>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 					<hr class="my-1">
+					<table style="width: 100%" class="text-muted">
+						<tbody>
+						<tr>
+							<td style="width: 65%">Kredit Tabungan</td>
+							<td class="text-right" style="width: 35%">
+								<?= number_format($data['deposit_credit'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						<tr>
+							<td>Debet Tunai</td>
+							<td class="text-right">
+								<?= number_format($data['deposit_cash'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						<tr>
+							<td>Debet Non-Tunai</td>
+							<td class="text-right">
+								<?= number_format($data['deposit_debit'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					<hr class="my-1">
 					<table style="width: 100%">
 						<tbody>
-<!--						<tr>-->
-<!--							<td style="width: 65%">Kredit Tabungan</td>-->
-<!--							<td class="text-right" style="width: 35%">-->
-<!--								--><?php //= number_format(0, 0, ',', '.') ?>
-<!--							</td>-->
-<!--						</tr>-->
-<!--						<tr>-->
-<!--							<td>Debet Tunai</td>-->
-<!--							<td class="text-right">-->
-<!--								--><?php //= number_format(0, 0, ',', '.') ?>
-<!--							</td>-->
-<!--						</tr>-->
-<!--						<tr>-->
-<!--							<td>Debet Non-Tunai</td>-->
-<!--							<td class="text-right">-->
-<!--								--><?php //= number_format(0, 0, ',', '.') ?>
-<!--							</td>-->
-<!--						</tr>-->
 						<tr>
-							<td>Saldo Tabungan</td>
-							<td class="text-right">
-								<?= number_format(0, 0, ',', '.') ?>
+							<td style="width: 65%">Saldo Tabungan</td>
+							<td style="width: 35%" class="text-right text-success">
+								<?= number_format($data['deposit_balance'], 0, ',', '.') ?>
 							</td>
 						</tr>
 						</tbody>
@@ -109,9 +114,9 @@
 				<table style="width: 100%">
 					<tbody>
 					<tr class="text-success font-weight-bold">
-						<td style="width: 65%">Total Pencairan</td>
+						<td style="width: 65%">Saldo Akhir</td>
 						<td class="text-right" style="width: 35%">
-							<?= number_format($data['total'], 0, ',', '.') ?>
+							<?= number_format($data['grand_total'], 0, ',', '.') ?>
 						</td>
 					</tr>
 					</tbody>

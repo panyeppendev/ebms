@@ -15,7 +15,7 @@
             ?>
                     <tr>
                         <td><?= $no++ ?></td>
-                        <td><?= datetimeIDShirtFormat($d->created_at) ?></td>
+                        <td><?= dateIDFormatShort($d->created_at) ?></td>
                         <td>Rp.</td>
                         <td class="text-right">
                             <?= number_format($d->amount, 0, ',', '.') ?>

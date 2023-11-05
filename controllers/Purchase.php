@@ -93,4 +93,11 @@ class Purchase extends CI_Controller
 
 		echo json_encode($result);
 	}
+
+	public function destroy()
+	{
+		$result = $this->pm->destroy();
+
+		echo json_encode($result);
+	}
 }

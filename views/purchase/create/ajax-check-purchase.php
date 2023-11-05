@@ -54,7 +54,7 @@
 		</div>
 		<div class="row mt-5">
 			<div class="col-6">
-				<button class="btn btn-block btn-primary" onclick="store('<?= $data['student']->id ?>', '<?= $data['package'] ?>', <?= $total ?>)">
+				<button class="btn btn-block btn-primary" onclick="store('<?= $data['student']->id ?>', '<?= $data['package'] ?>', '<?= $data['package_name'] ?>', <?= $total ?>)">
 					Simpan
 				</button>
 			</div>

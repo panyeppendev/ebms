@@ -5,10 +5,11 @@ class DisbursementModel extends CI_Model
 {
 	public function disbursements()
 	{
+		$role = $this->session->userdata('role_id');
 		$date = $this->input->post('date', true);
 		$name = $this->input->post('name', true);
 		$this->db->select('a.amount, a.id, b.name, b.village, b.city, b.domicile, b.class, b.level, b.class_of_formal, b.level_of_formal')->from('disbursements as a');
-		$this->db->join('students as b', 'b.id = a.student_id')->where('a.created_at', $date);
+		$this->db->join('students as b', 'b.id = a.student_id')->where(['a.created_at' => $date, 'role_id' => $role]);
 		if ($name) {
 			$this->db->like('b.name', $name);
 		}
@@ -26,9 +27,10 @@ class DisbursementModel extends CI_Model
 
 	public function dailyTotal()
 	{
+		$role = $this->session->userdata('role_id');
 		$date = $this->input->post('date', true);
 		$data = $this->db->select('SUM(amount) as total')->from('disbursements')->where([
-			'created_at' => $date
+			'created_at' => $date, 'role_id' => $role
 		])->get()->row_object();
 
 		if ($data) {
@@ -99,17 +101,17 @@ class DisbursementModel extends CI_Model
 		}
 
 		$balance = $this->getBalance($nis);
-		$disbursement = $this->getDisbursement($nis, $setting->created_at);
-        return [
-            'status' => 200,
-            'balance' => $balance[0],
+		$disbursement = $this->getDisbursement($nis, $setting->created_at, 10);
+		return [
+			'status' => 200,
+			'balance' => $balance[0],
 			'disbursement' => $disbursement,
 			'total' => $balance[0] - $disbursement,
-            'nis' => $nis,
-            'purchase' => $checkPurchase->id,
+			'nis' => $nis,
+			'purchase' => $checkPurchase->id,
 			'account' => $account->account_id,
 			'date' => $setting->created_at
-        ];
+		];
     }
 
 	public function getData()
@@ -125,7 +127,8 @@ class DisbursementModel extends CI_Model
 		$package = '';
 		$daily = 0;
 		$reserved = 0;
-		$disbursement = 0;
+		$disbursementCash = 0;
+		$disbursementDebit = 0;
 
 		$student = $this->db->get_where('students', ['id' => $nis])->row_object();
 
@@ -149,10 +152,25 @@ class DisbursementModel extends CI_Model
 			$reserved = $balance[1];
 		}
 
-		$disbursementLog = $this->getDisbursement($nis, $setting->created_at);
-		if ($disbursementLog) {
-			$disbursement = $disbursementLog;
+		$getDisbursementCash = $this->getDisbursement($nis, $setting->created_at, 0);
+		if ($getDisbursementCash) {
+			$disbursementCash = $getDisbursementCash;
 		}
+
+		$getDisbursementDebit = $this->getDisbursement($nis, $setting->created_at, 1);
+		if ($getDisbursementDebit) {
+			$disbursementDebit = $getDisbursementDebit;
+		}
+
+		$disbursement = $disbursementCash + $disbursementDebit;
+		$total = ($daily + $reserved) - $disbursement;
+
+		$depositCredit = $this->getAmount($nis, 'deposit_credit', '');
+		$depositCash = $this->getAmount($nis, 'deposit_debit', 0);
+		$depositDebit = $this->getAmount($nis, 'deposit_debit', 1);
+		$balance = $depositCredit - ($depositCash + $depositDebit);
+
+		$grandTotal = $total + $balance;
 
 		return [
 			'nis' => $nis,
@@ -164,9 +182,30 @@ class DisbursementModel extends CI_Model
 			'package' => $package,
 			'daily' => $daily,
 			'reserved' => $reserved,
-			'disbursement' => $disbursement,
-			'total' => $daily - $disbursement
+			'disbursement_cash' => $disbursementCash,
+			'disbursement_debit' => $disbursementDebit,
+			'pocket' => ($daily + $reserved) - $disbursement,
+			'total' => $daily - $disbursement,
+			'deposit_credit' => $depositCredit,
+			'deposit_cash' => $depositCash,
+			'deposit_debit' => $depositDebit,
+			'deposit_balance' => $balance,
+			'grand_total' => $grandTotal
 		];
+	}
+
+	public function getAmount($nis, $table, $status)
+	{
+		$this->db->select_sum('amount', 'credit')->where('student_id', $nis);
+		if ($status == 'deposit_debit') {
+			$this->db->where('status', $status);
+		}
+		$result = $this->db->get($table)->row_object();
+		if ($result) {
+			return $result->credit;
+		}
+
+		return 0;
 	}
 
 	public function getBalance($id)
@@ -181,11 +220,15 @@ class DisbursementModel extends CI_Model
 		return [0, 0];
 	}
 
-	public function getDisbursement($nis, $date)
+	public function getDisbursement($nis, $date, $status)
 	{
-		$data = $this->db->select('SUM(amount) as total')->from('disbursements')->where([
+		$this->db->select('SUM(amount) as total')->from('disbursements')->where([
 			'student_id' => $nis, 'created_at' => $date
-		])->get()->row_object();
+		]);
+		if ($status != 10) {
+			$this->db->where('status', $status);
+		}
+		$data = $this->db->get()->row_object();
 
 		if ($data) {
 			return $data->total;
@@ -237,7 +280,8 @@ class DisbursementModel extends CI_Model
 			'account_id' => $account,
 			'amount' => $nominal,
 			'role_id' => $this->session->userdata('role_id'),
-			'created_at' => $date
+			'created_at' => $date,
+			'status' => 0
 		]);
 
         return [

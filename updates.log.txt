@@ -257,6 +257,186 @@ create table account_pocket
             on delete cascade
 );
 
+alter table disbursements
+    add status boolean null comment '0 => CASH | 1 => CREDIT';
+
+update disbursements set status = 0;
+
+alter table purchases
+    add package_name varchar(10) null after package_id;
+
+create table set_daily_log
+(
+    id         int auto_increment,
+    created_at date null,
+    constraint set_daily_log_pk
+        primary key (id)
+);
+
+create table account_breakfast
+(
+    id         int auto_increment
+        primary key,
+    account_id int not null,
+    constraint account_breakfast_accounts_id_fk
+        foreign key (account_id) references accounts (id)
+            on delete cascade
+);
+
+create table account_dpu
+(
+    id         int auto_increment,
+    account_id int(10) null,
+    constraint account_dpu_pk
+        primary key (id),
+    constraint account_dpu_accounts_id_fk
+        foreign key (account_id) references accounts (id)
+            on delete cascade
+);
+
+create table account_deposit
+(
+    id         int auto_increment,
+    account_id int null,
+    constraint account_deposit_pk
+        primary key (id),
+    constraint account_deposit_accounts_id_fk
+        foreign key (account_id) references accounts (id)
+            on delete cascade
+);
+
+create table deposit_credit
+(
+    id         int auto_increment
+        primary key,
+    student_id varchar(16) not null,
+    account_id int         not null,
+    created_at date        null,
+    amount     int         null,
+    constraint deposit_credit_accounts_id_fk
+        foreign key (account_id) references accounts (id)
+            on delete cascade,
+    constraint deposit_credit_students_id_fk
+        foreign key (student_id) references students (id)
+            on delete cascade
+);
+
+alter table package_limit
+    drop foreign key package_limit_accounts_id_fk;
+
+alter table package_limit
+    add constraint package_limit_accounts_id_fk
+        foreign key (account_id) references accounts (id)
+            on delete cascade;
+
+alter table package_limit
+    drop foreign key package_limit_packages_id_fk;
+
+alter table package_limit
+    add constraint package_limit_packages_id_fk
+        foreign key (package_id) references packages (id)
+            on delete cascade;
+
+- Rekening buang tambahan
+- Perlu hapus data tambahan di package_limit
+- Hapus tambahan di account
+- Ubah struktur accounts
+alter table accounts
+    modify category enum ('PACKAGE', 'ADDON') not null;
+
+create table transactions
+(
+    id          int auto_increment
+        primary key,
+    student_id  varchar(16)                                           not null,
+    purchase_id varchar(20)                                           not null,
+    account_id  int                                                   not null,
+    role_id     int                                                   not null,
+    amount      int                                                   null,
+    created_at  date                                                  not null,
+    status      enum ('BREAKFAST', 'MORNING', 'AFTERNOON', 'FASTING') null,
+    constraint transactions_accounts_id_fk
+        foreign key (account_id) references accounts (id)
+            on delete cascade,
+    constraint transactions_purchases_id_fk
+        foreign key (purchase_id) references purchases (id)
+            on delete cascade,
+    constraint transactions_roles_id_fk
+        foreign key (role_id) references roles (id)
+            on delete cascade,
+    constraint transactions_students_id_fk
+        foreign key (student_id) references students (id)
+            on delete cascade
+)
+    comment 'Penampungan data distribusi makan';
+
+create table set_transaction_daily
+(
+    id         int auto_increment
+        primary key,
+    table_name varchar(50)                                           not null,
+    category   enum ('BREAKFAST', 'MORNING', 'AFTERNOON', 'FASTING') not null,
+    user_id    int                                                   not null,
+    constraint set_transaction_daily_users_id_fk
+        foreign key (user_id) references users (id)
+            on delete cascade
+);
+
+create table distributions
+(
+    id          int auto_increment
+        primary key,
+    student_id  varchar(16) not null,
+    purchase_id varchar(20) not null,
+    account_id  int         not null,
+    role_id     int         not null,
+    nominal     int         null,
+    created_at  date        not null,
+    constraint distributions_accounts_id_fk
+        foreign key (account_id) references accounts (id)
+            on delete cascade,
+    constraint distributions_purchases_id_fk
+        foreign key (purchase_id) references purchases (id)
+            on delete cascade,
+    constraint distributions_roles_id_fk
+        foreign key (role_id) references roles (id)
+            on delete cascade,
+    constraint distributions_students_id_fk
+        foreign key (student_id) references students (id)
+            on delete cascade
+);
+
+create table distribution_daily
+(
+    id          int auto_increment
+        primary key,
+    student_id  varchar(16) not null,
+    purchase_id varchar(20) not null,
+    account_id  int         not null,
+    role_id     int         not null,
+    nominal     int         null,
+    created_at  date        not null,
+    constraint distribution_daily_accounts_id_fk
+        foreign key (account_id) references accounts (id)
+            on delete cascade,
+    constraint distribution_daily_purchases_id_fk
+        foreign key (purchase_id) references purchases (id)
+            on delete cascade,
+    constraint distribution_daily_roles_id_fk
+        foreign key (role_id) references roles (id)
+            on delete cascade,
+    constraint distribution_daily_students_id_fk
+        foreign key (student_id) references students (id)
+            on delete cascade
+);
+
+
+
+
+
+
+
+
 
 
 

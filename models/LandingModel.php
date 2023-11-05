@@ -3,19 +3,107 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class LandingModel extends CI_Model
 {
-	public function step()
-    {
-        $data = $this->db->get_where('steps', ['status' => 'DISBURSEMENT'])->row_object();
-        if ($data) {
-            return $data->step;
-        } else {
-            return 0;
-        }
-    }
+	public function purchase($id)
+	{
+		$purchase = $this->db->get_where('purchases', [
+			'student_id' => $id, 'status' => 'ACTIVE'
+		])->row_object();
+
+		if (!$purchase) {
+			return [
+				'status' => false
+			];
+		}
+
+		$pocketAccount = $this->db->get('account_pocket')->row_object();
+		if (!$pocketAccount) {
+			return [
+				'status' => false
+			];
+		}
+		$account = $pocketAccount->account_id;
+		$income = $this->db->get_where('incomes', [
+			'purchase_id' => $purchase->id, 'account_id' => $account
+		])->row_object();
+		if (!$income) {
+			return [
+				'status' => false
+			];
+		}
+
+		$nominal = $income->nominal;
+		$cash = $this->disbursement($purchase->id, 0);
+		$credit = $this->disbursement($purchase->id, 1);
+		$disbursement = $cash + $credit;
+		$balance = $nominal - $disbursement;
+
+		return [
+			'status' => true,
+			'package' => $income->package_name,
+			'income' => $income->nominal,
+			'cash' => $cash,
+			'credit' => $credit,
+			'disbursement' => $disbursement,
+			'balance' => $balance
+		];
+
+	}
+
+	public function disbursement($id, $status)
+	{
+		$result = $this->db->select('SUM(amount) as total')->from('disbursements')->where([
+			'purchase_id' => $id, 'status' => $status
+		])->get()->row_object();
+
+		if ($result) {
+			return $result->total;
+		}
+
+		return 0;
+	}
+
+	public function deposit($id)
+	{
+		$credit = $this->db->select_sum('amount', 'credit')->from('deposit_credit')->where('student_id', $id)->get()->row_object();
+		$cash = $this->db->select_sum('amount', 'cash')->from('deposit_debit')->where([
+			'student_id' => $id, 'status' => 0
+		])->get()->row_object();
+		$debit = $this->db->select_sum('amount', 'debit')->from('deposit_debit')->where([
+			'student_id' => $id, 'status' => 1
+		])->get()->row_object();
+
+		if ($credit) {
+			$credit = $credit->credit;
+		}else{
+			$credit = 0;
+		}
+
+		if ($cash) {
+			$cash = $cash->cash;
+		}else{
+			$cash = 0;
+		}
+
+		if ($debit) {
+			$debit = $debit->debit;
+		}else{
+			$debit = 0;
+		}
+
+		$totalDebit = $cash + $debit;
+		$balance = $credit - $totalDebit;
+
+		return [
+			'credit' => $credit,
+			'cash' => $cash,
+			'debit' => $debit,
+			'total' => $totalDebit,
+			'balance' => $balance
+		];
+	}
 
     public function checkSaldo()
     {
-        $step = $this->step();
         $id = $this->input->post('id', true);
 
         $checkStudent = $this->db->get_where('students', ['id' => $id])->row_object();
@@ -26,22 +114,14 @@ class LandingModel extends CI_Model
             ];
         }
 
-        if ($step === 0 || $step === '0' || $step === '') {
-            return [
-                'status' => 400,
-                'message' => 'Tahap pembelian paket belum diatur'
-            ];
-        }
-
         return [
             'status' => 200,
             'message' => 'Sukses'
         ];
     }
 
-    public function getdata()
+    public function check()
     {
-        $step = $this->step();
         $id = $this->input->post('id', true);
 
         $checkStudent = $this->db->get_where('students', ['id' => $id])->row_object();
@@ -54,123 +134,13 @@ class LandingModel extends CI_Model
 
         return [
             'status' => 200,
-            'step' => $step,
             'student' => $checkStudent,
-            'package' => $this->getDetailPackage($id, $step),
-            'deposit' => $this->getDeposit($id),
+            'purchase' => $this->purchase($id),
+            'deposit' => $this->deposit($id),
 			'presence' => $this->getPresence($id)
         ];
     }
 
-	public function getDetailPackage($id, $step)
-	{
-		$period = $this->dm->getperiod();
-
-		$getPackage = $this->db->get_where('packages', [
-			'student_id' => $id,
-			'step' => $step,
-			'package !=' => 'UNKNOWN',
-			'period' => $period
-		])->row_object();
-
-		if (!$getPackage) {
-			return [
-				'status' => 400,
-				'message' => "Santri ini belum beli paket $step",
-			];
-		}
-
-		$package = $getPackage->package;
-		$idPackage = $getPackage->id;
-
-		if ($package == 'A' || $package == 'B') {
-			$limit = 150000;
-		} elseif ($package == 'C' || $package == 'D') {
-			$limit = 300000;
-		} else {
-			$limit = 0;
-		}
-
-		$this->db->select('status, SUM(amount) as total')->from('package_transaction');
-		$result = $this->db->where(['package_id' => $idPackage, 'type' => 'POCKET'])->group_by('status')->get()->result_object();
-		$cash = 0;
-		$all = 0;
-		$data = [];
-		if ($result) {
-			foreach ($result as $item) {
-				$status = $item->status;
-				$all += $item->total;
-
-				if ($status == 'POCKET_CASH') {
-					$cash += $item->total;
-				}else{
-					$data[] = [
-						'status' => $item->status,
-						'total' => $item->total
-					];
-				}
-			}
-		}
-		$nonCash = $all - $cash;
-
-		return [
-			'status' => 200,
-			'message' => 'Success',
-			'info' => [
-				'package' => $package,
-				'limit' => $limit,
-				'cash' => $cash,
-				'non_cash' => $nonCash,
-				'detail' => $data,
-				'residual' => $limit - $all
-			]
-		];
-	}
-
-	public function getDeposit($nis)
-	{
-		$period = $this->dm->getperiod();
-
-		$kredit = $this->db->select('SUM(deposit) AS deposit')->from('packages')->where([
-			'student_id' => $nis, 'period' => $period
-		])->get()->row_object();
-		if (!$kredit || $kredit->deposit == '') {
-			$kredit = 0;
-		} else {
-			$kredit = $kredit->deposit;
-		}
-
-		$this->db->select('status, SUM(amount) as total')->from('package_transaction');
-		$result = $this->db->where(['student_id' => $nis, 'type' => 'DEPOSIT'])->group_by('status')->get()->result_object();
-		$cash = 0;
-		$all = 0;
-		$data = [];
-		if ($result) {
-			foreach ($result as $item) {
-				$status = $item->status;
-				$all += $item->total;
-
-				if ($status == 'DEPOSIT_CASH') {
-					$cash += $item->total;
-				}else{
-					$data[] = [
-						'status' => $item->status,
-						'total' => $item->total
-					];
-				}
-			}
-		}
-		$nonCash = $all - $cash;
-
-		$total = $kredit - $all;
-		return [
-			'kredit' => $kredit,
-			'cash' => $cash,
-			'non_cash' => $nonCash,
-			'detail' => $data,
-			'residual' => $total
-		];
-	}
 
 	public function getPresence($id)
 	{

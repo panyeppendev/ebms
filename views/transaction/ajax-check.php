@@ -1,79 +1,139 @@
-<?php
-if ($data['status'] == 200) {
-    $avatarPath = FCPATH . 'assets/avatars/' . $data['student']->id . '.jpg';
+<div class="row">
+	<?php
+	if ($data) {
+		$avatarPath = FCPATH . 'assets/avatars/' . $data['nis']. '.jpg';
 
-    if (file_exists($avatarPath) === FALSE || $avatarPath == NULL) {
-        $avatar = base_url('assets/avatars/default.jpg');
-    } else {
-        $avatar = base_url('assets/avatars/' . $data['student']->id . '.jpg');
-    }
-
-    $city = str_replace(['Kabupaten', 'Kota'], '', $data['student']->city);
-?>
-    <div class="row">
-        <div class="col-4">
-            <div class="box-profile">
-                <div class="text-center">
-                    <img src="<?= $avatar ?>" alt="IMAGE OF <?= $data['student']->name ?>" style="width: 100%; border-radius: 3px;">
-                </div>
-            </div>
-        </div>
-        <div class="col-8">
-            <div class="row">
-                <?php if ($data['status_send'] == 400) { ?>
-                    <div class="col-12">
-                        <div class="alert alert-danger" role="alert">
-                            <?= $data['message'] ?>
-                        </div>
-                    </div>
-                <?php } ?>
-                <?php if ($data['status_send'] == 200) { ?>
-                    <div class="col-12">
-                        <div class="alert alert-success" role="alert">
-                            <?= $data['message'] ?>
-                        </div>
-                    </div>
-                <?php } ?>
-                <div class="col-12">
-                    <dl class="row">
-                        <dt class="col-sm-3 font-weight-normal mb-1">Nama</dt>
-                        <dd class="col-sm-9 mb-1 font-weight-bold"><?= $data['student']->name ?></dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">NIS</dt>
-                        <dd class="col-sm-9 mb-1">
-                            <?= $data['student']->id ?>
-                        </dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">Tetala</dt>
-                        <dd class="col-sm-9 mb-1">
-                            <?= $data['student']->place_of_birth . ', ' . dateIDFormat($data['student']->date_of_birth) ?>
-                        </dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">Alamat</dt>
-                        <dd class="col-sm-9 mb-1">
-                            <?= $data['student']->village ?>, <?= $city ?>
-                        </dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">Domisili</dt>
-                        <dd class="col-sm-9 mb-1">
-                            <?= $data['student']->domicile ?>
-                        </dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">Diniyah</dt>
-                        <dd class="col-sm-9 mb-1"><?= $data['student']->class ?> - <?= $data['student']->level ?></dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">Formal</dt>
-                        <dd class="col-sm-9 mb-1"><?= $data['student']->class_of_formal ?> - <?= $data['student']->level_of_formal ?></dd>
-                        <dt class="col-sm-3 font-weight-normal mb-1">Wali</dt>
-                        <dd class="col-sm-9 mb-1 font-weight-bold"><?= $data['student']->father ?></dd>
-                    </dl>
-                </div>
-                <div class="col-12">
-                    <div class="callout callout-success py-2">
-                        <span class="text-success font-weight-bold">
-                            <?= $data['package'] ?>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		if (file_exists($avatarPath) === FALSE || $avatarPath == NULL) {
+			$avatar = base_url('assets/avatars/default.jpg');
+		} else {
+			$avatar = base_url('assets/avatars/' . $data['nis']. '.jpg');
+		}
+		?>
+		<div class="col-7">
+			<div class="row">
+				<div class="col-5">
+					<div class="box-profile">
+						<div class="text-center">
+							<img src="<?= $avatar ?>" alt="IMAGE OF <?= $data['name'] ?>" style="width: 100%; border-radius: 3px;">
+						</div>
+					</div>
+				</div>
+				<div class="col-7">
+					<b><?= $data['name'] ?></b> <br>
+					<hr class="my-2">
+					<?= $data['address'] ?> <br>
+					<?= $data['domicile'] ?> <br>
+					<hr class="my-2">
+					<?= $data['diniyah'] ?> <br>
+					<?= $data['formal'] ?>
+				</div>
+			</div>
+		</div>
+		<div class="col-5">
+			<div class="callout callout-success py-2">
+                <span class="text-success font-weight-bold">
+                    Paket : <?= $data['package'] ?>
+                </span>
+				<div class="text-xs">
+					<hr class="my-1">
+					<table style="width: 100%" class="text-muted">
+						<tbody>
+						<tr>
+							<td style="width: 65%">Limit Harian</td>
+							<td style="width: 35%" class="text-right">
+								<?= number_format($data['daily'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						<tr>
+							<td style="width: 65%">Cadangan</td>
+							<td style="width: 35%" class="text-right">
+								<?= number_format($data['reserved'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						<tr>
+							<td>Debet Tunai</td>
+							<td class="text-right">
+								<?= number_format($data['disbursement_cash'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						<tr>
+							<td>Debet Non-Tunai</td>
+							<td class="text-right">
+								<?= number_format($data['disbursement_debit'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					<hr class="my-1">
+					<table style="width: 100%">
+						<tbody>
+							<tr>
+								<td style="width: 65%">Saldo Uang Saku</td>
+								<td style="width: 35%" class="text-right text-success">
+									<?= number_format($data['pocket'], 0, ',', '.') ?>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<hr class="my-1">
+					<table style="width: 100%" class="text-muted">
+						<tbody>
+						<tr>
+							<td style="width: 65%">Kredit Tabungan</td>
+							<td class="text-right" style="width: 35%">
+								<?= number_format($data['deposit_credit'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						<tr>
+							<td>Debet Tunai</td>
+							<td class="text-right">
+								<?= number_format($data['deposit_cash'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						<tr>
+							<td>Debet Non-Tunai</td>
+							<td class="text-right">
+								<?= number_format($data['deposit_debit'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					<hr class="my-1">
+					<table style="width: 100%">
+						<tbody>
+						<tr>
+							<td style="width: 65%">Saldo Tabungan</td>
+							<td style="width: 35%" class="text-right text-success">
+								<?= number_format($data['deposit_balance'], 0, ',', '.') ?>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					<hr class="my-1">
+				</div>
+				<table style="width: 100%">
+					<tbody>
+					<tr class="text-success font-weight-bold">
+						<td style="width: 65%">Saldo Akhir</td>
+						<td class="text-right" style="width: 35%">
+							<?= number_format($data['grand_total'], 0, ',', '.') ?>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+	</div>
 <?php
-} else {
-    echo 'Gagal memuat data. Segera hubungi Developer';
-}
+	} else {
+		?>
+		<div class="col-12">
+			<div class="callout callout-danger py-2">
+					<span class="text-danger">
+						Info paket tidak tersedia
+					</span>
+			</div>
+		</div>
+		<?php
+	}
 ?>
+</div>
