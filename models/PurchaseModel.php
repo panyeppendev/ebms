@@ -421,4 +421,25 @@ class PurchaseModel extends CI_Model
 			$this->db->insert_batch('distributions', $data);
 		}
 	}
+
+	public function setDisbursementDailyRecap($date)
+	{
+		$this->db->select('SUM(amount) as total, student_id as student, purchase_id as purchase, account_id as account, role_id as role');
+		$this->db->from('disbursements')->where('created_at', $date)->group_by(['student_id', 'account_id', 'role_id']);
+		$result = $this->db->get()->result_object();
+		$data = [];
+		if ($result) {
+			foreach ($result as $item) {
+				$data[] = [
+					'student_id' => $item->student,
+					'purchase_id' => $item->purchase,
+					'account_id' => $item->account,
+					'role_id' => $item->role,
+					'nominal' => $item->total,
+					'created_at' => $date
+				];
+			}
+			$this->db->insert_batch('distribution_daily', $data);
+		}
+	}
 }
