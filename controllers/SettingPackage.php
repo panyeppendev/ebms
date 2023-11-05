@@ -36,8 +36,7 @@ class SettingPackage extends CI_Controller
 			'title' => 'Pengaturan Limit',
 			'packages' => $this->spm->packages(),
 			'packageSelected' => $package,
-			'limits' => $this->spm->limits($package),
-			'others' => $this->spm->others()
+			'limits' => $this->spm->limits($package)
 		];
 		$this->load->view('setting-package/create/setting-package-create', $data);
 	}

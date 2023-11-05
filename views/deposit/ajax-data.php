@@ -71,7 +71,7 @@
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
-            Total : <b><?= $datas[1] ?> Transaksi<b>
+            Total : <b><?= $datas[1] ?> Orang<b>
         </div>
     </div>
 </div>

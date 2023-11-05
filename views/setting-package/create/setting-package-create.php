@@ -70,27 +70,6 @@
 								}
 							}
 							?>
-							<h6 class="mb-3 text-muted">Lain-lain</h6>
-							<?php
-							if ($others) {
-								foreach ($others as $other) {
-									?>
-									<input type="hidden" name="id[]" value="<?= $other->id ?>">
-									<div class="form-group row">
-										<label for="limit-<?= $other->id ?>" class="col-4 col-form-label font-weight-normal">
-											<?= $other->name ?>
-										</label>
-										<div class="col-5">
-											<input tabindex="<?= $tab++ ?>" type="text" name="nominal[]" class="form-control limit" id="limit-<?= $other->id ?>" value="<?= $this->spm->getNominal($packageSelected, $other->id)[0] ?>">
-										</div>
-										<div class="col-3">
-											<input maxlength="1" tabindex="<?= $tab++ ?>" type="text" name="qty[]" class="form-control limit" id="qty-<?= $other->id ?>" value="<?= $this->spm->getNominal($packageSelected, $other->id)[1] ?>">
-										</div>
-									</div>
-									<?php
-								}
-							}
-							?>
 						</form>
 					</div>
 				</div>

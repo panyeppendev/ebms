@@ -12,7 +12,7 @@
 		}
 	})
 
-	const saveTemp = () => {
+	const getById = () => {
 		let nis = $('#nis').val()
 
 		if (nis == '') {
@@ -65,7 +65,7 @@
 				}
 
 				toastr.success(res.message)
-				saveTemp()
+				getById()
 			}
 		})
 	}
@@ -94,6 +94,7 @@
 			data: {
 				id
 			},
+			dataType: 'JSON',
 			success: function(res) {
 				let status = res.status
 				if (status != 200) {
@@ -102,54 +103,7 @@
 				}
 
 				toastr.success(res.message)
-				saveTemp()
-			}
-		})
-	}
-
-	const destroy = () => {
-		let nis = $('#nis')
-		nis.val('')
-		$('#package').val('')
-	  	$('.check-addon').prop('checked', false)
-		$('#show-student').html('')
-		nis.focus()
-	}
-
-	const store = (nis, packageId, amount) => {
-		Swal.fire({
-			title: 'Yakin, nih?',
-			text: 'Pastikan pilihan paket dan tambahan sudah benar',
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: 'Yakin dong',
-			cancelButtonText: 'Gak jadi'
-		}).then((result) => {
-			if (result.isConfirmed) {
-				$.ajax({
-					url: `<?= base_url() ?>purchase/store`,
-					data: {
-						nis,
-						packageId,
-						amount
-					},
-					method: 'POST',
-					dataType: 'JSON',
-					success: response => {
-						let status = response.status
-						if (!status) {
-							toastr.error(response.message)
-							return false
-						}
-
-						destroy()
-						$('#id').val(response.message)
-						toastr.success('Status permbelian berhasil')
-						$('#form-invoice').submit()
-					}
-				})
+				getById()
 			}
 		})
 	}

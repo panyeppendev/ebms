@@ -1,82 +1,25 @@
 <script src="<?= base_url('template') ?>/plugins/autoNumeric.js"></script>
 <script>
-    $('[data-mask]').inputmask();
+	$('[data-mask]').inputmask();
 
-    toastr.options = {
-        "positionClass": "toast-top-center",
-        "timeOut": "2000"
-    }
+	toastr.options = {
+		"positionClass": "toast-top-center",
+		"timeOut": "2000"
+	}
 
-    const openDaily = el => {
-		Swal.fire({
-			title: 'Yakin, nih?',
-			text: 'Tindakan ini hanya bisa dilakukan sekali',
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			showLoaderOnConfirm: true,
-			confirmButtonText: 'OK, Lanjut',
-			cancelButtonText: 'Nggak jadi'
-		}).then((result) => {
-			if (result.isConfirmed) {
-				$('#modal-open').modal('show')
-			}
-		})
-    }
+	const openDaily = () => {
+		$('#modal-open').modal('show')
+	}
 
 	const saveOpenDaily = el => {
-		const account = $('#account').val()
-	  	const textOpen = '<?= $open ?>'
+		const textOpen = '<?= $open ?>'
 		const textConfirm = $('#text-confirm').val()
-
-		if (account == '') {
-			toastr.error('Opppss..! Pilih dulu rekening')
-			return false
-		}
 
 		if (textOpen != textConfirm) {
 			toastr.error('Opppss..! Ketikkan dengan benar')
 			return false
 		}
 
-		$.ajax({
-			url: '<?= base_url() ?>setdaily/open',
-			method: 'POST',
-			data: {
-				account
-			},
-			dataType: 'JSON',
-			beforeSend: () => {
-				$(el).prop('disabled', true)
-			},
-			success: function(res) {
-				$(el).prop('disabled', false)
-				let status = res.status
-
-				if (status != 200) {
-					toastr.error(res.message)
-					return false
-				}
-
-				$('#modal-open').modal('hide')
-
-				Swal.fire({
-					icon: 'success',
-					title: 'Yeahh...',
-					text: 'Transaksi hari ini berhasil dibuka',
-					timer: 2000,
-					timerProgressBar: true
-				})
-
-				setTimeout(function (){
-					location.reload()
-				}, 2000)
-			}
-		})
-	}
-
-	const closeDaily = el => {
 		Swal.fire({
 			title: 'Yakin, nih?',
 			text: 'Tindakan ini hanya bisa dilakukan sekali',
@@ -89,9 +32,43 @@
 			cancelButtonText: 'Nggak jadi'
 		}).then((result) => {
 			if (result.isConfirmed) {
-				$('#modal-close').modal('show')
+				$.ajax({
+					url: '<?= base_url() ?>setdaily/open',
+					method: 'POST',
+					dataType: 'JSON',
+					beforeSend: () => {
+						$(el).prop('disabled', true)
+					},
+					success: function(res) {
+						$(el).prop('disabled', false)
+						let status = res.status
+
+						if (status != 200) {
+							toastr.error(res.message)
+							return false
+						}
+
+						$('#modal-open').modal('hide')
+
+						Swal.fire({
+							icon: 'success',
+							title: 'Yeahh...',
+							text: 'Transaksi hari ini berhasil dibuka',
+							timer: 2000,
+							timerProgressBar: true
+						})
+
+						setTimeout(function (){
+							location.reload()
+						}, 2000)
+					}
+				})
 			}
 		})
+	}
+
+	const closeDaily = () => {
+		$('#modal-close').modal('show')
 	}
 
 	const saveCloseDaily = el => {
@@ -103,38 +80,52 @@
 			return false
 		}
 
-		$.ajax({
-			url: '<?= base_url() ?>setdaily/close',
-			method: 'POST',
-			data: {
-				textClose
-			},
-			dataType: 'JSON',
-			beforeSend: () => {
-				$(el).prop('disabled', true)
-			},
-			success: function(res) {
-				$(el).prop('disabled', false)
-				let status = res.status
+		Swal.fire({
+			title: 'Yakin, nih?',
+			text: 'Tindakan ini hanya bisa dilakukan sekali',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			showLoaderOnConfirm: true,
+			confirmButtonText: 'OK, Lanjut',
+			cancelButtonText: 'Nggak jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: '<?= base_url() ?>setdaily/close',
+					method: 'POST',
+					data: {
+						textClose
+					},
+					dataType: 'JSON',
+					beforeSend: () => {
+						$(el).prop('disabled', true)
+					},
+					success: function(res) {
+						$(el).prop('disabled', false)
+						let status = res.status
 
-				if (status != 200) {
-					toastr.error(res.message)
-					return false
-				}
+						if (status != 200) {
+							toastr.error(res.message)
+							return false
+						}
 
-				$('#modal-close').modal('hide')
+						$('#modal-close').modal('hide')
 
-				Swal.fire({
-					icon: 'success',
-					title: 'Yeahh...',
-					text: 'Transaksi hari ini berhasil ditutup',
-					timer: 2000,
-					timerProgressBar: true
+						Swal.fire({
+							icon: 'success',
+							title: 'Yeahh...',
+							text: 'Transaksi hari ini berhasil ditutup',
+							timer: 2000,
+							timerProgressBar: true
+						})
+
+						setTimeout(function (){
+							location.reload()
+						}, 2000)
+					}
 				})
-
-				setTimeout(function (){
-					location.reload()
-				}, 2000)
 			}
 		})
 	}

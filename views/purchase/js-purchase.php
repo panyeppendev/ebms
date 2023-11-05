@@ -64,6 +64,44 @@
             }
         })
     }
+
+	const destroy = id => {
+		Swal.fire({
+			title: 'Yakin, nih?',
+			text: 'Penutupan paket hanya dilakukan sekali',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yakin dong',
+			cancelButtonText: 'Gak jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				setDestroy(id)
+			}
+		})
+	}
+
+	const setDestroy = id => {
+	  $.ajax({
+		  url: '<?= base_url() ?>purchase/destroy',
+		  method: 'POST',
+		  data: {
+			  id
+		  },
+		  dataType: 'JSON',
+		  success: res => {
+			  let status = res.status
+			  if (status != 200) {
+				  toastr.error(`Oppss.. ${res.message}`)
+				  return false
+			  }
+
+			  toastr.success('Yeaahh.. Satu transaksi berhasil dihapus')
+			  purchases()
+		  }
+	  })
+	}
 </script>
 </body>
 

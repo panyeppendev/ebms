@@ -42,134 +42,111 @@
 		<div class="col-7">
 			<div class="row">
 				<section class="col-6">
-					<div class="card">
-						<div class="card-body pb-2">
-							<div class="callout callout-success py-3 px-3 mb-4">
-								<b>Paket <?= isset($data['package']['info']['package']) ? $data['package']['info']['package'] : '' ?></b>
-							</div>
-							<?php
-							if ($data['package']['status'] === 200) {
-								?>
-								<div class="row">
-									<div class="col-7">Saldo</div>
-									<div class="col-5 text-right">
-										<?= number_format($data['package']['info']['limit'], 0, ',', '.') ?>
-									</div>
-								</div>
-								<hr class="my-1">
-								<div class="row">
-									<div class="col-7">Tunai</div>
-									<div class="col-5 text-right">
-										<?= number_format($data['package']['info']['cash'], 0, ',', '.') ?>
-									</div>
-								</div>
-								<hr class="my-1">
-								<div class="row">
-									<div class="col-7">Non-tunai</div>
-									<div class="col-5 text-right">
-										<?= number_format($data['package']['info']['non_cash'], 0, ',', '.') ?>
-									</div>
-								</div>
-								<hr class="my-1">
-								<?php
-									if ($data['package']['info']['detail']) {
-										$text = [
-											'POCKET_CANTEEN' => 'Kantin',
-											'POCKET_STORE' => 'Koperasi',
-											'POCKET_LIBRARY' => 'Perpustakaan',
-											'POCKET_SECURITY' => 'KAMTIB',
-											'POCKET_BARBER' => 'Pangkas Rambut'
-										];
-
-										foreach ($data['package']['info']['detail'] as $item) {
-								?>
-										<div class="row text-danger text-sm">
-											<div class="col-7 pl-3">
-												- <?= $text[$item['status']] ?>
-											</div>
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-body pb-2">
+									<?php
+									if ($data['purchase']['status']) {
+										?>
+										<div class="callout callout-success py-3 px-3 mb-4">
+											<b>Paket <?= $data['purchase']['package'] ?></b>
+										</div>
+										<div class="row">
+											<div class="col-7">Saldo Awal</div>
 											<div class="col-5 text-right">
-												<?= number_format($item['total'], 0, ',', '.') ?>
+												<?= number_format($data['purchase']['income'], 0, ',', '.') ?>
 											</div>
 										</div>
 										<hr class="my-1">
-								<?php
-										}
-									}
-								?>
-								<div class="row text-success font-weight-bold">
-									<div class="col-7">Sisa</div>
-									<div class="col-5 text-right">
-										<?= number_format($data['package']['info']['residual'], 0, ',', '.') ?>
-									</div>
-								</div>
-							<?php } else { ?>
-								<div class="row">
-									<div class="col-12 text-center"><?= $data['package']['message'] ?></div>
-								</div>
-							<?php } ?>
-						</div>
-					</div>
-				</section>
-				<section class="col-6">
-					<div class="card">
-						<div class="card-body pb-2">
-							<div class="callout callout-success py-3 px-3 mb-4">
-								<b>Tabungan</b>
-							</div>
-							<div class="row">
-								<div class="col-7">Setoran</div>
-								<div class="col-5 text-right">
-									<?= number_format($data['deposit']['kredit'], 0, ',', '.') ?>
-								</div>
-							</div>
-							<hr class="my-1">
-							<div class="row">
-								<div class="col-7">Tunai</div>
-								<div class="col-5 text-right">
-									<?= number_format($data['deposit']['cash'], 0, ',', '.') ?>
-								</div>
-							</div>
-							<hr class="my-1">
-							<div class="row">
-								<div class="col-7">Non-Tunai</div>
-								<div class="col-5 text-right">
-									<?= number_format($data['deposit']['non_cash'], 0, ',', '.') ?>
-								</div>
-							</div>
-							<hr class="my-1">
-							<?php
-							if ($data['deposit']['detail']) {
-								$text = [
-										'DEPOSIT_CANTEEN' => 'Kantin',
-										'DEPOSIT_STORE' => 'Koperasi',
-										'DEPOSIT_LIBRARY' => 'Perpustakaan',
-										'DEPOSIT_SECURITY' => 'KAMTIB',
-										'DEPOSIT_BARBER' => 'Pangkas Rambut'
-								];
-
-								foreach ($data['deposit']['detail'] as $item) {
-									?>
-									<div class="row text-danger text-sm">
-										<div class="col-7 pl-3">
-											- <?= $text[$item['status']] ?>
+										<div class="row text-danger text-sm">
+											<div class="col-7 pl-3">
+												- Pencairan tunai
+											</div>
+											<div class="col-5 text-right">
+												<?= number_format($data['purchase']['cash'], 0, ',', '.') ?>
+											</div>
 										</div>
+										<div class="row text-danger text-sm">
+											<div class="col-7 pl-3">
+												- Pencairan Non-tunai
+											</div>
+											<div class="col-5 text-right">
+												<?= number_format($data['purchase']['credit'], 0, ',', '.') ?>
+											</div>
+										</div>
+										<hr class="my-1">
+										<div class="row">
+											<div class="col-7">Total pencairan</div>
+											<div class="col-5 text-right">
+												<?= number_format($data['purchase']['disbursement'], 0, ',', '.') ?>
+											</div>
+										</div>
+										<hr class="my-1">
+										<div class="row text-success font-weight-bold">
+											<div class="col-7">Saldo uang saku</div>
+											<div class="col-5 text-right">
+												<?= number_format($data['purchase']['balance'], 0, ',', '.') ?>
+											</div>
+										</div>
+									<?php } else { ?>
+										<div class="row">
+											<div class="col-12 text-center">Tidak ada data untuk ditampilkan</div>
+										</div>
+									<?php } ?>
+								</div>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="card">
+								<div class="card-body pb-2">
+									<div class="callout callout-success py-3 px-3 mb-4">
+										<b>Tabungan</b>
+									</div>
+									<div class="row">
+										<div class="col-7">Saldo Awal</div>
 										<div class="col-5 text-right">
-											<?= number_format($item['total'], 0, ',', '.') ?>
+											<?= number_format($data['deposit']['credit'], 0, ',', '.') ?>
 										</div>
 									</div>
 									<hr class="my-1">
-									<?php
-								}
-							}
-							?>
-							<div class="row">
-								<div class="col-7">Saldo</div>
-								<div class="col-5 text-right">
-									<?= number_format($data['deposit']['residual'], 0, ',', '.') ?>
+									<div class="row text-danger text-sm">
+										<div class="col-7 pl-3">
+											- Pencairan tunai
+										</div>
+										<div class="col-5 text-right">
+											<?= number_format($data['deposit']['cash'], 0, ',', '.') ?>
+										</div>
+									</div>
+									<div class="row text-danger text-sm">
+										<div class="col-7 pl-3">
+											- Pencairan Non-tunai
+										</div>
+										<div class="col-5 text-right">
+											<?= number_format($data['deposit']['debit'], 0, ',', '.') ?>
+										</div>
+									</div>
+									<hr class="my-1">
+									<div class="row">
+										<div class="col-7">Total pencairan</div>
+										<div class="col-5 text-right">
+											<?= number_format($data['deposit']['total'], 0, ',', '.') ?>
+										</div>
+									</div>
+									<hr class="my-1">
+									<div class="row text-success font-weight-bold">
+										<div class="col-7">Saldo uang saku</div>
+										<div class="col-5 text-right">
+											<?= number_format($data['deposit']['balance'], 0, ',', '.') ?>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+
+				</section>
+				<section class="col-6">
 					<div class="card">
 						<div class="card-body pb-2">
 							<div class="callout callout-success py-3 px-3 mb-4">

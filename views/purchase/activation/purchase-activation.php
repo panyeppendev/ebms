@@ -34,7 +34,7 @@
 						</form>
 					</div>
 					<div class="card-footer">
-						<button class="btn btn-primary btn-block" onclick="saveTemp()">
+						<button class="btn btn-primary btn-block" onclick="getById()">
 							Cek Sekarang
 						</button>
 					</div>

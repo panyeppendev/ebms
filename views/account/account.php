@@ -13,7 +13,6 @@
 							<option value="">:Kategori:</option>
 							<option value="PACKAGE">Paket</option>
 							<option value="ADDON">Tambahan</option>
-							<option value="OTHER">Lain-lain</option>
 						</select>
 					</div>
 					<div class="col-3">
@@ -54,7 +53,6 @@
 							<option value="">:Pilih:</option>
 							<option value="PACKAGE">Paket</option>
 							<option value="ADDON">Tambahan</option>
-							<option value="OTHER">Lain-lain</option>
 						</select>
 						<small class="text-danger errors" id="error-category"></small>
 					</div>

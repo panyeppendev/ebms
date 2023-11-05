@@ -24,13 +24,6 @@ class SettingPackageModel extends CI_Model
 		return '';
 	}
 
-	public function others()
-	{
-		return $this->db->get_where('accounts', [
-			'category' => 'OTHER', 'status' => 'ACTIVE'
-		])->result_object();
-	}
-
 	public function store()
 	{
 		$package = $this->input->post('package', true);

@@ -6,8 +6,8 @@ class PurchaseModel extends CI_Model
 	public function purchases()
 	{
 		$filter = $this->input->post('filter', true);
-		$this->db->select('a.student_id as id, a.amount, b.name as package, c.name, c.domicile, c.village, c.city')->from('purchases as a');
-		$this->db->join('packages as b', 'b.id = a.package_id')->join('students as c', 'c.id = a.student_id');
+		$this->db->select('a.id as purchase, a.student_id as id, a.amount, a.status, a.package_name as package, c.name, c.domicile, c.village, c.city')->from('purchases as a');
+		$this->db->join('students as c', 'c.id = a.student_id');
 		if ($filter) {
 			$this->db->where('a.status', $filter);
 		}
@@ -19,8 +19,8 @@ class PurchaseModel extends CI_Model
 	{
 		$nis = str_replace('_', '', $this->input->post('nis', true));
 
-		$this->db->select('a.id, a.student_id, a.amount, a.status, b.name as package, c.name, c.domicile, c.village, c.city')->from('purchases as a');
-		$this->db->join('packages as b', 'b.id = a.package_id')->join('students as c', 'c.id = a.student_id');
+		$this->db->select('a.id, a.student_id, a.amount, a.status, a.package_name as package, c.name, c.domicile, c.village, c.city')->from('purchases as a');
+		$this->db->join('students as c', 'c.id = a.student_id');
 		$this->db->where(['a.status !=' => 'DONE', 'a.student_id' => $nis]);
 
 		return $this->db->get()->result_object();
@@ -61,6 +61,14 @@ class PurchaseModel extends CI_Model
 			];
 		}
 
+		$checkPackage = $this->db->get_where('packages', ['id' => $package])->row_object();
+		if (!$checkPackage) {
+			return [
+				'status' => false,
+				'message' => 'Data paket tidak valid'
+			];
+		}
+
 		$this->db->where(['student_id' => $nis, 'user' => $this->session->userdata('user_id')])->delete('purchase_temp');
 
 		$this->saveAddon($nis, $addon);
@@ -74,7 +82,8 @@ class PurchaseModel extends CI_Model
 			'status' => true,
 			'student' => $student,
 			'purchases' => $purchases,
-			'package' => $package
+			'package' => $package,
+			'package_name' => $checkPackage->name
 		];
     }
 
@@ -111,6 +120,7 @@ class PurchaseModel extends CI_Model
 	{
 		$nis = $this->input->post('nis', true);
 		$package = $this->input->post('packageId', true);
+		$packageName = $this->input->post('packageName', true);
 		$amount = $this->input->post('amount', true);
 		$id = $this->idGenerator();
 		$user = $this->session->userdata('user_id');
@@ -125,6 +135,7 @@ class PurchaseModel extends CI_Model
 				'id' => $id,
 				'student_id' => $nis,
 				'package_id' => $package,
+				'package_name' => $packageName,
 				'amount' => $amount,
 				'created_at' => date('Y-m-d H:i:s'),
 				'user_id' => $user,
@@ -161,8 +172,8 @@ class PurchaseModel extends CI_Model
 	{
 		$id = $this->input->post('id', true);
 
-		$this->db->select('a.id, a.created_at, a.amount, b.name as package, c.name, c.domicile, c.class, c.level, c.class_of_formal, c.level_of_formal, c.village, c.city, d.name as user');
-		$this->db->from('purchases as a')->join('packages as b', 'b.id = a.package_id')->join('students as c', 'c.id = a.student_id');
+		$this->db->select('a.id, a.created_at, a.amount, a.package_name as package, c.name, c.domicile, c.class, c.level, c.class_of_formal, c.level_of_formal, c.village, c.city, d.name as user');
+		$this->db->from('purchases as a')->join('students as c', 'c.id = a.student_id');
 		$data = $this->db->join('users as d', 'd.id = a.user_id')->where('a.id', $id)->get()->row_object();
 
 		$this->db->select('a.nominal, b.name')->from('purchase_detail as a')->join('accounts as b', 'b.id = a.account_id');
@@ -279,7 +290,7 @@ class PurchaseModel extends CI_Model
 					'package_name' => $package,
 					'account_id' => $account,
 					'student_id' => $student,
-					'nominal' => $this->getLimit($id, $packageId),
+					'nominal' => $this->getLimit($account, $packageId),
 					'created_at' => date('Y-m-d'),
 					'caption' => 'AKTIVASI PAKET '.$id
 				]);
@@ -305,5 +316,109 @@ class PurchaseModel extends CI_Model
 		}
 
 		return $nominal;
+	}
+
+	public function finished()
+	{
+		$id = $this->input->post('id', true);
+		$purchase = $this->db->get_where('purchases', ['id' => $id])->row_object();
+		if (!$purchase) {
+			return [
+				'status' => 400,
+				'message' => 'Data paket tidak valid'
+			];
+		}
+		$this->setDisbursementRecap($id);
+		$this->setTransactionRecap($id);
+		$this->db->where('id', $id)->update('purchases', ['status' => 'DONE']);
+		if ($this->db->affected_rows() <= 0) {
+			return [
+				'status' => 400,
+				'message' => 'Gagal memperbarui data'
+			];
+		}
+
+		return [
+			'status' => 200,
+			'message' => 'Sukses'
+		];
+	}
+
+	public function destroy()
+	{
+		$id = $this->input->post('id', true);
+		$purchase = $this->db->get_where('purchases', [
+			'id' => $id
+		])->row_object();
+
+		if (!$purchase) {
+			return [
+				'status' => 400,
+				'message' => 'Data tidak valid'
+			];
+		}
+
+		$status = $purchase->status;
+		if ($status != 'INACTIVE') {
+			return [
+				'status' => 400,
+				'message' => 'Transaksi ini tidak bisa dihapus'
+			];
+		}
+
+		$this->db->where('id', $id)->delete('purchases');
+		if ($this->db->affected_rows() <= 0) {
+			return [
+				'status' => 400,
+				'message' => 'Gagal saat menghapus data'
+			];
+		}
+
+		return [
+			'status' => 200,
+			'message' => 'Sukses'
+		];
+	}
+
+	public function setDisbursementRecap($id)
+	{
+		$this->db->select('SUM(amount) as total, student_id as student, account_id as account, role_id as role');
+		$this->db->from('disbursements')->where('purchase_id', $id)->group_by(['account_id', 'role_id']);
+		$result = $this->db->get()->result_object();
+		$data = [];
+		if ($result) {
+			foreach ($result as $item) {
+				$data[] = [
+					'student_id' => $item->student,
+					'purchase_id' => $id,
+					'account_id' => $item->account,
+					'role_id' => $item->role,
+					'nominal' => $item->total,
+					'created_at' => date('Y-m-d')
+				];
+			}
+			$this->db->insert_batch('distributions', $data);
+		}
+	}
+
+	public function setTransactionRecap($id)
+	{
+		$this->db->select('SUM(amount) as total, student_id as student, purchase_id as purchase, account_id as account, role_id as role');
+		$this->db->from('transactions')->where('purchase_id', $id)->group_by(['account_id', 'role_id']);
+		$result = $this->db->get()->result_object();
+		$data = [];
+		if ($result) {
+			foreach ($result as $item) {
+				$data[] = [
+					'student_id' => $item->student,
+					'purchase_id' => $id,
+					'account_id' => $item->account,
+					'role_id' => $item->role,
+					'nominal' => $item->total,
+					'created_at' => date('Y-m-d')
+				];
+			}
+			$this->db->insert_batch('distributions', $data);
+		}
 	}
 }

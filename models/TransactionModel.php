@@ -3,262 +3,315 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class TransactionModel extends CI_Model
 {
-    public function step()
-    {
-        $data = $this->db->get_where('steps', ['status' => 'DISBURSEMENT'])->row_object();
-        if ($data) {
-            return $data->step;
-        } else {
-            return 0;
-        }
-    }
+	public function transactions()
+	{
+		$role = $this->session->userdata('role_id');
+		$date = $this->input->post('date', true);
+		$name = $this->input->post('name', true);
+		$this->db->select('a.amount, a.id, b.name, b.village, b.city, b.domicile, b.class, b.level, b.class_of_formal, b.level_of_formal')->from('disbursements as a');
+		$this->db->join('students as b', 'b.id = a.student_id')->where(['a.created_at' => $date, 'role_id' => $role]);
+		if ($name) {
+			$this->db->like('b.name', $name);
+		}
+		return $this->db->order_by('a.id', 'ASC')->get()->result_object();
+	}
+	public function setting()
+	{
+		return $this->db->get_where('set_daily', ['status' => 'OPEN'])->row_object();
+	}
 
-    public function setting()
-    {
-        $check = $this->db->get_where('steps', ['status' => 'DISBURSEMENT'])->num_rows();
-        if ($check > 0) {
-            return 'OPENED';
-        } else {
-            return 'CLOSED';
-        }
-    }
+	public function account()
+	{
+		return $this->db->get('account_pocket')->row_object();
+	}
 
-    public function loadData()
-    {
-        $shift = $this->getShift();
-        if ($shift == 'NIGHT') {
-            $shift = 'AFTERNOON';
-        } else {
-            $shift;
-        }
+	public function dailyTotal()
+	{
+		$role = $this->session->userdata('role_id');
+		$date = $this->input->post('date', true);
+		$data = $this->db->select('SUM(amount) as total')->from('disbursements')->where([
+			'created_at' => $date, 'role_id' => $role
+		])->get()->row_object();
 
-        $now = $this->db->get_where('package_transaction', [
-            'DATE(created_at)' => date('Y-m-d'), 'status' => $shift
-        ])->num_rows();
+		if ($data) {
+			return 'Rp. '.number_format($data->total, 0, ',', '.');
+		}
 
-        $this->db->select('id')->from('package_transaction')->where('DATE(created_at)', date('Y-m-d'));
-        $all = $this->db->where_in('type', ['BREAKFAST', 'DPU'])->get()->num_rows();
+		return 'Rp. 0';
+	}
 
-        return [$now, $all];
-    }
+	public function checkCard()
+	{
+		$card = str_replace('_', '', $this->input->post('card', true));
 
-    public function checkNIS()
-    {
-        $nis = str_replace('_', '', $this->input->post('nis', true));
-        $step = $this->input->post('step', true);
-        $period = $this->dm->getperiod();
+		$setting = $this->setting();
+		if (!$setting) {
+			return [
+				'status' => 500,
+				'message' => 'Transaksi hari ini belum dibuka'
+			];
+		}
 
-        //CHECK CARD
-        $checkCard = $this->db->get_where('cards', ['id' => $nis])->row_object();
-        if (!$checkCard) {
-            return [
-                'status' => 500,
-                'message' => 'Kartu tidak valid'
-            ];
-        }
+		$account = $this->account();
+		if (!$account) {
+			return [
+				'status' => 500,
+				'message' => 'Rekening pencairan belum diatur'
+			];
+		}
 
-        $statusCard = $checkCard->status;
-        if ($statusCard != 'ACTIVE') {
-            $statusText = ['INACTIVE' => 'belum diaktivasi', 'BLOCKED' => 'sudah diblokir'];
-            return [
-                'status' => 500,
-                'message' => 'Kartu ini ' . $statusText[$statusCard]
-            ];
-        }
+		//CHECK CARD
+		$checkCard = $this->db->get_where('cards', ['id' => $card])->row_object();
+		if (!$checkCard) {
+			return [
+				'status' => 500,
+				'message' => 'Kartu tidak valid'
+			];
+		}
 
-        $nis = $checkCard->student_id;
+		$statusCard = $checkCard->status;
+		if ($statusCard != 'ACTIVE') {
+			$statusText = ['INACTIVE' => 'belum diaktivasi', 'BLOCKED' => 'sudah diblokir'];
+			return [
+				'status' => 500,
+				'message' => 'Kartu ini ' . $statusText[$statusCard]
+			];
+		}
 
-        $cekStudent = $this->db->get_where('students', [
-            'id' => $nis, 'status' => 'AKTIF'
-        ])->num_rows();
-        if ($cekStudent <= 0) {
-            return [
-                'status' => 500,
-                'message' => 'Santri tidak ditemukan'
-            ];
-        }
+		$nis = $checkCard->student_id;
 
-        $checkPackage = $this->db->get_where('packages', [
-            'student_id' => $nis, 'period' => $period,
-            'step' => $step, 'status' => 'ACTIVE'
-        ])->row_object();
-        if (!$checkPackage) {
-            return [
-                'status' => 500,
-                'message' => 'Santri ini tidak punya paket aktif pada tahap saat ini'
-            ];
-        }
+		$cekStudent = $this->db->get_where('students', [
+			'id' => $nis, 'status' => 'AKTIF'
+		])->row_object();
+		if (!$cekStudent) {
+			return [
+				'status' => 500,
+				'message' => 'Santri tidak ditemukan'
+			];
+		}
 
-        $packageID = $checkPackage->id;
-        $package = $checkPackage->package;
-        $transport = $checkPackage->transport;
+		$checkPurchase = $this->db->get_where('purchases', [
+			'student_id' => $nis, 'status' => 'ACTIVE'
+		])->row_object();
+		if (!$checkPurchase) {
+			return [
+				'status' => 500,
+				'message' => 'Belum ada paket aktif'
+			];
+		}
 
-        //TRANSPORT
-        if ($transport <= 0) {
-            $teksTransport = '';
-        } else {
-            $teksTransport = ' + Transport';
-        }
+		$balance = $this->getBalance($nis);
+		$disbursement = $this->getDisbursement($nis, $setting->created_at, 10);
+		$pocket = ($balance[0] + $balance[1]) - $disbursement;
 
-        $shift = $this->getShift();
-        if (!$shift || $shift == '') {
-            return [
-                'status' => 400,
-                'message' => 'Saat ini jam tutup',
-                'nis' => $nis,
-                'text' => 'Paket ' . $package . $teksTransport
-            ];
-        }
+		$depositCredit = $this->getAmount($nis, 'deposit_credit', '');
+		$depositDebit = $this->getAmount($nis, 'deposit_debit', '');
+		$deposit = $depositCredit - $depositDebit;
 
-        if ($shift == 'NIGHT') {
-            $shift = 'AFTERNOON';
-        } else {
-            $shift;
-        }
+		return [
+			'status' => 200,
+			'pocket' => $pocket,
+			'deposit' => $deposit,
+			'total' => $pocket + $deposit,
+			'nis' => $nis,
+			'purchase' => $checkPurchase->id,
+			'account' => $account->account_id,
+			'date' => $setting->created_at
+		];
+	}
 
-        if ($shift == 'BREAKFAST') {
-            $type = 'BREAKFAST';
-        } else {
-            $type = 'DPU';
-        }
+	public function getData()
+	{
+		$nis = $this->input->post('nis', true);
+		$setting = $this->setting();
 
-        $checkTransaction = $this->db->select('id')->from('package_transaction')->where([
-            'package_id' => $packageID, 'DATE(created_at)' => date('Y-m-d'), 'status' => $shift
-        ])->get()->num_rows();
+		$name = '';
+		$address = '';
+		$domicile = '';
+		$diniyah = '';
+		$formal = '';
+		$package = '';
+		$daily = 0;
+		$reserved = 0;
+		$disbursementCash = 0;
+		$disbursementDebit = 0;
 
-        $now = date('Y-m-d H:i:s');
-        //BREAKFAST
-        if ($shift == 'BREAKFAST') {
-            if ($package === 'A' || $package === 'C') {
-                return [
-                    'status' => 400,
-                    'message' => 'Transaksi sarapan hanya khusus Paket B dan D',
-                    'nis' => $nis,
-                    'text' => 'Paket ' . $package . $teksTransport
-                ];
-            }
+		$student = $this->db->get_where('students', ['id' => $nis])->row_object();
 
-            if ($checkTransaction > 0) {
-                return [
-                    'status' => 400,
-                    'message' => 'Jatah nasi pada shift ini sudah diambil',
-                    'nis' => $nis,
-                    'text' => 'Paket ' . $package . $teksTransport
-                ];
-            }
-        }
+		$this->db->select('b.name')->from('purchases as a')->join('packages as b', 'b.id = a.package_id');
+		$purchase = $this->db->where(['a.student_id' => $nis, 'a.status' => 'ACTIVE'])->get()->row_object();
+		if ($student) {
+			$name = $student->name;
+			$address = $student->village.', '.str_replace(['Kota ', 'Kabupaten '], '', $student->city);
+			$domicile = $student->domicile;
+			$diniyah = $student->class.' - '.$student->level;
+			$formal = $student->class_of_formal.' - '.$student->level_of_formal;
+		}
 
-        if ($shift == 'MORNING') {
-            if ($checkTransaction > 0) {
-                return [
-                    'status' => 400,
-                    'message' => 'Jatah nasi pada shift ini sudah diambil',
-                    'nis' => $nis,
-                    'text' => 'Paket ' . $package . $teksTransport
-                ];
-            }
-        }
+		if ($purchase) {
+			$package = $purchase->name;
+		}
 
-        if ($shift == 'AFTERNOON') {
-            $dayNum = date('N');
+		$balance = $this->getBalance($nis);
+		if ($balance) {
+			$daily = $balance[0];
+			$reserved = $balance[1];
+		}
 
-            $setTomorrow = new DateTime('tomorrow');
-            $tomorrowDate = $setTomorrow->format('Y-m-d');
-            $hour = '09:00:00';
-            $format = 'Y-m-d H:i:s';
-            $tomorrowDateTime = DateTime::createFromFormat($format, $tomorrowDate . ' ' . $hour);
-            $tomorrowFinal = $tomorrowDateTime->format('Y-m-d H:i:s');
+		$getDisbursementCash = $this->getDisbursement($nis, $setting->created_at, 0);
+		if ($getDisbursementCash) {
+			$disbursementCash = $getDisbursementCash;
+		}
 
-            if ($dayNum == 3 || $dayNum == 7) {
-                //CHECK MORNING INI MONDAY
-                $checkTomorrow = $this->db->select('id')->from('package_transaction')->where([
-                    'package_id' => $packageID,
-                    'DATE(created_at)' => $tomorrowDate,
-                    'status' => 'MORNING'
-                ])->get()->num_rows();
+		$getDisbursementDebit = $this->getDisbursement($nis, $setting->created_at, 1);
+		if ($getDisbursementDebit) {
+			$disbursementDebit = $getDisbursementDebit;
+		}
 
-                if ($checkTransaction > 0) {
-                    $now = $tomorrowFinal;
-                    $shift = 'MORNING';
-                }
+		$disbursement = $disbursementCash + $disbursementDebit;
+		$total = ($daily + $reserved) - $disbursement;
 
-                if ($checkTransaction > 0 && $checkTomorrow > 0) {
-                    return [
-                        'status' => 400,
-                        'message' => 'Jatah nasi sahur sudah diambil',
-                        'nis' => $nis,
-                        'text' => 'Paket ' . $package . $teksTransport
-                    ];
-                }
-            } else {
-                if ($checkTransaction > 0) {
-                    return [
-                        'status' => 400,
-                        'message' => 'Jatah nasi pada shift ini sudah diambil',
-                        'nis' => $nis,
-                        'text' => 'Paket ' . $package . $teksTransport
-                    ];
-                }
-            }
-        }
+		$depositCredit = $this->getAmount($nis, 'deposit_credit', '');
+		$depositCash = $this->getAmount($nis, 'deposit_debit', 0);
+		$depositDebit = $this->getAmount($nis, 'deposit_debit', 1);
+		$balance = $depositCredit - ($depositCash + $depositDebit);
 
-        $this->db->insert('package_transaction', [
-            'package_id' => $packageID,
-            'created_at' => $now,
-            'amount' => 3000,
-            'type' => $type,
-            'status' => $shift
-        ]);
-        if ($this->db->affected_rows() <= 0) {
-            return [
-                'status' => 400,
-                'message' => 'Gagal menyimpan data. Kesalahan server..',
-                'nis' => $nis,
-                'text' => 'Paket ' . $package . $teksTransport
-            ];
-        }
+		$grandTotal = $total + $balance;
 
-        return [
-            'status' => 200,
-            'message' => 'Jatah nasi tersedia. Silahkan distribusikan..!!',
-            'nis' => $nis,
-            'text' => 'Paket ' . $package . $teksTransport
-        ];
-    }
+		return [
+			'nis' => $nis,
+			'name' => $name,
+			'address' => $address,
+			'domicile' => $domicile,
+			'diniyah' => $diniyah,
+			'formal' => $formal,
+			'package' => $package,
+			'daily' => $daily,
+			'reserved' => $reserved,
+			'disbursement_cash' => $disbursementCash,
+			'disbursement_debit' => $disbursementDebit,
+			'pocket' => ($daily + $reserved) - $disbursement,
+			'total' => $daily - $disbursement,
+			'deposit_credit' => $depositCredit,
+			'deposit_cash' => $depositCash,
+			'deposit_debit' => $depositDebit,
+			'deposit_balance' => $balance,
+			'grand_total' => $grandTotal
+		];
+	}
 
-    public function getShift()
-    {
-        $time = strtotime(date('H:i:s'));
+	public function getAmount($nis, $table, $status)
+	{
+		$this->db->select_sum('amount', 'credit')->where('student_id', $nis);
+		if ($table == 'deposit_debit') {
+			$this->db->where('status', $status);
+		}
+		$result = $this->db->get($table)->row_object();
+		if ($result) {
+			return $result->credit;
+		}
 
-        $data = $this->db->get('shifts')->result_object();
-        foreach ($data as $d) {
-            $begin = strtotime($d->begin);
-            $finish = strtotime($d->finish);
-            if ($time >= $begin and $time <= $finish) {
-                return $d->name;
-                break;
-            }
-        }
-    }
+		return 0;
+	}
 
-    public function getData()
-    {
-        $data = $this->db->get_where('students', [
-            'id' => $this->input->post('nis', true)
-        ])->row_object();
+	public function getBalance($id)
+	{
+		$data = $this->db->get_where('daily_pocket_limit', [
+			'student_id' => $id
+		])->row_object();
+		if ($data) {
+			return [$data->pocket, $data->reserved];
+		}
 
-        if (!$data) {
-            return [
-                'status' => 400
-            ];
-        }
+		return [0, 0];
+	}
 
-        return [
-            'status' => 200,
-            'student' => $data,
-            'package' => $this->input->post('text', true),
-            'status_send' => $this->input->post('status', true),
-            'message' => $this->input->post('message', true)
-        ];
-    }
+	public function getDisbursement($nis, $date, $status)
+	{
+		$this->db->select('SUM(amount) as total')->from('disbursements')->where([
+			'student_id' => $nis, 'created_at' => $date
+		]);
+		if ($status != 10) {
+			$this->db->where('status', $status);
+		}
+		$data = $this->db->get()->row_object();
+
+		if ($data) {
+			return $data->total;
+		}
+
+		return 0;
+	}
+
+	public function save()
+	{
+		$date = $this->input->post('date', true);
+		$nis = $this->input->post('nis', true);
+		$purchase = $this->input->post('purchase', true);
+		$account = $this->input->post('account', true);
+		$pocket = $this->input->post('pocket', true);
+		$deposit = $this->input->post('deposit', true);
+		$total = $this->input->post('total', true);
+		$nominal = $this->input->post('nominal_real', true);
+
+		if ($nominal == '' || $nominal <= 0) {
+			return [
+				'status' => 400,
+				'message' => 'Nominal tidak boleh kosong'
+			];
+		}
+
+		if ($nominal > $total) {
+			return [
+				'status' => 400,
+				'message' => 'Nominal tidak boleh lebih besar dari dana pencairan'
+			];
+		}
+
+		$residual = $pocket - $nominal;
+		if ($residual < 0) {
+			$this->db->insert('deposit_debit', [
+				'student_id' => $nis,
+				'amount' => $nominal - $pocket,
+				'role_id' => $this->session->userdata('role_id'),
+				'created_at' => $date,
+				'status' => 1
+			]);
+			$nominal = $pocket;
+		}
+
+		if ($pocket > 0) {
+			$this->db->insert('disbursements', [
+				'student_id' => $nis,
+				'purchase_id' => $purchase,
+				'account_id' => $account,
+				'amount' => $nominal,
+				'role_id' => $this->session->userdata('role_id'),
+				'created_at' => $date,
+				'status' => 1
+			]);
+		}
+
+		return [
+			'status' => 200,
+			'message' => 'Sukses'
+		];
+	}
+
+	public function destroy()
+	{
+		$id = $this->input->post('id', true);
+		$this->db->where('id', $id)->delete('disbursements');
+		if ($this->db->affected_rows() <= 0) {
+			return [
+				'status' => 400,
+				'message' => 'Gagal menghapus data'
+			];
+		}
+
+		return [
+			'status' => 200,
+			'message' => 'Satu transaksi berhasil dihapus'
+		];
+	}
 }

@@ -4,7 +4,7 @@
     <section class="content p-3">
 		<div class="row justify-content-between">
 			<div class="col-3">
-				<h4 class="card-title mt-1">Transaksi Pencairan</h4>
+				<h4 class="card-title mt-1">Pencairan Tunai</h4>
 			</div>
 			<div class="col-9">
 				<div class="row justify-content-end">
