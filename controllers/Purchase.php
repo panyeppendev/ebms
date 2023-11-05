@@ -100,27 +100,4 @@ class Purchase extends CI_Controller
 
 		echo json_encode($result);
 	}
-
-	public function setPackageName()
-	{
-		$result = $this->db->get('purchases')->result_object();
-		if ($result) {
-			foreach ($result as $item) {
-				$id = $item->id;
-				$packageId = $item->package_id;
-				$package = $this->db->get_where('packages', ['id' => $packageId])->row_object();
-				if ($package) {
-					$this->db->where('id', $id)->update('purchases', ['package_name' => $package->name]);
-				}
-			}
-		}
-	}
-
-	public function setDisbursementDaily()
-	{
-		$date = $this->db->group_by('created_at')->get('disbursements')->result_object();
-		if ($date) {
-			$this->pm->setDisbursementDailyRecap($date->created_at);
-		}
-	}
 }
