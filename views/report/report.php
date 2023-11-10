@@ -2,102 +2,35 @@
 <div class="content-wrapper">
     <!-- Main content -->
     <section class="content p-3">
-        <div class="row mb-3">
-            <div class="col-7">
-                <form action="<?= base_url() ?>report/log" target="_blank" method="post" class="row">
-                    <div class="col-4">
-                        <select name="type" required class="form-control form-control-sm">
-                            <option value="">.:Pilih:.</option>
-                            <option value="CASH">Tunai</option>
-                            <option value="CANTEEN">Kantin</option>
-                            <option value="STORE">Koperasi</option>
-                            <option value="LIBRARY">Perpus</option>
-                        </select>
-                    </div>
-                    <div class="col-5">
-                        <input type="date" name="date" required class="form-control form-control-sm">
-                    </div>
-                    <div class="col-3">
-                        <button class="btn btn-default btn-block btn-sm">
-                            <i class="fas fa-print"></i> Print Log
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-2">
-                <select onchange="loadPaymentReport()" id="change-step-payment" class="form-control form-control-sm">
-                    <option <?= ($step[0] == 0) ? 'selected' : '' ?> value="0">Pembayaran</option>
-                    <?php
-                    for ($i = 1; $i < 13; $i++) {
-                    ?>
-                        <option <?= ($step[0] == $i) ? 'selected' : '' ?> value="<?= $i ?>">Paket - <?= $i ?></option>
-                    <?php
-                    }
-                    ?>
-                </select>
-            </div>
-            <div class="col-3">
-                <form action="<?= base_url() ?>report/exportPocket" method="post">
-                    <input type="hidden" name="step" id="step-payment-download" value="<?= $step[0] ?>">
-                    <button type="submit" class="btn btn-default btn-sm btn-block">
-                        <i class="fas fa-file-download"></i>
-                        Unduh Laporan Pembayaran
-                    </button>
-                </form>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12" id="show-payment-report"></div>
-        </div>
-        <hr>
-        <div class="row mb-3">
-            <div class="col-4">
-                <form action="<?= base_url() ?>report/exportDeposit" method="post">
-                    <button type="submit" class="btn btn-default btn-sm btn-block">
-                        <i class="fas fa-file-download"></i>
-                        Unduh Laporan Tabungan
-                    </button>
-                </form>
-            </div>
-            <div class="col-2">
-                <select onchange="loadDisbursementReport()" id="change-step-disbursement" class="form-control form-control-sm">
-                    <option value="0" <?= ($step[1] == 0) ? 'selected' : '' ?>>Pencairan</option>
-                    <?php
-                    for ($i = 1; $i < 13; $i++) {
-                    ?>
-                        <option <?= ($step[1] == $i) ? 'selected' : '' ?> value="<?= $i ?>">Paket - <?= $i ?></option>
-                    <?php
-                    }
-                    ?>
-                </select>
-            </div>
-            <div class="col-3">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            <i class="far fa-calendar-alt"></i>
-                        </span>
-                    </div>
-                    <input type="text" class="form-control form-control-sm" id="reservation" placeholder="Semua waktu">
-                    <input type="hidden" id="start-date" value="">
-                    <input type="hidden" id="end-date" value="">
-                </div>
-            </div>
-            <div class="col-3">
-                <form action="<?= base_url() ?>report/exportDisbursement" method="post">
-                    <input type="hidden" name="step" id="step-disbursement-download" value="<?= $step[0] ?>">
-                    <input type="hidden" name="startDate" id="start-date-download" value="">
-                    <input type="hidden" name="endDate" id="end-date-download" value="">
-                    <button type="submit" class="btn btn-default btn-sm btn-block">
-                        <i class="fas fa-file-download"></i>
-                        Unduh Laporan Pencairan
-                    </button>
-                </form>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12" id="show-disbursement-report"></div>
-        </div>
+		<div class="row mt-5 justify-content-center">
+			<div class="col-8">
+				<div class="card">
+					<div class="card-body text-center">
+						<p class="mb-0">Silahkan pilih jenis laporan yang kamu inginkan</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row mt-5 justify-content-center">
+			<div class="col-3">
+				<a href="<?= base_url() ?>report/purchase" class="btn btn-outline-primary btn-block py-5">
+					<i class="fas fa-file-invoice fa-3x"></i>
+					<span class="d-block mt-3">Pembelian Paket</span>
+				</a>
+			</div>
+			<div class="col-3">
+				<a href="<?= base_url() ?>report/mutation" class="btn btn-outline-primary btn-block py-5">
+					<i class="fas fa-hand-holding-usd fa-3x"></i>
+					<span class="d-block mt-3">Mutasi Kas</span>
+				</a>
+			</div>
+			<div class="col-3">
+				<a href="<?= base_url() ?>report/cashflow" class="btn btn-outline-primary btn-block py-5">
+					<i class="fas fa-random fa-3x"></i>
+					<span class="d-block mt-3">Arus Kas</span>
+				</a>
+			</div>
+		</div>
     </section>
     <!-- /.content -->
 </div>

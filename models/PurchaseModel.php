@@ -6,8 +6,14 @@ class PurchaseModel extends CI_Model
 	public function purchases()
 	{
 		$filter = $this->input->post('filter', true);
+		$name = $this->input->post('name', true);
+
 		$this->db->select('a.id as purchase, a.student_id as id, a.amount, a.status, a.package_name as package, c.name, c.domicile, c.village, c.city')->from('purchases as a');
 		$this->db->join('students as c', 'c.id = a.student_id');
+		if ($name) {
+			$this->db->like('c.name', $name);
+		}
+
 		if ($filter) {
 			$this->db->where('a.status', $filter);
 		}

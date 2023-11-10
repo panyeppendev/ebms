@@ -54,12 +54,6 @@
 									<button class="btn btn-sm btn-danger" onclick="destroy('<?= $purchase->purchase ?>')">
 										<i class="fas fa-trash"></i>
 									</button>
-								<?php
-								}else{
-								?>
-									<button class="btn btn-sm btn-danger" disabled>
-										<i class="fas fa-trash"></i>
-									</button>
 								<?php } ?>
 							</td>
 						</tr>
