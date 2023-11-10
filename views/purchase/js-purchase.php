@@ -53,11 +53,13 @@
 
     const purchases = () => {
         let filter = $('#change-type').val()
+		let name = $('#name').val()
         $.ajax({
             url: '<?= base_url() ?>purchase/purchases',
             method: 'POST',
             data: {
-                filter
+                filter,
+				name
             },
             success: function(res) {
                 $('#show-data').html(res)

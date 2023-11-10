@@ -8,19 +8,10 @@
 			</div>
 			<div class="col-9">
 				<div class="row justify-content-end">
-<!--					<div class="col-4">-->
-<!--						<div class="input-group">-->
-<!--							<div class="input-group-prepend">-->
-<!--                        <span class="input-group-text">-->
-<!--                            <i class="far fa-calendar-alt"></i>-->
-<!--                        </span>-->
-<!--							</div>-->
-<!--							<input type="text" class="form-control form-control-sm" id="reservation" placeholder="Semua waktu">-->
-<!--							<input type="hidden" id="start-date" value="">-->
-<!--							<input type="hidden" id="end-date" value="">-->
-<!--						</div>-->
-<!--					</div>-->
-					<div class="col-3">
+					<div class="col-4">
+						<input autocomplete="off" type="text" onkeyup="purchases()" id="name" class="form-control form-control-sm" placeholder="Cari nama">
+					</div>
+					<div class="col-2">
 						<select name="" id="change-type" class="form-control form-control-sm" onchange="purchases()">
 							<option value="INACTIVE">TIDAK AKTIF</option>
 							<option value="ACTIVE">AKTIF</option>
@@ -47,16 +38,6 @@
     <!-- /.content -->
 </div>
 
-<div class="modal fade" id="modal-detail">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <input type="text" onkeyup="loadData()" id="changeName" class="form-control form-control-sm" placeholder="Cari nama">
-            </div>
-            <div class="modal-body" id="show-detail" style="min-height: 45vh; max-height: 85vh; overflow: auto"></div>
-        </div>
-    </div>
-</div>
 
 <?php $this->load->view('partials/footer'); ?>
 <script src="<?= base_url('template') ?>/plugins/moment/moment.min.js"></script>

@@ -22,8 +22,6 @@
 <script src="<?= base_url() ?>template/dist/js/adminlte.min.js"></script>
 <script src="<?= base_url() ?>template/plugins/croppie/croppie.js"></script>
 <script src="<?= base_url() ?>template/plugins/croppie/exif.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="<?= base_url() ?>template/dist/js/demo.js"></script>
 <script>
 	const switchRole = role_id => {
 		$.ajax({
