@@ -254,14 +254,12 @@ class PurchaseModel extends CI_Model
 
 	public function setIncome($id, $student, $package, $packageId)
 	{
-		$this->db->select('a.nominal, b.category, b.id')->from('purchase_detail as a');
-		$this->db->join('accounts as b', 'b.id = a.account_id');
-		$data = $this->db->where('a.purchase_id', $id)->get()->result_object();
+		$data = $this->db->get_where('purchase_detail', ['purchase_id' => $id])->result_object();
 
 		$rows = 0;
 		if ($data) {
 			foreach ($data as $d) {
-				$account = $d->id;
+				$account = $d->account_id;
 				$this->db->insert('incomes', [
 					'purchase_id' => $id,
 					'package_name' => $package,
@@ -291,17 +289,20 @@ class PurchaseModel extends CI_Model
 		if ($data) {
 			foreach ($data as $d) {
 				$account = $d->id;
-				$this->db->insert('expenditures', [
-					'purchase_id' => $id,
-					'package_name' => $package,
-					'account_id' => $account,
-					'student_id' => $student,
-					'nominal' => $this->getLimit($account, $packageId),
-					'created_at' => date('Y-m-d'),
-					'caption' => 'AKTIVASI PAKET '.$id
-				]);
-				if ($this->db->affected_rows() > 0) {
-					$rows++;
+				$nominal = $this->getLimit($account, $packageId);
+				if ($nominal > 0) {
+					$this->db->insert('expenditures', [
+						'purchase_id' => $id,
+						'package_name' => $package,
+						'account_id' => $account,
+						'student_id' => $student,
+						'nominal' => $nominal,
+						'created_at' => date('Y-m-d'),
+						'caption' => 'AKTIVASI PAKET '.$id
+					]);
+					if ($this->db->affected_rows() > 0) {
+						$rows++;
+					}
 				}
 			}
 		}
@@ -312,7 +313,7 @@ class PurchaseModel extends CI_Model
 	public function getLimit($id, $package)
 	{
 		$data = $this->db->get_where('package_limit', [
-			'package_id' => $package, 'account_id' => $id
+			'account_id' => $id, 'package_id' => $package
 		])->row_object();
 
 		$nominal = 0;
@@ -425,6 +426,40 @@ class PurchaseModel extends CI_Model
 				];
 			}
 			$this->db->insert_batch('distributions', $data);
+		}
+	}
+
+	public function reset()
+	{
+		$this->db->empty_table('expenditures');
+		$purchases = $this->db->get_where('purchases', [
+			'status !=' => 'INACTIVE'
+		])->result_object();
+		if ($purchases) {
+			foreach ($purchases as $purchase) {
+				$id = $purchase->id;
+				$package = $purchase->package_id;
+				$packageName = $purchase->package_name;
+				$dateTime = new DateTime($purchase->created_at);
+				$detail = $this->db->get_where('purchase_detail', ['purchase_id' => $id])->result_object();
+				if ($detail) {
+					foreach ($detail as $item) {
+						$account = $item->account_id;
+						$nominal = $this->getLimit($account, $package);
+						if ($nominal > 0) {
+							$this->db->insert('expenditures', [
+								'purchase_id' => $id,
+								'package_name' => $packageName,
+								'account_id' => $account,
+								'student_id' => $purchase->student_id,
+								'nominal' => $nominal,
+								'created_at' => $dateTime->format('Y-m-d'),
+								'caption' => 'AKTIVASI PAKET '.$id
+							]);
+						}
+					}
+				}
+			}
 		}
 	}
 }

@@ -154,7 +154,24 @@ class DistributionModel extends CI_Model
 			];
 		}
 
+		$checkTransaction = $this->db->select_sum('nominal', 'total')->from('transactions')->where([
+			'student_id' => $nis, 'account_id' => $accountId
+		])->get()->row_object();
+		if ($checkTransaction) {
+			$debit = $checkTransaction->total;
+		}else{
+			$debit = 0;
+		}
+
+		$residual = $checkExpenditure->nominal - $debit;
+
 		$total = $this->getBalance($purchaseId, $created, $category, $packageId, $accountId);
+		if ($residual < $total) {
+			return [
+				'status' => 500,
+				'message' => 'Saldo distribusi tidak tersedia'
+			];
+		}
 
 		return [
 			'status' => 200,
