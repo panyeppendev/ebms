@@ -100,4 +100,11 @@ class Purchase extends CI_Controller
 
 		echo json_encode($result);
 	}
+
+	public function reset()
+	{
+		$this->pm->reset();
+
+		redirect('purchase/activation');
+	}
 }

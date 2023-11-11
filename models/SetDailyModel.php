@@ -137,9 +137,31 @@ class SetDailyModel extends CI_Model
 			foreach ($result as $item) {
 				$package = $item->package_id;
 				$student = $item->student_id;
-				$limit = $this->getLimit($package, $account);
-				$reserved = $this->getReserved($student);
-				if ($limit > 0) {
+				$getLimit = $this->getLimit($package, $account);
+				$getReserved = $this->getReserved($student);
+				$limitDaily = $getLimit + $getReserved;
+				$balance = $this->getAllBalance($student, $account);
+
+				if ($balance > 0) {
+					if ($balance >= $limitDaily) {
+						$limit = $getLimit;
+						$reserved = $getReserved;
+					}else{
+						$residual = $balance - $getLimit;
+						if ($residual > 0){
+							$limit = $getLimit;
+							$reserved = $residual;
+						}else{
+							$limit = $balance;
+							$reserved = 0;
+						}
+					}
+				}else{
+					$limit = 0;
+					$reserved = 0;
+				}
+
+				if ($limit > 0 || $reserved > 0) {
 					$this->db->insert('daily_pocket_limit', [
 						'student_id' => $student,
 						'pocket' => $limit,
@@ -172,6 +194,29 @@ class SetDailyModel extends CI_Model
 		}
 
 		return 0;
+	}
+
+	public function getAllBalance($student, $account)
+	{
+		$credit = $this->db->select_sum('nominal', 'total')->from('expenditures')->where([
+			'student_id' => $student, 'account_id' => $account
+		])->get()->row_object();
+		if ($credit) {
+			$credit = $credit->total;
+		}else{
+			$credit = 0;
+		}
+
+		$debit = $this->db->select_sum('nominal', 'total')->from('distribution_daily')->where([
+			'student_id' => $student, 'account_id' => $account
+		])->get()->row_object();
+		if ($debit) {
+			$debit = $debit->total;
+		}else{
+			$debit = 0;
+		}
+
+		return $credit - $debit;
 	}
 
 	public function close()
