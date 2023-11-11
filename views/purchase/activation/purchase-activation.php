@@ -8,12 +8,12 @@
 			</div>
 			<div class="col-9">
 				<div class="row justify-content-end">
-					<div class="col-3">
-						<a href="<?= base_url() ?>purchase/reset" class="btn btn-sm btn-primary btn-block">
-							<i class="fa fa-database"></i>
-							Perbarui Data
-						</a>
-					</div>
+<!--					<div class="col-3">-->
+<!--						<a href="--><?php //= base_url() ?><!--purchase/reset" class="btn btn-sm btn-primary btn-block">-->
+<!--							<i class="fa fa-database"></i>-->
+<!--							Perbarui Data-->
+<!--						</a>-->
+<!--					</div>-->
 					<div class="col-3">
 						<a href="<?= base_url() ?>purchase" class="btn btn-sm btn-primary btn-block">
 							<i class="fa fa-list-alt"></i>
