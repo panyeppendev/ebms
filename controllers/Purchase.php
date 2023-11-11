@@ -103,7 +103,7 @@ class Purchase extends CI_Controller
 
 	public function reset()
 	{
-		$this->pm->reset();
+		//$this->pm->reset();
 
 		redirect('purchase/activation');
 	}
