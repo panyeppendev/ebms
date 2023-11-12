@@ -56,6 +56,7 @@
 						}
 					}
 					?>
+					<option value="DEPOSIT">TABUNGAN</option>
 				</select>
 			</div>
 			<div class="col-3">

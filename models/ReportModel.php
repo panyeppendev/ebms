@@ -82,8 +82,16 @@ class ReportModel extends CI_Model
 		$start = $this->input->post('start', true);
 		$end = $this->input->post('end', true);
 
-		$this->db->select('a.student_id as student, SUM(a.nominal) as total, b.name, b.class, b.level, b.domicile')->from('expenditures as a');
-		$this->db->join('students as b', 'b.id = a.student_id');
+		if ($account == 'DEPOSIT') {
+			$accountName = 'TABUNGAN';
+			$this->db->select('a.student_id as student, SUM(a.amount) as total, b.name, b.class, b.level, b.domicile')->from('deposit_credit as a');
+			$this->db->join('students as b', 'b.id = a.student_id');
+		}else{
+			$accountName= $this->getAccountById($account);
+			$this->db->select('a.student_id as student, SUM(a.nominal) as total, b.name, b.class, b.level, b.domicile')->from('expenditures as a');
+			$this->db->join('students as b', 'b.id = a.student_id')->where('a.account_id', $account);
+		}
+
 		if ($grade) {
 			$this->db->where('b.class', $grade);
 		}
@@ -96,7 +104,7 @@ class ReportModel extends CI_Model
 			$this->db->where('domicile', $room);
 		}
 
-		$result = $this->db->where('a.account_id', $account)->group_by('a.student_id')->get()->result_object();
+		$result = $this->db->group_by('a.student_id')->get()->result_object();
 
 		$data = [];
 		if ($result) {
@@ -115,14 +123,20 @@ class ReportModel extends CI_Model
 		return [
 			$data,
 			($start != '') ? 'Dari tanggal '.dateIDFormatShort($start).' s.d. '.dateIDFormatShort($end) : 'Seluruh waktu',
-			$this->getAccountById($account)
+			$accountName
 		];
 	}
 
 	public function getDebit($id, $account, $start, $end)
 	{
-		$this->db->select('SUM(nominal) as total')->from('distribution_daily');
-		$this->db->where(['account_id' => $account, 'student_id' => $id]);
+		if ($account == 'DEPOSIT') {
+			$this->db->select('SUM(amount) as total')->from('deposit_debit');
+			$this->db->where('student_id', $id);
+		}else{
+			$this->db->select('SUM(nominal) as total')->from('distribution_daily');
+			$this->db->where(['account_id' => $account, 'student_id' => $id]);
+		}
+
 		if ($start != '' && $end != '') {
 			$this->db->where(['DATE(created_at) >=' => $start, 'DATE(created_at) <=' => $end]);
 		}
@@ -151,18 +165,29 @@ class ReportModel extends CI_Model
 		$start = $this->input->post('start', true);
 		$end = $this->input->post('end', true);
 
-		$this->db->select('SUM(a.nominal) as total, c.name as role')->from('distribution_daily as a');
-		$this->db->join('roles as c', 'c.id = a.role_id');
-		$this->db->where('a.account_id', $account);
-		if ($start != '' && $end != '') {
-			$this->db->where(['a.created_at >=' => $start, 'a.created_at <=' => $end]);
+		if ($account == 'DEPOSIT') {
+			$this->db->select('SUM(a.amount) as total, b.name as role')->from('deposit_debit as a');
+			$this->db->join('roles as b', 'b.id = a.role_id');
+			if ($start != '' && $end != '') {
+				$this->db->where(['a.created_at >=' => $start, 'a.created_at <=' => $end]);
+			}
+			$result = $this->db->order_by('b.id')->group_by('a.role_id')->get()->result_object();
+			$accountName = 'TABUNGAN';
+		}else{
+			$this->db->select('SUM(a.nominal) as total, c.name as role')->from('distribution_daily as a');
+			$this->db->join('roles as c', 'c.id = a.role_id');
+			$this->db->where('a.account_id', $account);
+			if ($start != '' && $end != '') {
+				$this->db->where(['a.created_at >=' => $start, 'a.created_at <=' => $end]);
+			}
+			$result = $this->db->order_by('c.id')->group_by('a.role_id')->get()->result_object();
+			$accountName = $this->getAccountById($account);
 		}
-		$result = $this->db->order_by('c.id')->group_by('a.role_id')->get()->result_object();
 
 		return [
 			$result,
 			($start != '') ? 'Dari tanggal '.dateIDFormatShort($start).' s.d. '.dateIDFormatShort($end) : 'Seluruh waktu',
-			$this->getAccountById($account)
+			$accountName
 		];
 	}
 }
