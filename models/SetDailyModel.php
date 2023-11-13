@@ -261,10 +261,16 @@ class SetDailyModel extends CI_Model
 							'student_id' => $d->student_id, 'amount' => $final
 						]);
 					}
+
+					$this->db->insert('reserved_pocket_daily', [
+						'student_id' => $d->student_id,
+						'amount' => $final,
+						'created_at' => $date
+					]);
 				}
 			}
-			$this->db->truncate('daily_pocket_limit');
-			$this->db->truncate('set_daily');
+			$this->db->empty_table('daily_pocket_limit');
+			$this->db->empty_table('set_daily');
 		}
 	}
 
@@ -319,6 +325,11 @@ class SetDailyModel extends CI_Model
 			}
 			$this->db->insert_batch('distribution_daily', $data);
 		}
+	}
+
+	public function reset()
+	{
+		$this->db->empty_table('reserved_pocket');
 	}
 
 }

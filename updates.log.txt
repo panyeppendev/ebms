@@ -433,6 +433,21 @@ create table deposit_debit
             on delete cascade
 );
 
+ADD TABLE RESERVED_POCKET_DAILY
+create table reserved_pocket_daily
+(
+    id         int auto_increment
+        primary key,
+    student_id varchar(16) null,
+    amount     int         null,
+    created_at date        null,
+    constraint reserved_pocket_daily_students_id_fk
+        foreign key (student_id) references students (id)
+            on delete cascade
+);
+
+
+
 
 
 
