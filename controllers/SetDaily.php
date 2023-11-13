@@ -53,4 +53,11 @@ class SetDaily extends CI_Controller
 
 		echo json_encode($result);
 	}
+
+	public function reset()
+	{
+		$this->sdm->reset();
+
+		redirect('setdaily');
+	}
 }

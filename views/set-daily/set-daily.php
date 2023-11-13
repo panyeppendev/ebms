@@ -2,12 +2,18 @@
 <div class="content-wrapper">
     <!-- Main content -->
     <section class="content p-3">
-		<div class="row justify-content-between">
+		<div class="row justify-content-between mb-5">
 			<div class="col-3">
 				<h4 class="card-title mt-1">Pengaturan Pencairan</h4>
 			</div>
 			<div class="col-9">
 				<div class="row justify-content-end">
+					<div class="col-3">
+						<a href="<?= base_url() ?>setdaily/reset" class="btn btn-sm btn-danger btn-block">
+							<i class="fa fa-plus-circle"></i>
+							Reset Cadangan
+						</a>
+					</div>
 					<div class="col-3">
 						<a href="<?= base_url() ?>setdaily/create" class="btn btn-sm btn-default btn-block">
 							<i class="fa fa-plus-circle"></i>
@@ -17,7 +23,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="row mt-4 justify-content-center">
+		<div class="row mt-5 justify-content-center">
 			<div class="col-4">
 				<?php if (!$setting) { ?>
 					<button type="button" class="btn btn-outline-primary btn-block py-5" onclick="openDaily()">
