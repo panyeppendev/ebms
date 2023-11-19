@@ -143,10 +143,7 @@ class SetDailyModel extends CI_Model
 				$balance = $this->getAllBalance($student, $account);
 
 				if ($balance > 0) {
-					if ($balance >= $limitDaily) {
-						$limit = $getLimit;
-						$reserved = $getReserved;
-					}else{
+					if ($balance < $limitDaily) {
 						$residual = $balance - $getLimit;
 						if ($residual > 0){
 							$limit = $getLimit;
@@ -155,6 +152,9 @@ class SetDailyModel extends CI_Model
 							$limit = $balance;
 							$reserved = 0;
 						}
+					}else{
+						$limit = $getLimit;
+						$reserved = $getReserved;
 					}
 				}else{
 					$limit = 0;
@@ -329,7 +329,12 @@ class SetDailyModel extends CI_Model
 
 	public function reset()
 	{
+		$setting = $this->setting();
+		if ($setting) {
+			$this->db->where('created_at', $setting->created_at)->delete('reserved_pocket_daily');
+		}
 		$this->db->empty_table('reserved_pocket');
+		$this->db->update('daily_pocket_limit', ['reserved' => 0]);
 	}
 
 }
