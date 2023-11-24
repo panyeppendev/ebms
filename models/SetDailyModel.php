@@ -142,23 +142,23 @@ class SetDailyModel extends CI_Model
 				$limitDaily = $getLimit + $getReserved;
 				$balance = $this->getAllBalance($student, $account);
 
-				if ($balance > 0) {
-					if ($balance < $limitDaily) {
-						$residual = $balance - $getLimit;
-						if ($residual > 0){
+				if ($balance <= 0) {
+					$limit = 0;
+					$reserved = 0;
+				}else{
+					if ($balance >= $limitDaily) {
+						$limit = $getLimit;
+						$reserved = $getReserved;
+					}else{
+						if ($balance >= $getLimit) {
+							$residual = $balance - $getLimit;
 							$limit = $getLimit;
-							$reserved = $residual;
+							$reserved = ($residual <= 0) ? 0 : $residual;
 						}else{
 							$limit = $balance;
 							$reserved = 0;
 						}
-					}else{
-						$limit = $getLimit;
-						$reserved = $getReserved;
 					}
-				}else{
-					$limit = 0;
-					$reserved = 0;
 				}
 
 				if ($limit > 0 || $reserved > 0) {
