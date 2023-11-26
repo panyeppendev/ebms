@@ -60,19 +60,4 @@ class SetDaily extends CI_Controller
 
 		redirect('setdaily');
 	}
-
-	public function coba()
-	{
-		$total = $this->db->get_where('daily_pocket_limit', ['student_id' => '14370197003'])->row_object();
-		$result = $this->sdm->getDisbursement('14370197003', '2023-11-26');
-
-		$all = ($total->pocket + $total->reserved) - $result;
-		$date = $this->sdm->setting();
-
-		if ($all > 0) {
-			echo 1;
-		}else{
-			echo 0;
-		}
-	}
 }
