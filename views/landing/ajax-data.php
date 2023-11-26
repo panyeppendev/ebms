@@ -50,7 +50,7 @@
 									if ($data['purchase']['status']) {
 										?>
 										<div class="callout callout-success py-3 px-3 mb-4">
-											<b>Paket <?= $data['purchase']['package'] ?></b>
+											<b>Saat ini: Paket <?= $data['purchase']['package'] ?></b>
 										</div>
 										<div class="row">
 											<div class="col-7">Saldo Awal</div>
