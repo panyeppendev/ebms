@@ -246,21 +246,15 @@ class SetDailyModel extends CI_Model
 	{
 		$data = $this->db->get('daily_pocket_limit')->result_object();
 		if ($data) {
+			$this->db->empty_table('reserved_pocket');
 			foreach ($data as $d) {
 				$total = $d->pocket + $d->reserved;
 				$disbursement = $this->getDisbursement($d->student_id, $date);
 				$final = $total - $disbursement;
 				if ($final > 0) {
-					$reserved = $this->db->get_where('reserved_pocket', ['student_id' => $d->student_id])->row_object();
-					if ($reserved) {
-						$this->db->where('id', $reserved->id)->update('reserved_pocket', [
-							'amount' => $final
-						]);
-					}else{
-						$this->db->insert('reserved_pocket', [
-							'student_id' => $d->student_id, 'amount' => $final
-						]);
-					}
+					$this->db->insert('reserved_pocket', [
+						'student_id' => $d->student_id, 'amount' => $final
+					]);
 
 					$this->db->insert('reserved_pocket_daily', [
 						'student_id' => $d->student_id,

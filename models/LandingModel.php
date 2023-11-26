@@ -21,26 +21,26 @@ class LandingModel extends CI_Model
 				'status' => false
 			];
 		}
+
 		$account = $pocketAccount->account_id;
-		$income = $this->db->get_where('incomes', [
-			'purchase_id' => $purchase->id, 'account_id' => $account
-		])->row_object();
-		if (!$income) {
+		$this->db->select_sum('nominal', 'total')->from('expenditures');
+		$expenditures = $this->db->where(['student_id' => $id, 'account_id' => $account])->get()->row_object();
+		if (!$expenditures) {
 			return [
 				'status' => false
 			];
 		}
 
-		$nominal = $income->nominal;
-		$cash = $this->disbursement($purchase->id, 0);
-		$credit = $this->disbursement($purchase->id, 1);
+		$nominal = $expenditures->total;
+		$cash = $this->disbursement(0);
+		$credit = $this->disbursement(1);
 		$disbursement = $cash + $credit;
 		$balance = $nominal - $disbursement;
 
 		return [
 			'status' => true,
-			'package' => $income->package_name,
-			'income' => $income->nominal,
+			'package' => $purchase->package_name,
+			'income' => $nominal,
 			'cash' => $cash,
 			'credit' => $credit,
 			'disbursement' => $disbursement,
@@ -49,11 +49,10 @@ class LandingModel extends CI_Model
 
 	}
 
-	public function disbursement($id, $status)
+	public function disbursement($status)
 	{
-		$result = $this->db->select('SUM(amount) as total')->from('disbursements')->where([
-			'purchase_id' => $id, 'status' => $status
-		])->get()->row_object();
+		$this->db->select('SUM(amount) as total')->from('disbursements');
+		$result = $this->db->where('status', $status)->get()->row_object();
 
 		if ($result) {
 			return $result->total;
