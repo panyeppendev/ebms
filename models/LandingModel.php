@@ -26,14 +26,13 @@ class LandingModel extends CI_Model
 		$this->db->select_sum('nominal', 'total')->from('expenditures');
 		$expenditures = $this->db->where(['student_id' => $id, 'account_id' => $account])->get()->row_object();
 		if (!$expenditures) {
-			return [
-				'status' => false
-			];
+			$nominal = 0;
+		}else{
+			$nominal = $expenditures->total;
 		}
 
-		$nominal = $expenditures->total;
-		$cash = $this->disbursement(0);
-		$credit = $this->disbursement(1);
+		$cash = $this->disbursement($id, 0);
+		$credit = $this->disbursement($id, 1);
 		$disbursement = $cash + $credit;
 		$balance = $nominal - $disbursement;
 
@@ -49,10 +48,12 @@ class LandingModel extends CI_Model
 
 	}
 
-	public function disbursement($status)
+	public function disbursement($id, $status)
 	{
 		$this->db->select('SUM(amount) as total')->from('disbursements');
-		$result = $this->db->where('status', $status)->get()->row_object();
+		$result = $this->db->where([
+			'student_id' => $id, 'status' => $status
+		])->get()->row_object();
 
 		if ($result) {
 			return $result->total;
