@@ -57,7 +57,7 @@ class DepositModel extends CI_Model
         if (!$checkPurchase) {
             return [
                 'status' => 400,
-                'message' => 'Santri ini memiliki paket'
+                'message' => 'Santri ini tidak memiliki paket aktif'
             ];
         }
 
