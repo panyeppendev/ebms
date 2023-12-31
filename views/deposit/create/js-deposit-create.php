@@ -121,6 +121,7 @@
                         toastr.success(`Yeaah! ${ res.message }`)
                         $('#show-check').html('')
                         $('#nominal').prop('readonly', true).val('')
+						$('#id').val('').focus()
                     }
                 })
             }
