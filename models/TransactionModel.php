@@ -314,4 +314,14 @@ class TransactionModel extends CI_Model
 			'message' => 'Satu transaksi berhasil dihapus'
 		];
 	}
+
+	public function searchCard($name)
+	{
+		$this->db->select('a.id, b.name, b.village, b.city, b.domicile, b.class, b.level, b.class_of_formal, b.level_of_formal')->from('students as b');
+		$this->db->join('cards as a', 'a.student_id = b.id')->where('a.status', 'ACTIVE');
+		if ($name != '') {
+			$this->db->like('b.name', $name);
+		}
+		return $this->db->order_by('b.name')->get()->result_object();
+	}
 }

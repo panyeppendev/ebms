@@ -65,4 +65,13 @@ class Transaction extends CI_Controller
 		];
 		$this->load->view('transaction/ajax-check', $data);
 	}
+
+	public function searchCard($name)
+	{
+		$result = $this->tm->searchCard($name);
+		$data = [
+			'data' => $result
+		];
+		$this->load->view('transaction/ajax-search', $data);
+	}
 }
