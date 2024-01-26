@@ -7,11 +7,50 @@
         "timeOut": "2000"
     }
 
+	let modalSearch = $('#modal-search-name')
     $('body').on('keydown', e => {
         if (e.keyCode == 113) {
             $('#card').focus().val('')
+			return false
         }
+
+		if (e.keyCode == 115) {
+			modalSearch.modal('show')
+		}
     })
+
+	modalSearch.on('shown.bs.modal', function (){
+		$('#search-name').val('').focus()
+	})
+
+	modalSearch.on('hidden.bs.modal', function (){
+		$('#search-name').val('')
+		$('#show-search-result').html('')
+	})
+
+	$('#search-name').on('keyup', function(e) {
+		let name = $(this).val()
+		let key = e.which
+		if (key != 13) {
+			return false
+		}
+
+		if (key == 13 && name == '') {
+			return false
+		}
+
+		searchCard(name)
+	})
+
+	const searchCard = name => {
+		$.ajax({
+			url: `<?= base_url() ?>transaction/searchCard/${name}`,
+			method: 'GET',
+			success: function(res) {
+				$('#show-search-result').html(res)
+			}
+		})
+	}
 
     $('.indonesian-currency').autoNumeric('init', {
         aSep: '.',
@@ -242,6 +281,19 @@
 				})
 			}
 		})
+	}
+
+	function copyToClipboard(text) {
+		var sampleTextarea = document.createElement("textarea");
+		document.body.appendChild(sampleTextarea);
+		sampleTextarea.value = text; //save main text in it
+		sampleTextarea.select(); //select textarea contenrs
+		document.execCommand("copy");
+		document.body.removeChild(sampleTextarea);
+		toastr.success('ID berhasil disalin ke clipboard')
+
+		modalSearch.modal('hide')
+		$('#card').val(text).focus()
 	}
 </script>
 </body>

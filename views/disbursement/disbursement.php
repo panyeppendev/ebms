@@ -52,6 +52,7 @@
 								<input readonly type="text" class="form-control indonesian-currency" id="nominal" name="nominal">
 
                             </div>
+							<small class="text-success">Tekan F4 untuk cari nama</small>
                         </div>
                     </div>
                 </div>
@@ -75,6 +76,16 @@
 	</div>
 </div>
 
+<div class="modal fade" id="modal-search-name">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<input autocomplete="off" type="text" id="search-name" class="form-control form-control-sm" placeholder="Ketik nama lalu tekan enter">
+			</div>
+			<div class="modal-body" id="show-search-result" style="min-height: 45vh; max-height: 85vh; overflow: auto"></div>
+		</div>
+	</div>
+</div>
 
 <?php $this->load->view('partials/footer'); ?>
 <script src="<?= base_url('template') ?>/plugins/moment/moment.min.js"></script>
