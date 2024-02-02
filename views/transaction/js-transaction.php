@@ -124,6 +124,7 @@
             },
             dataType: 'JSON',
             success: function(res) {
+				console.log(res)
                 let status = res.status
                 if (status != 200) {
                     errorAlert(res.message)
@@ -146,7 +147,7 @@
 				$('#account').val(res.account)
 				$('#pocket').val(res.pocket)
 				$('#deposit').val(res.deposit)
-				$('#total').val(res.total)
+				$('#total').val(res.grand_total)
 
 				getData(res.nis)
             }

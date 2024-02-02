@@ -105,8 +105,9 @@ class TransactionModel extends CI_Model
 		$pocket = ($balance[0] + $balance[1]) - $disbursement;
 
 		$depositCredit = $this->getAmount($nis, 'deposit_credit', '');
-		$depositDebit = $this->getAmount($nis, 'deposit_debit', '');
-		$deposit = $depositCredit - $depositDebit;
+		$depositDebit0 = $this->getAmount($nis, 'deposit_debit', 0);
+		$depositDebit1 = $this->getAmount($nis, 'deposit_debit', 1);
+		$deposit = $depositCredit - ($depositDebit0 + $depositDebit1);
 
 		return [
 			'status' => 200,
@@ -208,7 +209,12 @@ class TransactionModel extends CI_Model
 		}
 		$result = $this->db->get($table)->row_object();
 		if ($result) {
-			return $result->credit;
+			$result = $result->credit;
+			if ($result) {
+				return $result;
+			}
+
+			return 0;
 		}
 
 		return 0;
