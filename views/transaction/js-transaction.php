@@ -147,7 +147,7 @@
 				$('#account').val(res.account)
 				$('#pocket').val(res.pocket)
 				$('#deposit').val(res.deposit)
-				$('#total').val(res.grand_total)
+				$('#total').val(res.total)
 
 				getData(res.nis)
             }
