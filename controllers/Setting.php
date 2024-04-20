@@ -299,4 +299,32 @@ class Setting extends CI_Controller
 
         echo json_encode($result);
     }
+
+	public function resetAll()
+	{
+		$this->db->empty_table('daily_pocket_limit');
+		$this->db->empty_table('deposit_credit');
+		$this->db->empty_table('deposit_debit');
+		$this->db->empty_table('disbursements');
+		$this->db->empty_table('distribution_daily');
+		$this->db->empty_table('distributions');
+		$this->db->empty_table('expenditures');
+		$this->db->empty_table('package_transaction');
+		$this->db->empty_table('purchase_detail');
+		$this->db->empty_table('purchase_temp');
+		$this->db->empty_table('purchases');
+		$this->db->empty_table('reserved_pocket');
+		$this->db->empty_table('reserved_pocket_daily');
+		$this->db->empty_table('transactions');
+		$this->db->empty_table('set_daily');
+		$this->db->empty_table('set_daily_log');
+		$this->db->empty_table('set_transaction_daily');
+
+		$result = [
+			'status' => TRUE,
+			'message' => 'Berhasil direset'
+		];
+
+		echo json_encode($result);
+	}
 }
