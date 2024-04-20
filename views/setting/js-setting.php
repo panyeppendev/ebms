@@ -6,6 +6,36 @@
         "timeOut": "2000"
     }
 
+	const resetAll = () => {
+		Swal.fire({
+			title: 'Anda Yakin?',
+			text: 'Akan reset data',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yakin dong',
+			cancelButtonText: 'Nggak jadi'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: '<?= base_url() ?>setting/resetAll',
+					method: 'POST',
+					dataType: 'JSON',
+					success: function(response) {
+						let status = response.status
+						if (!status) {
+							toastr.error(`Oppss..! ${response.message}`)
+							return false
+						}
+
+						toastr.success(`Yeaahh..! ${response.message}`)
+					}
+				})
+			}
+		})
+	}
+
     const savePeriod = () => {
         let period = $('#period').val()
         if (period == '') {

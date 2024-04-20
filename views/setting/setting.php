@@ -100,6 +100,8 @@
                         </div>
                     </div>
                 </div>
+
+				<button class="btn btn-primary btn-block" onclick="resetAll()">Reset</button>
             </section>
             <section class="col-lg-8 connectedSortable ui-sortable">
                 <div class="row">
