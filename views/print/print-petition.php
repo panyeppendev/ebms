@@ -363,7 +363,7 @@
 									<br>
 									PPMU. Panyeppen
 									<br><br><br><br>
-									<b><u>( UST. RUMHUL FATTAH )</u></b>
+									<b><u>( UST. MAHRUS ALI )</u></b>
 								</td>
 							</tr>
 						</table>
