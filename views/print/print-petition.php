@@ -347,7 +347,7 @@
 								<td>
 									Koord. KAMTIB,
 									<br><br><br><br>
-									<b><u>( UST. NASIHOL AMIN / UST. SAHRULLAH )</u></b>
+									<b><u>( UST. FENDI TLB )</u></b>
 								</td>
 							</tr>
 						</table>
